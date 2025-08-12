@@ -7,7 +7,7 @@ import org.openide.awt.ActionReferences;
 import org.openide.util.NbBundle;
 
 @ActionID(
- category = "Menu/Edit",
+ category = "Menu/Window",
  id = "uno.anahata.netbeans.ai.AIWindowAction"
 )
 @ActionReferences({
