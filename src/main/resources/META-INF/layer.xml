@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer version="1.0" xmlns="http://www.netbeans.org/xml/layer/1">
+ <window>
+ <id name="AIWindow"/>
+ <title>AI Assistant</title>
+ <iconBase>uno/anahata/netbeans/ai/resources/icon.png</iconBase>
+ <menu name="Menu/Window" position="100">
+ <item name="AIWindowAction" position="100"/>
+ </menu>
+ </window>
+ <action id="AIWindowAction" class="uno.anahata.netbeans.ai.AIWindowAction"/>
+</layer>
