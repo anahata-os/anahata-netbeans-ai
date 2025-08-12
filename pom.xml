@@ -71,7 +71,7 @@
  <plugin>
  <groupId>org.netbeans.cluster</groupId>
  <artifactId>netbeans-maven-plugin</artifactId>
- <version>${netbeans.version}</version>
+ <version>5.0</version> <!-- updated version -->
  <executions>
  <execution>
  <id>netbeans-deploy</id>
@@ -84,4 +84,11 @@
  </plugin>
  </plugins>
  </build>
+ <repositories>
+ <repository>
+ <id>netbeans</id>
+ <name>NetBeans Repository</name>
+ <url>https://repo.netbeans.org/maven2</url>
+ </repository>
+ </repositories>
 </project>
