@@ -81,6 +81,9 @@
  </goals>
  </execution>
  </executions>
+ <configuration>
+ <netbeansHome>/path/to/netbeans/installation</netbeansHome>
+ </configuration>
  </plugin>
  </plugins>
  </build>
