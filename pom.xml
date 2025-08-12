@@ -5,7 +5,7 @@
  <groupId>uno.anahata.netbeans.ai</groupId>
  <artifactId>anahata-netbeans-ai</artifactId>
  <version>1.0.0-SNAPSHOT</version>
- <packaging>nb-module</packaging>
+ <packaging>jar</packaging>
 
  <name>Anahata NetBeans AI Plugin</name>
 
