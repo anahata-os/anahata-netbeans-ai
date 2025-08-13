@@ -11,6 +11,10 @@ import org.openide.windows.TopComponent;
     mode = "editor",
     openAtStartup = false
 )
+@TopComponent.Description(
+    displayName = "#CTL_MinimalTopComponent",
+    iconBase = "path/to/icon.png"
+)
 @Messages({
     "CTL_MinimalTopComponent=Minimal TopComponent"
 })
