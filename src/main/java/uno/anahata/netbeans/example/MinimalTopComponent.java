@@ -1,18 +1,24 @@
 package uno.anahata.netbeans.example;
 
 import javax.swing.JLabel;
+import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
-@TopComponent.Registration(displayName = "Minimal TopComponent", 
- iconBase = "path/to/icon.png", 
- mimeType = "text/plain",
- mode = "editor",
- openAtStartup = false)
+@TopComponent.Registration(
+    displayName = "#CTL_MinimalTopComponent",
+    iconBase = "path/to/icon.png",
+    mimeType = "text/plain",
+    mode = "editor",
+    openAtStartup = false
+)
+@Messages({
+    "CTL_MinimalTopComponent=Minimal TopComponent"
+})
 public class MinimalTopComponent extends TopComponent {
 
- public MinimalTopComponent() {
- setName("Minimal TopComponent");
- setToolTipText("This is a minimal TopComponent");
- add(new JLabel("Hello, World!"));
- }
+    public MinimalTopComponent() {
+        setName(Bundle.CTL_MinimalTopComponent());
+        setToolTipText(Bundle.CTL_MinimalTopComponent());
+        add(new JLabel(Bundle.CTL_MinimalTopComponent()));
+    }
 }
