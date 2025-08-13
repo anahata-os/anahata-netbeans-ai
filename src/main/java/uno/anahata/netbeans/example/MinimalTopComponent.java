@@ -5,7 +5,9 @@ import org.openide.windows.TopComponent;
 
 @TopComponent.Registration(displayName = "Minimal TopComponent", 
  iconBase = "path/to/icon.png", 
- mimeType = "text/plain")
+ mimeType = "text/plain",
+ mode = "editor",
+ openAtStartup = false)
 public class MinimalTopComponent extends TopComponent {
 
  public MinimalTopComponent() {
