@@ -6,8 +6,8 @@ import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 @TopComponent.Registration(displayName = "#ChatTopComponent.displayName", 
-                          iconBase = "path/to/icon.png", 
-                          persistenceType = TopComponent.PERSISTENCE_NEVER)
+ iconBase = "path/to/icon.png", 
+ persistenceType = TopComponent.PERSISTENCE_NEVER)
 public class ChatTopComponent extends TopComponent {
 
  public ChatTopComponent() {
