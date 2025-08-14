@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module>
-  <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
-  <specificationVersion>1.0</specificationVersion>
-  <displayName>Anahata NetBeans AI Plugin</displayName>
-  <description>AI assistant integration for NetBeans</description>
-</module>
