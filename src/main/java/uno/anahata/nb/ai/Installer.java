@@ -7,6 +7,9 @@ package uno.anahata.nb.ai;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.modules.ModuleInstall;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
+import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
 
 public class Installer extends ModuleInstall {
 
@@ -22,7 +25,17 @@ public class Installer extends ModuleInstall {
     @Override
     public void validate() throws IllegalStateException {
         logId("validate()");
+        logId("Compiler classpath" + ExecuteJavaCode.getCompilerClasspath());
         super.validate(); // Generated from 
+        
+        // Called when the module is reloaded
+        TopComponent tc = WindowManager.getDefault().findTopComponent("gemini");
+        
+        if (tc != null && tc.isOpened()) {
+            logId("validate() will close the old TopComponent()");
+            tc.close();  // Close existing instance
+            
+        }
     }
 
     @Override
@@ -33,7 +46,7 @@ public class Installer extends ModuleInstall {
                 listener = null;
             }
             logId("restored() creating new listener:" + listener);            
-            listener = new NetBeansListener();
+            //listener = new NetBeansListener();
         } catch (Exception e) {
             log.log(Level.SEVERE, "restored()", e);
         }

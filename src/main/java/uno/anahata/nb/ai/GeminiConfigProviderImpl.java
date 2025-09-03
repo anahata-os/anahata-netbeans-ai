@@ -16,13 +16,13 @@ import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import uno.anahata.gemini.SystemInstructionProvider;
+import uno.anahata.gemini.GeminiConfigProvider;
 
 /**
  *
  * @author pablo
  */
-public class SystemInstructionProviderImpl implements SystemInstructionProvider{
+public class GeminiConfigProviderImpl implements GeminiConfigProvider {
     private static String staticEnvSummary;  // Cached static info
     private static volatile String dynamicEnvSummary;  // Updated on demand
 
@@ -38,13 +38,13 @@ public class SystemInstructionProviderImpl implements SystemInstructionProvider{
     @Override
     public Content getSystemInstruction() {
         return Content.fromParts(
-        Part.fromText("You are an AI coding assistant embedded in NetBeans IDE as a NetBeans plugin."),
-        Part.fromText("Your role is to generate Java code that the plugin will compile and run in the current JVM to interact with the IDE (e.g., open files using org.netbeans.api.actions.OpenAction)."),
+        Part.fromText("You are an AI software developer assistant embedded in NetBeans IDE as a nbm plugin."),
+        Part.fromText("Your role is to write Java code that the plugin can compile it and run in the current JVM via declared functions to interact with the IDE (e.g., open files using org.netbeans.api.actions.OpenAction)."),
+        Part.fromText("You can also use the runShell or read and write file functions if that is easier"),
         Part.fromText("Use the provided environment details to ensure compatibility."),
         Part.fromText(staticEnvSummary),
         Part.fromText(dynamicEnvSummary));
     }
-    
     
 
     // Compute static environment details (called once)
