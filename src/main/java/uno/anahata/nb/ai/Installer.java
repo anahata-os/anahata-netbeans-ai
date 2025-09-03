@@ -1,18 +1,81 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/NetBeansModuleDevelopment-files/moduleInstall.java to edit this template
+ */
 package uno.anahata.nb.ai;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.modules.ModuleInstall;
 
 public class Installer extends ModuleInstall {
 
+    private static NetBeansListener listener;
+    private static final Logger log = Logger.getLogger(Installer.class.getName());
+
+    public Installer() {
+        logId("init()");
+    }
+    
+    
+
     @Override
-    public void restored() {
-        // Module has been installed and restored
-        System.out.println("LLM Chat Plugin loaded successfully!");
+    public void validate() throws IllegalStateException {
+        logId("validate()");
+        super.validate(); // Generated from 
     }
 
     @Override
-    public void uninstalled() {
-        // Module is being uninstalled
-        System.out.println("LLM Chat Plugin uninstalled.");
+    public void restored() {
+        try {
+            if (listener != null) {
+                logId("restored() deleting old listener:" + listener);            
+                listener = null;
+            }
+            logId("restored() creating new listener:" + listener);            
+            listener = new NetBeansListener();
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "restored()", e);
+        }
+        
+        logId("restored() finished");
     }
+    
+    @Override
+    public void uninstalled() {
+        if (listener != null) {
+            logId("uninstalled() calling listener.cleanup()");
+            listener.cleanup();
+        } else {
+            logId("uninstalled() no listener was created");
+        }
+        
+        logId("uninstalled()");
+        super.uninstalled();
+    }
+
+    @Override
+    protected boolean clearSharedData() {
+        boolean ret = super.clearSharedData();
+        logId("clearSharedData(): " + ret);
+        return ret;
+    }
+
+    @Override
+    public boolean closing() {
+        boolean ret = super.closing();
+        logId("closing(): " + ret);
+        return ret;
+    }
+
+    @Override
+    public void close() {
+        logId("close()");
+        super.close();
+    }
+
+    private void logId(String mssg) {
+        log.info(System.identityHashCode(this) + ":" + mssg);
+    }
+
 }

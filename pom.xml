@@ -5,33 +5,41 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uno.anahata.netbeans.ai</groupId>
+    <groupId>uno.anahata</groupId>
     <artifactId>anahata-netbeans-ai</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
     
 
-    <name>Anahata NetBeans AI Plugin</name>
-    <description>AI assistant integration for NetBeans</description>
+    <name>Gemini NetBeans Plugin</name>
+    <description>Gemini in NetBeans</description>
+    <organization>
+        <name>Anahata</name>
+        <url>http://anahata.uno</url>
+    </organization>
+    <url>https://anahata.uno/nb-gemini</url>
+    
+    <developers>
+        <developer>
+            <name>Priyadarshi</name>
+            <email>p@anahata.uno</email>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netbeans.version>RELEASE260</netbeans.version>
+        <netbeans.version>RELEASE270</netbeans.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
-<!--
-    <repositories>
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>https://bits.netbeans.org/maven2/</url>
-        </repository>
-    </repositories>
--->
 
     <dependencies>
-         <dependency>
+        <dependency>
+            <groupId>uno.anahata</groupId>
+            <artifactId>gemini-java-client</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
             <version>${netbeans.version}</version>
@@ -43,17 +51,22 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE260</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-ui</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -61,7 +74,26 @@
             <artifactId>org-openide-modules</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-loaders</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-editor-lib2</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -72,34 +104,10 @@
                 <version>14.3</version>
                 <extensions>true</extensions>                
                 <configuration>
-                    <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>                                        
+                    <author>Project Author</author>
+                    <homePageUrl>http://anahata.uno</homePageUrl>
+                    <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>manifest</id>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                        <configuration>
-                            <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>branding</id>
-                        <goals>
-                            <goal>branding</goal>
-                        </goals>
-                        <!-- optional branding config -->
-                    </execution>
-                    <execution>
-                        <id>nbm</id>
-                        <goals>
-                            <goal>nbm</goal>
-                        </goals>
-                        <!-- optional nbm config -->
-                    </execution>
-                </executions>
-                
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
