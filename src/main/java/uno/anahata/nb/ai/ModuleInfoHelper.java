@@ -4,9 +4,8 @@
  */
 package uno.anahata.nb.ai;
 
-import java.awt.event.ActionEvent;
 import java.io.File;
-import static java.lang.System.out;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,10 +14,10 @@ import java.util.logging.Logger;
 import org.openide.modules.Dependency;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInfo;
+import org.openide.modules.Modules;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Lookup;
 import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
-import static uno.anahata.nb.ai.ClassPathUtils.getExtraClassPath;
 
 /**
  *
@@ -49,24 +48,21 @@ public class ModuleInfoHelper {
     }
 
     public static List<String> getGeminiModuleJars() throws Exception {
-        ModuleInfo thisModuleOnly = null;
-        Collection<? extends ModuleInfo> allModules = Lookup.getDefault().lookupAll(ModuleInfo.class);
-        logger.info("All modules:" + allModules.size());
-        Collection<ModuleInfo> processedModules = new ArrayList();
-        for (ModuleInfo m : allModules) {
-            if (m.getCodeName().contains("anahata")) {
-                logger.info("Found Plugin Module " + m.getCodeName() + " implementation version " + m.getImplementationVersion() + " build version " + m.getBuildVersion());
-                thisModuleOnly = m;
-                break;
-            }
-        }
+        //String codeNameBase = "uno.anahata.netbeans.ai";
+        ModuleInfo thisModuleOnly = Modules.getDefault().ownerOf(GeminiTopComponent.class);
 
         if (thisModuleOnly == null) {
-            throw new RuntimeException("Could not find: anahata-netbeans-ai");
+            throw new RuntimeException("Could not find Gemini's own ");
         }
 
+        logger.info("Found Plugin Module " + thisModuleOnly.getCodeName() + " implementation version " + thisModuleOnly.getImplementationVersion() + " build version " + thisModuleOnly.getBuildVersion());
+
+        Collection<? extends ModuleInfo> allModules = Lookup.getDefault().lookupAll(ModuleInfo.class);
+        logger.info("All modules: " + allModules.size());
+        
         logger.info("This module" + thisModuleOnly.getCodeName() + " All Modules " + allModules.size());
         List<String> collection = new ArrayList<>();
+        Collection<ModuleInfo> processedModules = new ArrayList<>();
         collectJarFiles(thisModuleOnly, allModules, collection, processedModules);
         return collection;
     }
@@ -74,7 +70,7 @@ public class ModuleInfoHelper {
     public static List<String> getAllEnabledModulesJars() throws Exception {
 
         Collection<? extends ModuleInfo> allModules = Lookup.getDefault().lookupAll(ModuleInfo.class);
-        Collection<ModuleInfo> processedModules = new ArrayList();
+        Collection<ModuleInfo> processedModules = new ArrayList<>();
 
         List<String> collection = new ArrayList<>();
         for (ModuleInfo moduleInfo : allModules) {
@@ -101,7 +97,7 @@ public class ModuleInfoHelper {
             // Print details
             /*
             logger.info("Display Name: " + displayName);
-            logger.info("Code Name : " + module.getCodeName());
+            logger.info("Code Name: " + module.getCodeName());
             logger.info("Code Name Base: " + codeNameBase);
             logger.info("Version: " + versionStr);
             logger.info("Enabled: " + enabled);
@@ -110,6 +106,9 @@ public class ModuleInfoHelper {
             // Resolve JAR path: Convert code name to file name (replace '.' with '-')
             //String jarName = codeNameBase.replace('.', '-') + ".jar";
             File jarFile = getMainJarFile(module);
+            if (jarFile == null) {
+                
+            }
             if (jarFile != null) {
                 String jarPath = jarFile.getAbsolutePath();
                 if (jarPath != null) {
@@ -121,12 +120,12 @@ public class ModuleInfoHelper {
                     }
                 } else {
                     logger.warning("No absolutePath for"
-                            + " module= " + module + " "
-                            + "jarFile=" + jarFile
-                            + " getPath=" + jarFile.getPath()
-                            + " dir=" + jarFile.isDirectory()
-                            + " canonicalPath=" + jarFile.getCanonicalPath()
-                            + " exists=" + jarFile.exists());
+                        + " module= " + module + " "
+                        + " jarFile=" + jarFile
+                        + " getPath=" + jarFile.getPath()
+                        + " dir=" + jarFile.isDirectory()
+                        + " canonicalPath=" + jarFile.getCanonicalPath()
+                        + " exists=" + jarFile.exists());
                 }
 
             } else {
@@ -135,7 +134,7 @@ public class ModuleInfoHelper {
 
             //logger.info("JAR File: " + jarFile);
             for (Dependency d : module.getDependencies()) {
-                ModuleInfo matchingModule = findMatchingModule(d, (Collection) allModules);
+                ModuleInfo matchingModule = Modules.getDefault().findCodeNameBase(d.getName());
                 if (matchingModule != null && !processedModules.contains(matchingModule)) {
                     collectJarFiles(matchingModule, allModules, collectedJars, processedModules);
                     /*
@@ -149,7 +148,8 @@ public class ModuleInfoHelper {
                             }
                         } else {
                             logger.info("\tCould not add dependency jar: codeName=" + codeName + " v=" + version + " t=" + d.getType() + " comparison=" + d.getComparison() + " module:" + matchingModule);
-                        }*/
+                        }
+                     */
 
                 } else {
                     //logger.info("\tCould not find matching module for dependency : codeName=" + codeName + " v=" + version + " t=" + d.getType() + " comparison=" + d.getComparison());
@@ -184,10 +184,10 @@ public class ModuleInfoHelper {
 
         // Check for all valid, known types. If it's not one of these, we will ignore it.
         if (dep.getType() == Dependency.TYPE_MODULE
-                || dep.getType() == Dependency.TYPE_PACKAGE
-                || dep.getType() == Dependency.TYPE_REQUIRES
-                || dep.getType() == Dependency.TYPE_RECOMMENDS
-                || dep.getType() == Dependency.TYPE_NEEDS) {
+            || dep.getType() == Dependency.TYPE_PACKAGE
+            || dep.getType() == Dependency.TYPE_REQUIRES
+            || dep.getType() == Dependency.TYPE_RECOMMENDS
+            || dep.getType() == Dependency.TYPE_NEEDS) {
             // This is a valid type, so we let the method continue to the logic below.
         } else {
             // This is an unknown or unhandled type. Log it and skip it safely.
@@ -275,5 +275,26 @@ public class ModuleInfoHelper {
         }
 
         return null; // No match found
+    }
+
+    public static File getMainJarFile2(ModuleInfo module) {
+        try {
+            // Get the module's classloader and find the manifest URL
+            URL manifestUrl = module.getClassLoader().getResource("META-INF/MANIFEST.MF");
+            if (manifestUrl == null) {
+                logger.warning("Could not find manifest for module: " + module);
+                return null;
+            }
+
+            // Extract the JAR file path from the manifest URL
+            java.net.JarURLConnection connection = (java.net.JarURLConnection) manifestUrl.openConnection();
+            URL fileUrl = connection.getJarFileURL();
+            File jarFile = new File(fileUrl.toURI());
+            logger.info("Found JAR for " + module.getCodeNameBase() + " at " + jarFile.getAbsolutePath());
+            return jarFile;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error getting JAR for module " + module, e);
+            return null;
+        }
     }
 }
