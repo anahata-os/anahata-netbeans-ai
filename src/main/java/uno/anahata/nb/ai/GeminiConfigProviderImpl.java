@@ -38,11 +38,11 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
     @Override
     public Content getSystemInstruction() {
         return Content.fromParts(
-        Part.fromText("You are an AI software developer assistant embedded in NetBeans IDE as a nbm plugin."),
-        Part.fromText("Your role is to write Java code that the plugin can compile it and run in the current JVM via declared functions to interact with the IDE (e.g., open files using org.netbeans.api.actions.OpenAction)."),
-        Part.fromText("You can also use the runShell or read and write file functions if that is easier"),
+        Part.fromText("You are an AI software developer assistant embedded in " + System.getProperty("netbeans.productversion") + " as a NBM plugin."),
+        //Part.fromText("Your role is to write Java code that the plugin can compile it and run in the current JVM via declared functions to interact with the IDE (e.g., open files using org.netbeans.api.actions.OpenAction)."),
+        //Part.fromText("You can also use the runShell or read and write file functions if that is easier"),
         Part.fromText("Use the provided environment details to ensure compatibility."),
-        Part.fromText(staticEnvSummary),
+        //Part.fromText(staticEnvSummary),
         Part.fromText(dynamicEnvSummary));
     }
     
@@ -51,19 +51,17 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
     private static String computeStaticEnvSummary() {
         StringBuilder sb = new StringBuilder();
         sb.append("Static environment details:\n");
-        sb.append("- IDE: Apache NetBeans ").append(Modules.getDefault().ownerOf(ModuleInfo.class).getSpecificationVersion()).append("\n");
-        sb.append("- Java Version: ").append(System.getProperty("java.version")).append("\n");
-        sb.append("- OS: ").append(System.getProperty("os.name")).append(" ").append(System.getProperty("os.version")).append("\n");
+        //sb.append("- IDE: Apache NetBeans ").append(Modules.getDefault().ownerOf(ModuleInfo.class).getSpecificationVersion()).append("\n");
         return sb.toString();
     }
 
     // Compute dynamic environment details (called per request or on event)
     private static String computeDynamicEnvSummary() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Dynamic environment details:\n");
-        sb.append("- Classpath Summary: ").append(summarizeClasspath(System.getProperty("java.class.path"))).append("\n");
-        sb.append("- Key System Properties: user.dir=").append(System.getProperty("user.dir")).append("\n");
-        sb.append("- Environment Variables: JAVA_HOME=").append(System.getenv("JAVA_HOME")).append("\n");
+        
+        sb.append("- System Properties: ").append(System.getProperties().toString()).append("\n");
+        sb.append("- Environment veriables: ").append(System.getenv().toString()).append("\n");
+        
         // Add project-specific info if applicable, e.g., current project's dependencies
         return sb.toString();
     }
@@ -75,7 +73,7 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
             .limit(5)  // Limit for token efficiency
             .collect(Collectors.joining(", "));
     }
-
+    
     
 }
 
