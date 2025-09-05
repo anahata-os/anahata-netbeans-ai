@@ -10,6 +10,7 @@ import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.modules.Dependency;
 import org.openide.modules.InstalledFileLocator;
@@ -27,58 +28,66 @@ public class ModuleInfoHelper {
 
     private static final Logger logger = Logger.getLogger(ModuleInfoHelper.class.getName());
 
-    public static void initExecJava() {
-        String initClassPath = ExecuteJavaCode.initDefaultCompilerClasspath();
-        List<String> geminiClasspath = getGeminiModuleJars();
-        logger.info("ExecJava initializing getGeminiModuleJars(): This module: " + geminiClasspath.size());
-        List<String> allModulesClassPath = getAllEnabledModulesJars();
-        logger.info("ExecJava initializing getAllEnabledModulesJars()" +  allModulesClassPath.size());
-        logger.info("ExecJava initializing default classpath: This module: " + geminiClasspath.size() + ". All active modules " + allModulesClassPath.size());
-        String extraClassPathString = ClassPathUtils.classPathToString(geminiClasspath);
-        String newClassPathString = initClassPath + File.pathSeparator + extraClassPathString;
-        ExecuteJavaCode.setDefaultCompilerClasspath(newClassPathString);
-        logger.info("ExecJava compilerClassPAth initialized:");
-        //return ExecuteJavaCode.defaultCompilerClasspath;
+    public static void initExecuteJavaCode() {
+
+        try {
+            String initClassPathString = ExecuteJavaCode.initDefaultCompilerClasspath();
+            logger.info("ExecJava initializing initClassPath: " + initClassPathString);
+            List<String> geminiClasspath = getGeminiModuleJars();
+            //List<String> allModulesClassPath = getAllEnabledModulesJars();
+            //logger.info("ExecJava initializing getAllEnabledModulesJars()" + allModulesClassPath.size());
+            //logger.info("ExecJava initializing default classpath: This module: " + geminiClasspath.size());
+            String extraClassPathString = ClassPathUtils.classPathToString(geminiClasspath);
+            String newClassPathString = initClassPathString + File.pathSeparator + extraClassPathString;
+            ExecuteJavaCode.setDefaultCompilerClasspath(newClassPathString);
+            logger.info("newClassPathString: " + initClassPathString);
+            //return ExecuteJavaCode.defaultCompilerClasspath;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Exception initializing ExecuteJavaCode", e);
+        }
+
     }
 
-    public static List<String> getGeminiModuleJars() {
+    public static List<String> getGeminiModuleJars() throws Exception {
         ModuleInfo thisModuleOnly = null;
         Collection<? extends ModuleInfo> allModules = Lookup.getDefault().lookupAll(ModuleInfo.class);
-        Collection<ModuleInfo> processedModules = new ArrayList(); 
+        logger.info("All modules:" + allModules.size());
+        Collection<ModuleInfo> processedModules = new ArrayList();
         for (ModuleInfo m : allModules) {
             if (m.getCodeName().contains("anahata")) {
-                logger.info("Module " + m.getCodeName() + " " + m.getCodeNameBase());
+                logger.info("Found Plugin Module " + m.getCodeName() + " implementation version " + m.getImplementationVersion() + " build version " + m.getBuildVersion());
                 thisModuleOnly = m;
                 break;
             }
         }
-        
+
         if (thisModuleOnly == null) {
             throw new RuntimeException("Could not find: anahata-netbeans-ai");
         }
+
         logger.info("This module" + thisModuleOnly.getCodeName() + " All Modules " + allModules.size());
         List<String> collection = new ArrayList<>();
         collectJarFiles(thisModuleOnly, allModules, collection, processedModules);
         return collection;
     }
-    public static List<String> getAllEnabledModulesJars() {
-        
+
+    public static List<String> getAllEnabledModulesJars() throws Exception {
+
         Collection<? extends ModuleInfo> allModules = Lookup.getDefault().lookupAll(ModuleInfo.class);
-        Collection<ModuleInfo> processedModules = new ArrayList(); 
-        
+        Collection<ModuleInfo> processedModules = new ArrayList();
+
         List<String> collection = new ArrayList<>();
         for (ModuleInfo moduleInfo : allModules) {
             if (moduleInfo.isEnabled()) {
                 collectJarFiles(moduleInfo, allModules, collection, processedModules);
             }
         }
-        
+
         return collection;
 
     }
 
-
-    public static void collectJarFiles(ModuleInfo module, Collection allModules, List<String> collectedJars, Collection<ModuleInfo> processedModules) {
+    public static void collectJarFiles(ModuleInfo module, Collection allModules, List<String> collectedJars, Collection<ModuleInfo> processedModules) throws Exception {
         /*
         String codeNameBase = module.getCodeNameBase();
         String displayName = module.getDisplayName();
@@ -87,7 +96,7 @@ public class ModuleInfoHelper {
          */
         boolean enabled = module.isEnabled();
 
-        if (enabled && ! processedModules.contains(module)) {
+        if (enabled && !processedModules.contains(module)) {
             processedModules.add(module);
             // Print details
             /*
@@ -101,23 +110,33 @@ public class ModuleInfoHelper {
             // Resolve JAR path: Convert code name to file name (replace '.' with '-')
             //String jarName = codeNameBase.replace('.', '-') + ".jar";
             File jarFile = getMainJarFile(module);
-            String jarPath = (jarFile != null) ? jarFile.getAbsolutePath() : "Not found";
-            if (jarFile != null && jarFile.getAbsolutePath() != null) {
-                if (!collectedJars.contains(jarPath)) {
-                    collectedJars.add(jarPath);
-                    logger.info("Jar located for module: " + module + " " + jarPath);
+            if (jarFile != null) {
+                String jarPath = jarFile.getAbsolutePath();
+                if (jarPath != null) {
+                    if (!collectedJars.contains(jarPath)) {
+                        collectedJars.add(jarPath);
+                        //logger.info("Jar located for module: " + module + " " + jarPath);
+                    } else {
+                        logger.warning("Jar File already located for module: " + module + " ");
+                    }
                 } else {
-                    logger.fine("Jar File already located for module: " + module + " ");
+                    logger.warning("No absolutePath for"
+                            + " module= " + module + " "
+                            + "jarFile=" + jarFile
+                            + " getPath=" + jarFile.getPath()
+                            + " dir=" + jarFile.isDirectory()
+                            + " canonicalPath=" + jarFile.getCanonicalPath()
+                            + " exists=" + jarFile.exists());
                 }
 
             } else {
-                logger.warning("Could not locate main jar file for module: " + module + " " + jarFile);
+                logger.warning("Could not locate main jar file for module: " + module + " jarFile=" + jarFile);
             }
 
             //logger.info("JAR File: " + jarFile);
             for (Dependency d : module.getDependencies()) {
                 ModuleInfo matchingModule = findMatchingModule(d, (Collection) allModules);
-                if (matchingModule != null && ! processedModules.contains(matchingModule)) {
+                if (matchingModule != null && !processedModules.contains(matchingModule)) {
                     collectJarFiles(matchingModule, allModules, collectedJars, processedModules);
                     /*
                         File depJar = getJarFile(matchingModule);
@@ -139,8 +158,6 @@ public class ModuleInfoHelper {
             }
 
         }
-        
-        
 
     }
 
@@ -152,23 +169,25 @@ public class ModuleInfoHelper {
         // Resolve JAR path: Convert code name to file name (replace '.' with '-')
         String jarName = codeNameBase.replace('.', '-') + ".jar";
         File jarFile = InstalledFileLocator.getDefault().locate("modules/" + jarName, codeNameBase, false);
+        logger.info("Module: " + module + "\n\t jarFile=" + jarFile);
         return jarFile;
+
     }
 
     public static ModuleInfo findMatchingModule(Dependency dep, Collection<ModuleInfo> allModules) {
         boolean required = false;
-        
+
         // START OF CHANGE
         if (dep.getType() == Dependency.TYPE_JAVA) {
             return null; // Skip JDK dependencies
         }
 
         // Check for all valid, known types. If it's not one of these, we will ignore it.
-        if (dep.getType() == Dependency.TYPE_MODULE ||
-            dep.getType() == Dependency.TYPE_PACKAGE ||
-            dep.getType() == Dependency.TYPE_REQUIRES ||
-            dep.getType() == Dependency.TYPE_RECOMMENDS ||
-            dep.getType() == Dependency.TYPE_NEEDS) {
+        if (dep.getType() == Dependency.TYPE_MODULE
+                || dep.getType() == Dependency.TYPE_PACKAGE
+                || dep.getType() == Dependency.TYPE_REQUIRES
+                || dep.getType() == Dependency.TYPE_RECOMMENDS
+                || dep.getType() == Dependency.TYPE_NEEDS) {
             // This is a valid type, so we let the method continue to the logic below.
         } else {
             // This is an unknown or unhandled type. Log it and skip it safely.

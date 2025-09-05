@@ -46,7 +46,7 @@ public class Installer extends ModuleInstall {
         
         logId("restored() default compiler classpath before:" + ExecuteJavaCode.getDefaultCompilerClasspath().split(File.pathSeparator).length);
         try {
-            ModuleInfoHelper.initExecJava();
+            ModuleInfoHelper.initExecuteJavaCode();
         } catch (Exception e) {
             log.log(Level.SEVERE, "Exception in ModuleInfoHelper.initExecJava()", e);
         }
