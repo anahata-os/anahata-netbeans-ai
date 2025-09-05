@@ -111,7 +111,7 @@ public class ModuleInfoHelper {
                 }
 
             } else {
-                logger.warning("Could not locate jar file for module: " + module + " " + jarFile);
+                logger.warning("Could not locate main jar file for module: " + module + " " + jarFile);
             }
 
             //logger.info("JAR File: " + jarFile);
@@ -157,19 +157,25 @@ public class ModuleInfoHelper {
 
     public static ModuleInfo findMatchingModule(Dependency dep, Collection<ModuleInfo> allModules) {
         boolean required = false;
+        
+        // START OF CHANGE
         if (dep.getType() == Dependency.TYPE_JAVA) {
-            return null;
-        } else if (dep.getType() == Dependency.TYPE_REQUIRES) {
-            //required = true;
-        } else if (dep.getType() == Dependency.TYPE_RECOMMENDS) {
-            //required = true;
-        } else if (dep.getType() == Dependency.TYPE_PACKAGE) {
-            //required = true;
-        } else if (dep.getType() == Dependency.TYPE_NEEDS) {
-            //required = true;
-        } else if (dep.getType() != Dependency.TYPE_MODULE) {
-            throw new IllegalArgumentException("Dependency " + dep + " must be of type TYPE_MODULE but it is: " + dep.getType() + " " + dep.getName());
+            return null; // Skip JDK dependencies
         }
+
+        // Check for all valid, known types. If it's not one of these, we will ignore it.
+        if (dep.getType() == Dependency.TYPE_MODULE ||
+            dep.getType() == Dependency.TYPE_PACKAGE ||
+            dep.getType() == Dependency.TYPE_REQUIRES ||
+            dep.getType() == Dependency.TYPE_RECOMMENDS ||
+            dep.getType() == Dependency.TYPE_NEEDS) {
+            // This is a valid type, so we let the method continue to the logic below.
+        } else {
+            // This is an unknown or unhandled type. Log it and skip it safely.
+            logger.warning("Skipping unhandled dependency type: " + dep);
+            return null;
+        }
+        // END OF CHANGE
 
         String depName = dep.getName();
         int depSlashIdx = depName.indexOf('/');
