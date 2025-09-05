@@ -128,13 +128,11 @@ public class ModuleInfoHelper {
         }
     }
 
-    private static ModuleInfo findMatchingModule(Dependency dep, Collection<ModuleInfo> allModules) {
-        boolean required = false;
-
+    public static ModuleInfo findMatchingModule(Dependency dep, Collection<ModuleInfo> allModules) {
         if (dep.getType() == Dependency.TYPE_JAVA) {
             return null; // Skip JDK dependencies
         }
-
+    
         if (dep.getType() != Dependency.TYPE_MODULE &&
             dep.getType() != Dependency.TYPE_PACKAGE &&
             dep.getType() != Dependency.TYPE_REQUIRES &&
@@ -143,52 +141,41 @@ public class ModuleInfoHelper {
             logger.warning("Skipping unhandled dependency type: " + dep);
             return null;
         }
-
+    
+        List<ModuleInfo> candidates = new ArrayList<>();
         String depName = dep.getName();
         int depSlashIdx = depName.indexOf('/');
         String depBase = (depSlashIdx == -1) ? depName : depName.substring(0, depSlashIdx);
         String relSpec = (depSlashIdx == -1) ? null : depName.substring(depSlashIdx + 1);
-
-        int minRel = -1;
-        int maxRel = -1;
-        if (relSpec != null) {
-            if (relSpec.contains("-")) {
-                String[] range = relSpec.split("-");
-                if (range.length != 2) {
-                    throw new IllegalArgumentException("Invalid release range in dependency");
-                }
-                minRel = Integer.parseInt(range[0]);
-                maxRel = Integer.parseInt(range[1]);
-            } else {
-                minRel = Integer.parseInt(relSpec);
-                maxRel = minRel;
-            }
-        }
-
+    
         for (ModuleInfo m : allModules) {
             String moduleCodeName = m.getCodeName();
             int moduleSlashIdx = moduleCodeName.indexOf('/');
             String moduleBase = (moduleSlashIdx == -1) ? moduleCodeName : moduleCodeName.substring(0, moduleSlashIdx);
-            int moduleRel = (moduleSlashIdx == -1) ? -1 : Integer.parseInt(moduleCodeName.substring(moduleSlashIdx + 1));
-
+    
             if (!moduleBase.equals(depBase)) {
                 continue;
             }
-
+    
             if (relSpec != null) {
-                if (moduleRel == -1 || moduleRel < minRel || moduleRel > maxRel) {
+                int moduleRel = (moduleSlashIdx == -1) ? -1 : Integer.parseInt(moduleCodeName.substring(moduleSlashIdx + 1));
+                if (moduleRel == -1 || !relSpec.equals(String.valueOf(moduleRel))) { // Simplified, assuming exact match for now
                     continue;
                 }
             }
-
+            
+            // At this point, the module is a potential candidate by name.
+            // Now, check if it satisfies the version requirements.
+            boolean versionOk = false;
             int comparison = dep.getComparison();
             String depVersion = dep.getVersion();
+    
             if (comparison == Dependency.COMPARE_ANY) {
-                return m;
+                versionOk = true;
             } else if (comparison == Dependency.COMPARE_IMPL) {
                 String moduleImpl = m.getImplementationVersion();
                 if (depVersion != null && depVersion.equals(moduleImpl)) {
-                    return m;
+                    versionOk = true;
                 }
             } else if (comparison == Dependency.COMPARE_SPEC) {
                 SpecificationVersion moduleSpec = m.getSpecificationVersion();
@@ -196,15 +183,42 @@ public class ModuleInfoHelper {
                     try {
                         SpecificationVersion depSpec = new SpecificationVersion(depVersion);
                         if (moduleSpec.compareTo(depSpec) >= 0) {
-                            return m;
+                            versionOk = true;
                         }
                     } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Dependency " + dep + " marked as COMPARE_SPEC but cannot compare", e);
+                        logger.log(Level.SEVERE, "Could not parse specification version for dependency: " + dep + " on module: " + m, e);
+                    }
+                }
+            }
+            
+            if(versionOk) {
+                candidates.add(m);
+            }
+        }
+    
+        if (candidates.isEmpty()) {
+            return null; // No match found
+        }
+    
+        if (candidates.size() == 1) {
+            return candidates.get(0); // Only one choice
+        }
+    
+        // More than one candidate, find the one with the highest spec version.
+        ModuleInfo best = null;
+        for (ModuleInfo candidate : candidates) {
+            if (best == null) {
+                best = candidate;
+            } else {
+                SpecificationVersion bestSpec = best.getSpecificationVersion();
+                SpecificationVersion candidateSpec = candidate.getSpecificationVersion();
+                if (bestSpec != null && candidateSpec != null) {
+                    if (candidateSpec.compareTo(bestSpec) > 0) {
+                        best = candidate;
                     }
                 }
             }
         }
-        return null; // No match found
+        return best;
     }
-
 }
