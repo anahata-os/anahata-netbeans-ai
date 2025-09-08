@@ -42,9 +42,8 @@ public final class GeminiTopComponent extends TopComponent {
     private void initComponents() {
         setLayout(new java.awt.BorderLayout());
         
-        String initMessage = "Hello! Your short-term memory has been pre-populated by the plugin's startup routine. " +
-                             "Please check your chatTemp map for the 'openProjectsList' key and greet the user with a summary of the open projects.";
-        gemini = new GeminiPanel(sysInsProvider, initMessage);        
+        //String initMessage = "Hi I just opened NetBeans";
+        gemini = new GeminiPanel(sysInsProvider, null);        
         add(gemini, java.awt.BorderLayout.CENTER);
     }
 
