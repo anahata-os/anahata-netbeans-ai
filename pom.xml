@@ -30,11 +30,14 @@
             <artifactId>gemini-java-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        
+        <!--Openide core deps-->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
@@ -72,6 +75,20 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-text</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <!-- I/O API (for Output window) -->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-io</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <!--NetBeans IDE deps-->
+
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-java-classpath</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
@@ -80,16 +97,17 @@
             <artifactId>org-netbeans-api-annotations-common</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-editor-lib2</artifactId>
+            <artifactId>org-netbeans-api-maven</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
+        -->
+        
+        
+        <!--Module IDE deps-->
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
@@ -100,18 +118,30 @@
             <artifactId>org-netbeans-modules-projectuiapi</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <!-- Added Dependency -->
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-text</artifactId>
+            <artifactId>org-netbeans-modules-editor</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <!-- Added Dependency -->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-editor-mimelookup</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-lib</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-editor-lib2</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        
+        
+
     </dependencies>
     <build>
         <plugins>
@@ -124,6 +154,18 @@
                     <author>Project Author</author>
                     <homePageUrl>http://anahata.uno</homePageUrl>
                     <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
+                    <!--
+<moduleDependencies>
+    
+</moduleDependencies>
+
+
+<useOSGiDependencies></useOSGiDependencies>
+                    -->
+                                        
+                    <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
+                                        
+                                        
                 </configuration>
             </plugin>
             <plugin>

@@ -44,18 +44,7 @@ public class Installer extends ModuleInstall {
             log.log(Level.SEVERE, "restored()", e);
         }
         
-        logId("restored() default compiler classpath before:" + ExecuteJavaCode.getDefaultCompilerClasspath().split(File.pathSeparator).length);
-        try {
-            ModuleInfoHelper.initExecuteJavaCode();
-        } catch (Exception e) {
-            log.log(Level.SEVERE, "Exception in ModuleInfoHelper.initExecJava()", e);
-        }
-        
-        logId("restored() after initExecJava:" + ExecuteJavaCode.getDefaultCompilerClasspath().split(File.pathSeparator).length);
-        logId("restored() before setParentClassloader:" + ExecuteJavaCode.getParentClassLoader());
-        ExecuteJavaCode.setParentClassLoader(getClass().getClassLoader());
-        logId("restored() after setParentClassloader:" + ExecuteJavaCode.getParentClassLoader());
-  
+        SetDefaultCompilerClassPathAction.initExecuteJavaCode();
         
         logId("restored() finished");
     }

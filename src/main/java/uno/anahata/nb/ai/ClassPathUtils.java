@@ -44,10 +44,21 @@ public class ClassPathUtils {
     
   */  
     public static String getExtraClassPath() {
-        return classPathToString(listNetBeansJars());
+        return fileNamesToPathToString(listNetBeansJars());
     }
     
-    public static String classPathToString(List<String> classPath) {
+    public static String filesToClassPathString(Set<File> classPath) {
+        StringBuilder sb = new StringBuilder();
+        for (File jarFile : classPath) {
+            if (sb.length() > 0) {
+                sb.append(File.pathSeparator);
+            }
+            sb.append(jarFile.getAbsolutePath());
+        }
+        return sb.toString();
+    }
+    
+    public static String fileNamesToPathToString(List<String> classPath) {
         StringBuilder sb = new StringBuilder();
         for (String string : classPath) {
             if (sb.length() > 0) {

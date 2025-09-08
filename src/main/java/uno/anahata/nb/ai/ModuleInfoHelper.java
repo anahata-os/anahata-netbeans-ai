@@ -19,9 +19,10 @@ import org.openide.util.Lookup;
 import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
 
 /**
- *
+ * Replaced by SetDefaultCompilerClasspathAction 
  * @author pablo
  */
+@Deprecated()
 public class ModuleInfoHelper {
 
     private static final Logger logger = Logger.getLogger(ModuleInfoHelper.class.getName());
@@ -29,13 +30,19 @@ public class ModuleInfoHelper {
     public static void initExecuteJavaCode() {
 
         try {
-            String initClassPathString = ExecuteJavaCode.initDefaultCompilerClasspath();
-            logger.info("ExecJava initializing initClassPath: " + initClassPathString);
+            String javaClassPath = ExecuteJavaCode.initDefaultCompilerClasspath();
+            String netbeansDynamicClassPath = System.getProperty("netbeans.dynamic.classpath");
+            logger.info("ExecJava initializing initClassPath: " + javaClassPath);            
+            
             List<String> geminiClasspath = getGeminiModuleJars();
-            String extraClassPathString = ClassPathUtils.classPathToString(geminiClasspath);
-            String newClassPathString = initClassPathString + File.pathSeparator + extraClassPathString;
+            String moduleClassPath = ClassPathUtils.fileNamesToPathToString(geminiClasspath);
+            
+            String newClassPathString = 
+                      javaClassPath + File.pathSeparator 
+                    + netbeansDynamicClassPath + File.separator
+                    + moduleClassPath;
             ExecuteJavaCode.setDefaultCompilerClasspath(newClassPathString);
-            logger.info("newClassPathString: " + initClassPathString);
+            logger.info("newClassPathString: " + newClassPathString);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Exception initializing ExecuteJavaCode", e);
         }
@@ -54,7 +61,7 @@ public class ModuleInfoHelper {
         Collection<? extends ModuleInfo> allModules = Lookup.getDefault().lookupAll(ModuleInfo.class);
         logger.info("All modules: " + allModules.size());
         
-        logger.info("This module" + thisModuleOnly.getCodeName() + " All Modules " + allModules.size());
+        //logger.info("This module: " + thisModuleOnly.getCodeName() + " All Modules " + allModules.size());
         List<String> collection = new ArrayList<>();
         Collection<ModuleInfo> processedModules = new ArrayList<>();
         collectJarFiles(thisModuleOnly, allModules, collection, processedModules);
@@ -103,6 +110,7 @@ public class ModuleInfoHelper {
             for (Dependency d : module.getDependencies()) {
                 ModuleInfo matchingModule = findMatchingModule(d, (Collection) allModules);
                 if (matchingModule != null && !processedModules.contains(matchingModule)) {
+                    logger.info("Matching module: " + module);
                     collectJarFiles(matchingModule, allModules, collectedJars, processedModules);
                 }
             }
