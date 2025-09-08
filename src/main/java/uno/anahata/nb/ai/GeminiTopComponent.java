@@ -1,32 +1,16 @@
 package uno.anahata.nb.ai;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JTextArea;
-import org.netbeans.api.java.classpath.ClassPath;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
-import org.openide.awt.ActionRegistration;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.modules.Dependency;
-import org.openide.modules.ModuleInfo;
-import org.openide.modules.Modules;
-import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
+import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
 import uno.anahata.gemini.ui.GeminiPanel;
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenGeminiAction")
@@ -40,9 +24,10 @@ import uno.anahata.gemini.ui.GeminiPanel;
 public final class GeminiTopComponent extends TopComponent {
 
     private static final Logger log = Logger.getLogger(GeminiTopComponent.class.getName());
+    private static boolean initialized = false;
 
     private GeminiPanel gemini;
-    private GeminiConfigProviderImpl sysInsProvider = new GeminiConfigProviderImpl();
+    private final GeminiConfigProviderImpl sysInsProvider = new GeminiConfigProviderImpl();
 
     public GeminiTopComponent() {
         log.info("init() -- entry ");
@@ -57,20 +42,9 @@ public final class GeminiTopComponent extends TopComponent {
     private void initComponents() {
         setLayout(new java.awt.BorderLayout());
         
-        /*
-        JTextArea centerTextArea = new JTextArea();
-        JButton button = new JButton("Show classpath");
-        button.setAction(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                    centerTextArea.setText(ClassPathUtils.getClassPathOfEverythingOpenInIDE());
-            }
-        });
-        add(button, java.awt.BorderLayout.NORTH);
-        add(centerTextArea, java.awt.BorderLayout.CENTER);
-*/
-        
-        gemini = new GeminiPanel(sysInsProvider, null);        
+        String initMessage = "Hello! Your short-term memory has been pre-populated by the plugin's startup routine. " +
+                             "Please check your chatTemp map for the 'openProjectsList' key and greet the user with a summary of the open projects.";
+        gemini = new GeminiPanel(sysInsProvider, initMessage);        
         add(gemini, java.awt.BorderLayout.CENTER);
     }
 
@@ -88,7 +62,6 @@ public final class GeminiTopComponent extends TopComponent {
 
     @Override
     protected void componentActivated() {
-        //centerTextArea.setText(ClassPathUtils.getClassPathOfEverythingOpenInIDE());
         log.info("super.componentActivated(); ");
         super.componentActivated();
     }
@@ -106,12 +79,40 @@ public final class GeminiTopComponent extends TopComponent {
     }
 
     @Override
-    protected void componentOpened() {
+    public void componentOpened() {
         log.info("super.componentOpened();");
         super.componentOpened();
-    }
+        
+        if (!initialized) {
+            initialized = true;
+            Thread initThread = new Thread(() -> {
+                log.info("Starting background initialization of Gemini short-term memory in TopComponent...");
+                try {
+                    // Self-test to ensure the execution environment is ready.
+                    Object selfTestResult = ExecuteJavaCode.compileAndExecuteJava("public class Gemini implements java.util.concurrent.Callable<String> { public String call() { return \"OK\"; } }", null, null);
+                    if (!"OK".equals(selfTestResult)) {
+                        throw new IllegalStateException("Gemini self-test failed, execution environment not ready.");
+                    }
+                    log.info("Gemini self-test successful.");
 
-    
-    
-    
+                    // Now proceed with the original logic
+                    Path snippetPath = Paths.get(System.getProperty("user.home"), ".netbeans", "gemini_snippets", "getOpenProjects.java");
+                    if (Files.exists(snippetPath)) {
+                        String snippetCode = new String(Files.readAllBytes(snippetPath));
+                        Object result = ExecuteJavaCode.compileAndExecuteJava(snippetCode, null, null);
+                        ExecuteJavaCode.chatTemp.put("openProjectsList", result);
+                        log.info("Successfully pre-cached open projects list.");
+                    } else {
+                        log.warning("Golden snippet for open projects not found. Skipping pre-caching.");
+                    }
+                } catch (Exception e) {
+                    log.log(Level.SEVERE, "Error during background initialization of Gemini", e);
+                    ExecuteJavaCode.chatTemp.put("initializationError", e.getMessage());
+                }
+            });
+            initThread.setName("Gemini-TC-Init-Thread");
+            initThread.setDaemon(true);
+            initThread.start();
+        }
+    }
 }

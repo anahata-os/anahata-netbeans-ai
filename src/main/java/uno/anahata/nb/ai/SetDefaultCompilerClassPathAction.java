@@ -30,7 +30,7 @@ import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
-import static uno.anahata.nb.ai.ModuleInfoHelper.getGeminiModuleJars;
+import static uno.anahata.nb.ai.deprecated.ModuleInfoHelper.getGeminiModuleJars;
 
 @ActionID(
         category = "Tools",

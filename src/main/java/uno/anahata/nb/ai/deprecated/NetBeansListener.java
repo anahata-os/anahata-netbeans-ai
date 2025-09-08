@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package uno.anahata.nb.ai;
+package uno.anahata.nb.ai.deprecated;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -31,9 +31,11 @@ import org.openide.windows.TopComponent.Registry;
 import org.openide.windows.WindowManager;
 
 /**
- *
+ * Class not bein used. Listens for netbeans events, not being used but it may become a handy starting point 
+ * 
  * @author pablo
  */
+@Deprecated
 public class NetBeansListener implements LookupListener, FileChangeListener, PropertyChangeListener {
 
     Logger log = Logger.getLogger(NetBeansListener.class.getName());

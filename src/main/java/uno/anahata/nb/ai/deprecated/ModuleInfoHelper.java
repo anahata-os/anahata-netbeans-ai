@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package uno.anahata.nb.ai;
+package uno.anahata.nb.ai.deprecated;
 
 import java.io.File;
 import java.net.URL;
@@ -17,9 +17,12 @@ import org.openide.modules.Modules;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Lookup;
 import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
+import uno.anahata.nb.ai.ClassPathUtils;
 
 /**
  * Replaced by SetDefaultCompilerClasspathAction 
+ * 
+ * @deprecated 
  * @author pablo
  */
 @Deprecated()
