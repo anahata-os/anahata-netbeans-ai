@@ -11,6 +11,8 @@
             <actionName>CUSTOM-run-ide</actionName>
             <displayName>run-ide</displayName>
             <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
                 <goal>nbm:cluster</goal>
                 <goal>nbm:run-ide</goal>
             </goals>
