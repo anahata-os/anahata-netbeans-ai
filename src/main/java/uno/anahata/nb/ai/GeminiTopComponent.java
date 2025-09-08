@@ -42,8 +42,8 @@ public final class GeminiTopComponent extends TopComponent {
     private void initComponents() {
         setLayout(new java.awt.BorderLayout());
         
-        //String initMessage = "Hi I just opened NetBeans";
-        gemini = new GeminiPanel(sysInsProvider, null);        
+        
+        gemini = new GeminiPanel(sysInsProvider);        
         add(gemini, java.awt.BorderLayout.CENTER);
     }
 

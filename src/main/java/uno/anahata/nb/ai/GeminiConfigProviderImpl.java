@@ -48,7 +48,7 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
     
     //@Override
     public Content getStartupContent() {
-        return Content.fromParts(Part.fromText(STARTUP_MANUAL));
+        return Content.fromParts(Part.fromText("Hi, i just launched started netbeans"), Part.fromText(STARTUP_MANUAL));
     }
 
     private static String computeDynamicEnvSummary() {
