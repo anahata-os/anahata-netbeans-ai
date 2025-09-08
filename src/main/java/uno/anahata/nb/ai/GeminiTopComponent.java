@@ -83,36 +83,6 @@ public final class GeminiTopComponent extends TopComponent {
         log.info("super.componentOpened();");
         super.componentOpened();
         
-        if (!initialized) {
-            initialized = true;
-            Thread initThread = new Thread(() -> {
-                log.info("Starting background initialization of Gemini short-term memory in TopComponent...");
-                try {
-                    // Self-test to ensure the execution environment is ready.
-                    Object selfTestResult = ExecuteJavaCode.compileAndExecuteJava("public class Gemini implements java.util.concurrent.Callable<String> { public String call() { return \"OK\"; } }", null, null);
-                    if (!"OK".equals(selfTestResult)) {
-                        throw new IllegalStateException("Gemini self-test failed, execution environment not ready.");
-                    }
-                    log.info("Gemini self-test successful.");
-
-                    // Now proceed with the original logic
-                    Path snippetPath = Paths.get(System.getProperty("user.home"), ".netbeans", "gemini_snippets", "getOpenProjects.java");
-                    if (Files.exists(snippetPath)) {
-                        String snippetCode = new String(Files.readAllBytes(snippetPath));
-                        Object result = ExecuteJavaCode.compileAndExecuteJava(snippetCode, null, null);
-                        ExecuteJavaCode.chatTemp.put("openProjectsList", result);
-                        log.info("Successfully pre-cached open projects list.");
-                    } else {
-                        log.warning("Golden snippet for open projects not found. Skipping pre-caching.");
-                    }
-                } catch (Exception e) {
-                    log.log(Level.SEVERE, "Error during background initialization of Gemini", e);
-                    ExecuteJavaCode.chatTemp.put("initializationError", e.getMessage());
-                }
-            });
-            initThread.setName("Gemini-TC-Init-Thread");
-            initThread.setDaemon(true);
-            initThread.start();
-        }
+        
     }
 }

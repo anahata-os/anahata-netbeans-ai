@@ -56,6 +56,7 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
         sb.append("\n\n# Dynamic Environment Details\n");
         sb.append("- System Properties: ").append(System.getProperties().toString()).append("\n");
         sb.append("- Environment variables: ").append(System.getenv().toString()).append("\n");
+        sb.append("- ExecuteJavaCode.chatTemp keys: ").append(ExecuteJavaCode.chatTemp.keySet()).append("\n");
         sb.append("- Default Compiler classpath: ").append(ExecuteJavaCode.getDefaultCompilerClasspath()).append("\n");
         return sb.toString();
     }
