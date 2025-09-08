@@ -32,17 +32,22 @@ import org.openide.windows.OutputWriter;
 import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
 import static uno.anahata.nb.ai.deprecated.ModuleInfoHelper.getGeminiModuleJars;
 
+/**
+ * Show gemini's compilers classpath on a new output tab.
+ * 
+ * @author pablo
+ */
 @ActionID(
         category = "Tools",
-        id = "uno.anahata.nb.ai.SetDefaultCompilerClassPathAction"
+        id = "uno.anahata.nb.ai.ShowDefaultCompilerClassPathAction"
 )
 @ActionRegistration(
-        displayName = "SetDefaultCompilerClassPathAction"
+        displayName = "Show Gemini"
 )
 @ActionReference(path = "Menu/Tools", position = 10)
-public final class SetDefaultCompilerClassPathAction implements ActionListener {
+public final class ShowDefaultCompilerClassPathAction implements ActionListener {
     
-    private static final Logger logger = Logger.getLogger(Installer.class.getName());
+    private static final Logger logger = Logger.getLogger(ShowDefaultCompilerClassPathAction.class.getName());
 
     OutputWriter out;
 
@@ -50,12 +55,12 @@ public final class SetDefaultCompilerClassPathAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        InputOutput io = IOProvider.getDefault().getIO("Module Classpath", true);
+        InputOutput io = IOProvider.getDefault().getIO("Gemini Compiler's Classpath", true);
         io.select();
         processed.clear();
         try (OutputWriter out = io.getOut()) {
             this.out = out;
-            initExecuteJavaCode();
+            //initExecuteJavaCode();
             String cp = ExecuteJavaCode.getDefaultCompilerClasspath();
             out.println("-----------------------------------------------------------------------");
             String[] s = cp.split(File.pathSeparator);
