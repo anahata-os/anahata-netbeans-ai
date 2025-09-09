@@ -26,9 +26,7 @@ public class Installer extends ModuleInstall {
     @Override
     public void restored() {
         logId("restored() begins :");
-        
         ShowDefaultCompilerClassPathAction.initExecuteJavaCode();
-        
         logId("restored() finished");
     }
     

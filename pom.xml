@@ -138,9 +138,14 @@
             <artifactId>org-netbeans-modules-editor-lib2</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        
-        
-        
+        <!-- Can't be added: Module has friend dependency on org.netbeans.modules.git but is not listed as a friend -->
+        <!--
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-git</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        -->
 
     </dependencies>
     <build>

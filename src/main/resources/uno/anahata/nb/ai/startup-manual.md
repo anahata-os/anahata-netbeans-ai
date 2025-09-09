@@ -1,37 +1,73 @@
-# AI Best Practices Manual (Startup Instructions)
+# Startup Manual
 
-This document contains a set of established workflows and best practices for you, the Gemini AI assistant, to follow when operating within the NetBeans IDE. You must read and internalize these instructions for this session and be aware that right now the "user" of the conversation is the developer of the very plugin being used to interact with you as the plugin is under development and hasnt been published yet.
+This document contains a set of established workflows and best practices for you, 
+the Gemini AI assistant, to follow when operating within the NetBeans IDE. 
+You must read and internalize these instructions for this session and be aware 
+that right now the "user" of the conversation is the developer of the very 
+plugin being used to interact with you as the plugin is under development 
+and hasnt been published yet.
 
 ## 1. Principle of Least Effort: Avoid Unnecessary File System Searches to locate netbeans jars
 
-**Problem:** When needing to perform an IDE action through NetBeans APIs, the initial instinct is to search the entire NetBeans installation directory for the required JAR files to add to the classpath. This is slow and inefficient.
+**Problem:** If the NB version you are working on was released after your knowledge cutoff date you can easily make 
+mistakes when writing java code to operate the IDE to perform actions such as: opening a tab in the editor, getting a 
+list of open projects, editing a file, building a project, doing a git commit, checking the build outputs, opening a file on the editor 
+tab for the user, getting an overview of the workspace, reading all source files of a project, etc 
 
-**Best Practice:** On startup the compiler's classpath is prepopulated with all the jars that are visible to the plugin's classloader. You should always assume the necessary jars to perform IDE actions are already available on the default compiler classpath and available at runtime on the plugins classloader because if they are required, it is just a matter of adding them to the pom.xml of the Gemini NetBeans plugin
+
+**Best Practice:** Your primary method to perform these types of actions is to run existing "gems" with the runGem function.
+If that doesnt work, or there is no existing "gem", **try your plan**  in compileAndExecuteJava with what you know 
+from the source code of the gems and everything you learnt from the start of thisconversation. If that doesnt work, search the web.
+
+All the jars the plugin sees (dependencys on the plugins pom.xml) should have been prepopulated 
+to the defaultCompilerClasspath of runGem and compiletAndExecuteJavaCode at plguin startup 
+and should be available to the plugin's classloader at runtime. 
+
+On startup, the compiler's default classpath is prepopulated with 
+all the jars that are visible to the plugin's classloader at 
+runtime (including all the dependencies declared in the pom both normal java 
+ones and the jars of all other dependant modules. 
+
+You should always assume the necessary jars to perform IDE actions are already 
+available on the default compiler classpath and available at runtime on 
+the plugins classloader because if they are not, we have to add them
+to the pom.xml of the Gemini NetBeans Plugin project (the nbm module where you live)
 
 **Workflow:**
-1.  If you cant compile or instantiate a Gemini.java file ´tdue to , Identify a key class from the API you need (e.g., `org.netbeans.api.project.Project` for the Project API).
+1.  If you cant compile or execute a Gemini.java or a "gem" file due to, Identify a key class from the API you need (e.g., `org.netbeans.api.project.Project` for the Project API).
 2.  Use the `compileAndExecuteJava` function to run a small piece of code that attempts to load the class using `Class.forName("fully.qualified.ClassName")`.
-3.  **If it succeeds:** The API is already on the classpath. Proceed with your task without modifying the classpath.
-4.  **If it fails with `ClassNotFoundException`:** The API is not available. Only then should you inform the user that the required module might 
-be missing or disabled and, if necessary, fall back to searching for the JAR file or the maven coordinates to include it as a plugin dependency 
-so it is available on the next session.
+3.  **If it succeeds:** The API is already on the classpath. Proceed with your task 
+without modifying the classpath. It is most likely a training cutoff / api version mismatch.
+4.  **If it fails with `ClassNotFoundException` or compile time exception:** The API is not available on the compilers classpath or the plugins classloader. 
+Only then should you inform the user that the required module might be missing or disabled and, if necessary, fall back to searching 
+for the JAR file or files and "trying it out" via extraCompilersClasspth.
+3.  **If it succeeds:** Suggest the user adding it to the pom and / or creating a "gem" for it. 
 
-## 2. Learning to operate the IDE through the netbeans APIs
+**Pro-Tip:** When you determine a new dependency is needed, always recommend adding the official NetBeans module dependency to the pom.xml first (e.g., org-netbeans-modules-foo.jar). This is better than just adding a single JAR to the classpath, as it correctly handles any of the module's own transitive dependencies.
 
-**Problem:** When trying to operate the IDE you will be writing, compiling and running IDE operations via netbeans apis (e.g. get open projects, get open tabs, get selected tab on the editor, check outoutput tab, build, run, etc) but some of the versions of the APIs available to you (both at compile and runtime) will often be versions released after your training cutoff date.
+## 2. Understanding Your Initial Context
 
-**Best Practice:** The code snippets to perform IDE actions are maintained as "golden snippets" on the users file system (not on the plugins codebase) to ensure they are reusable and up-to-date.
+**On startup, you are inside an text area and the plugin automatically provides 
+you with a complete situational overview.** This is delivered as the first message 
+in our conversation or "opening content" and ti contains the output of the `performStartupAwareness.java` "gem".
+ This payload contains two key pieces of information:
+1.  **Workspace Overview:** A JSON object detailing all currently open projects, including their names, 
+paths, and the summary from their respective `gemini.md` files.
+2.  **Available Gems:** The complete source code for all available Gems is located in the `${user.home}/Gems/` directory.
 
-**Workflow:**
-1.  To read the content of all files in the `~/.netbeans/gemini_snippets/` directory at startup.
-2.  Use the contents of those files as a starting point for executing netbeans actions, if any of those snippets needs to be updated or a new one needs to be added or deleted, do that, it is your job to mantain the snippets in that directory and to read it at startup. Functions are enabled at statup so you can read all files in that directory at startup (when you receive the greeting "init" message with the AI manual overview).
+**Your primary action is to parse this initial message.** This single step replaces any need to manually search for 
+projects or tools, making you immediately ready to assist. You are expected to understand the project structures 
+and your available capabilities from this initial data dump.
 
 ## 3. General Directives
 
+- **Functions And Google Search:** To due to an unknown reason gemini api servers or googles java-gemini-sdk do not allow function calling and web search tools enabled in the same generateContent request so you have to ask the user to disable functions if you need to search the web and remind him to reenable them once you are done with your web / google search
 - **Sources and Javadocs:** If you encounter NetBeans APIs newer than your training data, feel free to take time to read their sources or javadocs from the web or from the users maven repository if they are already there or to fetch the sources from the web. If you want to fetch netbeans API sources or javadocs, may ve worth downloading them through the IDE via download sources or download javadoc feature of the ide so they are directly downloaded into the local maven repo.
-- **Prompt Engineering:** Assist the user (the plugin developer) in refining the init message for the chat, the system instructions passed to the model on every request.
+- **Prompt Engineering:** Assist the user (the plugin developer) in refining the init message for the chat (opening content) and the 
+system instructions passed to the model on every request (dynamic environment details).
 - **Project Understanding:** To quickly understand a project, first look for a `gemini.md` file. If it's not there, use `findAndReadFiles` to get an overview of the source code. Use `readMultipleFiles` for efficiency. Offer to create or update a `gemini.md` on the project directory to persist your understanding. This file can also be used by the user to correct your understanding of a given project.
 - **Environment Awareness:** Always. Always use the provided dynamic environment details (System Properties, Classpath, Environment variables, keys in chatTemp, etc.) to ensure your actions are compatible with the user's setup.
+- **State Management:** Your short-term memory is the `chatTemp` map, which is reset when the IDE closes. For long-term, persistent knowledge, you should focus on updating `gemini.md` files or creating/evolving Gems.
 
 ## 4. Accessing Short-Term Memory (`chatTemp`)
 
