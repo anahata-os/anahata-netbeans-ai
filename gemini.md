@@ -25,8 +25,29 @@ Continue improving the learning capabilities of the model ensuring the model can
 as needed
 
 ## Todo List
-- [ ] Add a "copy to clipboard" button for code blocks and commit messages in the chat UI.
+- [ ] Add a "copy to clipboard" button for code blocks, commit messages or any parts in general in the chat UI.
 - [ ] Figure out ways to reduce context usage.
+- [ ] Figure out ways to improve scrolling in the conversation. Currently super laggish after 10.000 tokens and nearly 
+impossible to scroll through the last received Content for two reasons: the scroll bar chunk becomes super small and it jumps from the start of one cell to the start of another cell.
 - [ ] Format code snippets in received parts from the model.
 - [ ] Improve the function call confirmation dialog to also display the model's thought/rationale.
 - [ ] Explore more efficient file editing strategies (e.g., diff/patch) instead of full read/write cycles.
+- [ ] Explore more visually efficient file editing strategies. May be beter if the model could edit files in 
+the editor itself navigating through the file like a human user so the actual user can understand better the models intentions and rationale
+- [ ] Explore more efficient function calling strategies, currently the model sometimes makes two round 
+trips for two function calls that could be done in one. 
+- [ ] Explore the possibility to do non-blocking function calls as currently
+ the chat disables the input field when a generateContent request is in progress, there may be function calls that the assistant/model
+can perform without blocking the user (e.g. creating, testing or evolving a gem, attempting some other netbeans action,
+ performing a research a task or any other task that can be triggered in a call that a) does not need any / all history or b) 
+can be handled in a separate conversation / chat window that can be monitored by asistant of the "main" chat)
+- [ ] Explore the possibility / benefits of notifying the model of user actions (user opened this fil in the editor, user triggered build, user modified this files, user opened project, user performed action, etc) via NetBeansListener
+- [ ] Screenshot not working on ubuntu, produces os level error logs. Explore context usage of screenshots and alternatives for the model to "see" the uses screen without blowing up context usage
+- [ ] Explore the possibility of asking questions to other models with free tiers.
+- [ ] Explore the possibility of persisting some of the session's conversation or doing diffs or looking up commit message history 
+or netbeans local history upon startup so the model is more aware of "were we left it" when the last nb session ended
+- [ ] Assess the impact of the Gemini API limitation to combine local functions with web search tools (UNEXPECTED_TOOL_CALL)
+to ensure the model can search the web or ask other models to do so if it needs to. It may be worth trying to show the the model how to
+press the functions toggle button on the ui programmatically so it can toggle functions on or off when needed or to make a function called enableWebSearch that the model can call
+ (there is an issue reported on googles genai java sdk github page https://github.com/googleapis/java-genai/issues/466)
+
