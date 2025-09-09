@@ -27,7 +27,7 @@ as needed
 ## Todo List
 - [ ] Add a "copy to clipboard" button for code blocks, commit messages or any parts in general in the chat UI.
 - [ ] Figure out ways to reduce context usage.
-- [ ] Figure out ways to improve scrolling in the conversation. Currently super laggish after 10.000 tokens and nearly 
+- [ ] Figure out ways to improve scrolling in the conversation. Currently super laggish after 70.000 tokens and nearly 
 impossible to scroll through the last received Content for two reasons: the scroll bar chunk becomes super small and it jumps from the start of one cell to the start of another cell.
 - [ ] Format code snippets in received parts from the model.
 - [ ] Improve the function call confirmation dialog to also display the model's thought/rationale.
