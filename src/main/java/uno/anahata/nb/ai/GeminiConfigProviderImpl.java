@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import uno.anahata.gemini.GeminiConfigProvider;
-import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
+import uno.anahata.gemini.functions.spi.RunningJVM;
 
 public class GeminiConfigProviderImpl implements GeminiConfigProvider {
 
@@ -22,7 +22,7 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
     private static final String GEMS_DIR_PATH = System.getProperty("user.home") + File.separator + ".netbeans" + File.separator + "Gems";
 
     static {
-        ExecuteJavaCode.setGemsDirPath(GEMS_DIR_PATH);
+        RunningJVM.setGemsDirPath(GEMS_DIR_PATH);
         STARTUP_MANUAL = loadManual("startup-manual.md");
         PER_REQUEST_MANUAL = loadManual("per-request-manual.md");        
         dynamicEnvSummary = computeDynamicEnvSummary();
@@ -55,7 +55,7 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
     public Content getStartupContent() {
         try {
             log.info("Attempting to perform startup awareness via runGem...");
-            String awarenessResult = (String) ExecuteJavaCode.runGem("performStartupAwareness.java");
+            String awarenessResult = (String) RunningJVM.runGem("performStartupAwareness.java");
             log.info("Successfully performed startup awareness.");
             
             // CORRECTED: Send the manual first for better UI and model context.
@@ -80,9 +80,9 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
         sb.append("\n\n# Dynamic Environment Details\n");
         sb.append("- System Properties: ").append(System.getProperties().toString()).append("\n");
         sb.append("- Environment variables: ").append(System.getenv().toString()).append("\n");
-        sb.append("- ExecuteJavaCode.chatTemp keys: ").append(ExecuteJavaCode.chatTemp.keySet()).append("\n");
-        sb.append("- Gem Ids: ").append(ExecuteJavaCode.getGemIds()).append("\n");
-        sb.append("- Default Compiler classpath: ").append(ExecuteJavaCode.getDefaultCompilerClasspath()).append("\n");
+        sb.append("- RunningJVM.chatTemp keys: ").append(RunningJVM.chatTemp.keySet()).append("\n");
+        sb.append("- Gem Ids: ").append(RunningJVM.getGemIds()).append("\n");
+        sb.append("- Default Compiler classpath: ").append(RunningJVM.getDefaultCompilerClasspath()).append("\n");
         return sb.toString();
     }
 }

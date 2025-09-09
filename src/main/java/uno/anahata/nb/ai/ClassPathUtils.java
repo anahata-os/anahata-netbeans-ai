@@ -26,7 +26,7 @@ import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Lookup;
-import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
+import uno.anahata.gemini.functions.spi.RunningJVM;
 
 /**
  *
@@ -37,9 +37,9 @@ public class ClassPathUtils {
     private static final Logger logger = Logger.getLogger(ClassPathUtils.class.getName());
 /*
     public static String initExecJava() {
-        ExecuteJavaCode.defaultCompilerClasspath = ExecuteJavaCode.defaultCompilerClasspath + File.pathSeparator + getExtraClassPath();
-        logger.info("ExecJava default compilerClassPath: " + ExecuteJavaCode.defaultCompilerClasspath.replace(File.pathSeparator, "\n\t"));
-        return ExecuteJavaCode.defaultCompilerClasspath;
+        RunningJVM.defaultCompilerClasspath = RunningJVM.defaultCompilerClasspath + File.pathSeparator + getExtraClassPath();
+        logger.info("ExecJava default compilerClassPath: " + RunningJVM.defaultCompilerClasspath.replace(File.pathSeparator, "\n\t"));
+        return RunningJVM.defaultCompilerClasspath;
     }
     
   */  

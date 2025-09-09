@@ -3,7 +3,7 @@ package uno.anahata.nb.ai;
 import uno.anahata.nb.ai.deprecated.NetBeansListener;
 import java.util.logging.Logger;
 import org.openide.modules.ModuleInstall;
-import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
+import uno.anahata.gemini.functions.spi.RunningJVM;
 
 public class Installer extends ModuleInstall {
     
@@ -13,7 +13,7 @@ public class Installer extends ModuleInstall {
     public Installer() {
         logId("init() jva.class.path=" + System.getProperty("java.class.path"));
         logId("init() nb.dynamic.classpath=" + System.getProperty("netbeans.dynamic.classpath"));
-        logId("init() ExecuteJavaCode.defaultCompilerClasspath=" + ExecuteJavaCode.getDefaultCompilerClasspath());
+        logId("init() RunningJVM.defaultCompilerClasspath=" + RunningJVM.getDefaultCompilerClasspath());
     }
     
     @Override
@@ -26,7 +26,7 @@ public class Installer extends ModuleInstall {
     @Override
     public void restored() {
         logId("restored() begins :");
-        ShowDefaultCompilerClassPathAction.initExecuteJavaCode();
+        ShowDefaultCompilerClassPathAction.initRunningJVM();
         logId("restored() finished");
     }
     

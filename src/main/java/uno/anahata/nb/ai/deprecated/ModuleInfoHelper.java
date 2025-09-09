@@ -16,7 +16,7 @@ import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Lookup;
-import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
+import uno.anahata.gemini.functions.spi.RunningJVM;
 import uno.anahata.nb.ai.ClassPathUtils;
 
 /**
@@ -30,10 +30,11 @@ public class ModuleInfoHelper {
 
     private static final Logger logger = Logger.getLogger(ModuleInfoHelper.class.getName());
 
-    public static void initExecuteJavaCode() {
+    @Deprecated()
+    public static void initRunningJVM() {
 
         try {
-            String javaClassPath = ExecuteJavaCode.initDefaultCompilerClasspath();
+            String javaClassPath = RunningJVM.initDefaultCompilerClasspath();
             String netbeansDynamicClassPath = System.getProperty("netbeans.dynamic.classpath");
             logger.info("ExecJava initializing initClassPath: " + javaClassPath);            
             
@@ -44,7 +45,7 @@ public class ModuleInfoHelper {
                       javaClassPath + File.pathSeparator 
                     + netbeansDynamicClassPath + File.separator
                     + moduleClassPath;
-            ExecuteJavaCode.setDefaultCompilerClasspath(newClassPathString);
+            RunningJVM.setDefaultCompilerClasspath(newClassPathString);
             logger.info("newClassPathString: " + newClassPathString);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Exception initializing ExecuteJavaCode", e);

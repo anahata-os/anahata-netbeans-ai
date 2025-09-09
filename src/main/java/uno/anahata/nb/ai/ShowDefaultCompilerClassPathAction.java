@@ -29,7 +29,7 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
-import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
+import uno.anahata.gemini.functions.spi.RunningJVM;
 import static uno.anahata.nb.ai.deprecated.ModuleInfoHelper.getGeminiModuleJars;
 
 /**
@@ -61,7 +61,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
         try (OutputWriter out = io.getOut()) {
             this.out = out;
             //initExecuteJavaCode();
-            String cp = ExecuteJavaCode.getDefaultCompilerClasspath();
+            String cp = RunningJVM.getDefaultCompilerClasspath();
             out.println("-----------------------------------------------------------------------");
             String[] s = cp.split(File.pathSeparator);
             for (int i = 0; i < s.length; i++) {
@@ -77,10 +77,10 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
     
     
     
-    public static void initExecuteJavaCode() {
+    public static void initRunningJVM() {
 
         try {
-            String javaClassPath = ExecuteJavaCode.initDefaultCompilerClasspath();
+            String javaClassPath = RunningJVM.initDefaultCompilerClasspath();
             String netbeansDynamicClassPath = System.getProperty("netbeans.dynamic.classpath");
             logger.info("javaClassPath: " + javaClassPath);
             logger.info("nbDynamic: " + netbeansDynamicClassPath);
@@ -93,10 +93,10 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
                       javaClassPath + File.pathSeparator 
                     + netbeansDynamicClassPath + File.pathSeparator
                     + moduleClassPathStr;
-            ExecuteJavaCode.setDefaultCompilerClasspath(newClassPathString);
+            RunningJVM.setDefaultCompilerClasspath(newClassPathString);
             logger.info("newClassPathString: " + newClassPathString);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception initializing ExecuteJavaCode", e);
+            logger.log(Level.SEVERE, "Exception initializing RunningJVM default compilers classpath", e);
         }
 
     }

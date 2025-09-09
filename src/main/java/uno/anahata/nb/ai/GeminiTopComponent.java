@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
-import uno.anahata.gemini.functions.spi.ExecuteJavaCode;
+import uno.anahata.gemini.functions.spi.RunningJVM;
 import uno.anahata.gemini.ui.GeminiPanel;
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenGeminiAction")
