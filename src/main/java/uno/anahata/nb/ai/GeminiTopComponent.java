@@ -26,7 +26,7 @@ public final class GeminiTopComponent extends TopComponent {
     private static final Logger log = Logger.getLogger(GeminiTopComponent.class.getName());
     private static boolean initialized = false;
 
-    private GeminiPanel gemini;
+    private GeminiPanel geminiPanel;
     private final GeminiConfigProviderImpl sysInsProvider = new GeminiConfigProviderImpl();
 
     public GeminiTopComponent() {
@@ -37,14 +37,15 @@ public final class GeminiTopComponent extends TopComponent {
         log.info("init() -- exit ");
     }
     
-    JTextArea centerTextArea = new JTextArea();
+    public GeminiPanel getGeminiPanel() {
+        return geminiPanel;
+    }
+    
 
     private void initComponents() {
         setLayout(new java.awt.BorderLayout());
-        
-        
-        gemini = new GeminiPanel(sysInsProvider);        
-        add(gemini, java.awt.BorderLayout.CENTER);
+        geminiPanel = new GeminiPanel(sysInsProvider);        
+        add(geminiPanel, java.awt.BorderLayout.CENTER);
     }
 
     @Override
