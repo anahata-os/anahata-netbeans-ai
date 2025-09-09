@@ -23,3 +23,10 @@ Continue trying new actions to see if there are any more nb modules or java depe
 
 Continue improving the learning capabilities of the model ensuring the model can "create", "delete" or "evolve" gems 
 as needed
+
+## Todo List
+- [ ] Add a "copy to clipboard" button for code blocks and commit messages in the chat UI.
+- [ ] Figure out ways to reduce context usage.
+- [ ] Format code snippets in received parts from the model.
+- [ ] Improve the function call confirmation dialog to also display the model's thought/rationale.
+- [ ] Explore more efficient file editing strategies (e.g., diff/patch) instead of full read/write cycles.
