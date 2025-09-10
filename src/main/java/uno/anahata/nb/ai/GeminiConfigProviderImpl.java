@@ -30,6 +30,10 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
     private static final String GEMS_DIR_PATH = System.getProperty("user.home") + File.separator + ".netbeans" + File.separator + "Gems";
 
     static {
+        File f = new File(GEMS_DIR_PATH);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
         RunningJVM.setGemsDirPath(GEMS_DIR_PATH);
         STARTUP_MANUAL = loadManual("startup-manual.md");
         PER_REQUEST_MANUAL = loadManual("per-request-manual.md");
@@ -80,11 +84,18 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
             startupParts.add(Part.fromText(errorMsg));
         }
 
+        //File gemsDir = new File(G);
         // Part 3: Gems, Notes, and History (Consolidated)
         try {
             log.info("Attempting to read all files from Gems directory...");
             Map<String, String> fileContentMap = LocalFiles.findAndReadFiles(GEMS_DIR_PATH, "**/*");
 
+            for (String path : fileContentMap.keySet()) {
+                String content = fileContentMap.get(path);
+                startupParts.add(Part.fromText(path));
+                startupParts.add(Part.fromText(content));
+            }
+            /*
             if (fileContentMap != null && !fileContentMap.isEmpty()) {
                  Map<String, String> files = fileContentMap.entrySet().stream()
                     .collect(Collectors.toMap(
@@ -93,13 +104,14 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
                     ));
 
                 String filesJson = new Gson().toJson(files);
-                startupParts.add(Part.fromText(filesJson));
+                startupParts.add(Part.fromJson(filesJson));
                 log.info("Successfully read and added " + files.size() + " files from Gems directory.");
             } else {
                 String notFoundMsg = "NOTE: No files found in Gems directory: " + GEMS_DIR_PATH;
                 startupParts.add(Part.fromText("{\"gemsDirDump\": {}}")); // Send empty JSON
                 log.warning(notFoundMsg);
             }
+             */
         } catch (Exception e) {
             log.log(Level.SEVERE, "Error reading files from Gems directory", e);
             String errorMsg = "Error reading gems and notes: " + e.getMessage();

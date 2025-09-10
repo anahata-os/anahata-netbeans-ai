@@ -7,7 +7,7 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import uno.anahata.gemini.ui.GeminiPanel;
-import uno.anahata.gemini.ui.GeminiPanel2;
+import uno.anahata.gemini.ui.v2.GeminiPanel2;
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenGeminiAction")
 @ActionReference(path = "Menu/Window", position = 333)
