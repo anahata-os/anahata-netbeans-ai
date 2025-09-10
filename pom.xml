@@ -29,6 +29,18 @@
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+            <!--
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jspecify</groupId>
+                    <artifactId>jspecify</artifactId>
+                </exclusion>
+            </exclusions>
+                -->
         </dependency>
         
         <!--Openide core deps-->
@@ -97,14 +109,6 @@
             <artifactId>org-netbeans-api-annotations-common</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-api-maven</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        -->
-        
         
         <!--Module IDE deps-->
         
@@ -116,6 +120,16 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectuiapi</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-project</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-source-base</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -138,14 +152,15 @@
             <artifactId>org-netbeans-modules-editor-lib2</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <!-- Can't be added: Module has friend dependency on org.netbeans.modules.git but is not listed as a friend -->
-        <!--
+        
+        <!-- ADDED DEPENDENCY FOR MAVEN EXECUTION 
+        
         <dependency>
             <groupId>org.netbeans.modules</groupId>
-            <artifactId>org-netbeans-modules-git</artifactId>
+            <artifactId>org-netbeans-modules-maven-embedder</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        -->
+                -->
 
     </dependencies>
     <build>
@@ -159,18 +174,7 @@
                     <author>Project Author</author>
                     <homePageUrl>http://anahata.uno</homePageUrl>
                     <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
-                    <!--
-<moduleDependencies>
-    
-</moduleDependencies>
-
-
-<useOSGiDependencies></useOSGiDependencies>
-                    -->
-                                        
                     <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
-                                        
-                                        
                 </configuration>
             </plugin>
             <plugin>
