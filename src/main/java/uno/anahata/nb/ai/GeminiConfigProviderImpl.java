@@ -80,7 +80,7 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
             startupParts.add(Part.fromText(errorMsg));
         }
 
-        // Part 3: Gems and Notes (Consolidated)
+        // Part 3: Gems, Notes, and History (Consolidated)
         try {
             log.info("Attempting to read all files from Gems directory...");
             Map<String, String> fileContentMap = LocalFiles.findAndReadFiles(GEMS_DIR_PATH, "**/*");
@@ -105,9 +105,6 @@ public class GeminiConfigProviderImpl implements GeminiConfigProvider {
             String errorMsg = "Error reading gems and notes: " + e.getMessage();
             startupParts.add(Part.fromText(errorMsg));
         }
-
-        // Part 4: Default Compiler Classpath
-        startupParts.add(Part.fromText("Default Compiler Classpath: " + RunningJVM.getDefaultCompilerClasspath()));
 
         return Content.fromParts(startupParts.toArray(new Part[startupParts.size()]));
     }
