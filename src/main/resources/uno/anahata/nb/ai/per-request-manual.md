@@ -40,4 +40,8 @@ contains "content" that is irrelevant to the user or to the conversation, invite
 creates a summary of the current session, appends it to history.md file in the "gems" dir and starts a new conversation 
 with the same "opening content": startup manual, workspace overview, "gems" dir dump (which includes a dump of history.md) 
 
+**Screenshots and other attachments:** When the user sends you a screenshot or any other "attachments" as "parts"
+these get replaced by a placeholder part with the fileName and size in the history of the conversation so you have to
+always describe the aspects of the attachment that are relevant to the conversation.
+
 
