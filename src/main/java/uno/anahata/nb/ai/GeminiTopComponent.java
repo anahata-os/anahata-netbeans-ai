@@ -1,13 +1,19 @@
 package uno.anahata.nb.ai;
 
 import java.awt.BorderLayout;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JEditorPane;
 import javax.swing.JTabbedPane;
+import javax.swing.text.EditorKit;
+import org.netbeans.api.editor.mimelookup.MimeLookup;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
+
+import uno.anahata.gemini.ui.CodeBlockRenderer;
 import uno.anahata.gemini.ui.GeminiPanel;
-import uno.anahata.gemini.ui.v2.GeminiPanel2;
+
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenGeminiAction")
 @ActionReference(path = "Menu/Window", position = 333)
@@ -15,95 +21,91 @@ import uno.anahata.gemini.ui.v2.GeminiPanel2;
         preferredID = "gemini",
         iconBase = "uno/anahata/nb/ai/gemini.png",
         persistenceType = TopComponent.PERSISTENCE_NEVER)
-@TopComponent.Registration(mode = "output", openAtStartup = true)
+@TopComponent.Registration(mode = "output", openAtStartup = false)
 @TopComponent.OpenActionRegistration(displayName = "Gemini Assistant", preferredID = "gemini")
-/**
- * The plugins main component and integration point in the IDE.
- * Now contains a JTabbedPane to compare different UI implementations.
- */
 public final class GeminiTopComponent extends TopComponent {
 
-    private static final Logger log = Logger.getLogger(GeminiTopComponent.class.getName());
+    private static final Logger logger = Logger.getLogger(GeminiTopComponent.class.getName());
 
-    // --- MODIFIED: Separate fields for each panel ---
-    private GeminiPanel geminiPanel1; // The original JList implementation
-    private GeminiPanel2 geminiPanel2; // The new JTextPane implementation
-    private final GeminiConfigProviderImpl sysInsProvider = new GeminiConfigProviderImpl();
+    public GeminiPanel geminiPanel;
+    
+    private final GeminiConfigProviderImpl configProvider = new GeminiConfigProviderImpl();
 
     public GeminiTopComponent() {
-        log.info("init() -- entry ");
+        logger.info("init() -- entry ");
         setName("Gemini");
         setToolTipText("Get Gemini to do your work");
+        
+        // --- WARM-UP CODE ---
+        // Force the Java EditorKit and its associated lexer to load before the UI is built.
+        // This resolves a race condition where syntax highlighting would not be ready for the first message.
+        try {
+            logger.info("Warming up Java EditorKit...");
+            JEditorPane warmupPane = new JEditorPane();
+            EditorKit kit = MimeLookup.getLookup("text/x-java").lookup(EditorKit.class);
+            if (kit != null) {
+                warmupPane.setEditorKit(kit);
+                logger.info("Java EditorKit successfully warmed up.");
+            } else {
+                logger.warning("Failed to find Java EditorKit during warm-up.");
+            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Exception during Java EditorKit warm-up", e);
+        }
+        // --- END WARM-UP CODE ---
+        
         initComponents();
-        log.info("init() -- exit ");
+        logger.info("init() -- exit ");
     }
 
-    // --- MODIFIED: Main initComponents now creates the tabbed pane ---
     private void initComponents() {
         setLayout(new BorderLayout());
 
         JTabbedPane tabbedPane = new JTabbedPane();
-
-        // --- Tab 1: Original JList version ---
-        geminiPanel1 = new GeminiPanel(sysInsProvider);
-        geminiPanel1.initComponents();
-        tabbedPane.addTab("V1 - JList", geminiPanel1);
-
-        // --- Tab 2: New JTextPane version ---
-        geminiPanel2 = new GeminiPanel2(sysInsProvider);
-        geminiPanel2.initComponents();
-        tabbedPane.addTab("V2 - JTextPane", geminiPanel2);
-
         add(tabbedPane, BorderLayout.CENTER);
-
-        // Initialize both chats so they are ready to use
-        geminiPanel1.initChat();
-        geminiPanel2.initChat();
+        
+        CodeBlockRenderer netbeansRenderer = new NetBeansCodeBlockRenderer();
+        geminiPanel = new GeminiPanel(configProvider, netbeansRenderer);        
+        tabbedPane.addTab("Gemini", geminiPanel);   
+        
+        geminiPanel.initComponents();
+        geminiPanel.initChatInSwingWorker();
     }
     
-    // --- Getters for individual panels (optional, but good practice) ---
-    public GeminiPanel getGeminiPanel1() {
-        return geminiPanel1;
-    }
-
-    public GeminiPanel2 getGeminiPanel2() {
-        return geminiPanel2;
-    }
-
-    // --- Life-cycle methods remain the same ---
+    
     @Override
     public void componentClosed() {
-        log.info("super.componentClosed(); ");
+        logger.info("componentClosed(); ");
         super.componentClosed();
     }
 
     @Override
     protected void componentDeactivated() {
-        log.info("super.componentDeactivated(); ");
+        logger.info("componentDeactivated(); ");
         super.componentDeactivated();
     }
 
     @Override
     protected void componentActivated() {
-        log.info("super.componentActivated(); ");
+        logger.info("componentActivated(); ");
         super.componentActivated();
     }
 
     @Override
     protected void componentHidden() {
-        log.info("super.componentHidden(); ");
+        logger.info("componentHidden(); ");
         super.componentHidden();
     }
 
     @Override
     protected void componentShowing() {
-        log.info("super.componentShowing();");
+        logger.info("componentShowing();");
         super.componentShowing();
     }
 
     @Override
     public void componentOpened() {
-        log.info("super.componentOpened();");
+        logger.info("componentOpened();");
         super.componentOpened();
     }
 }
