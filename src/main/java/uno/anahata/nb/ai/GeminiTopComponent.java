@@ -5,8 +5,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JTabbedPane;
+import javax.swing.text.Document;
 import javax.swing.text.EditorKit;
 import org.netbeans.api.editor.mimelookup.MimeLookup;
+import org.netbeans.api.lexer.Language;
+import org.netbeans.api.lexer.TokenHierarchy;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
@@ -36,24 +39,6 @@ public final class GeminiTopComponent extends TopComponent {
         setName("Gemini");
         setToolTipText("Get Gemini to do your work");
         
-        // --- WARM-UP CODE ---
-        // Force the Java EditorKit and its associated lexer to load before the UI is built.
-        // This resolves a race condition where syntax highlighting would not be ready for the first message.
-        try {
-            logger.info("Warming up Java EditorKit...");
-            JEditorPane warmupPane = new JEditorPane();
-            EditorKit kit = MimeLookup.getLookup("text/x-java").lookup(EditorKit.class);
-            if (kit != null) {
-                warmupPane.setEditorKit(kit);
-                logger.info("Java EditorKit successfully warmed up.");
-            } else {
-                logger.warning("Failed to find Java EditorKit during warm-up.");
-            }
-        } catch (Exception e) {
-            logger.log(Level.WARNING, "Exception during Java EditorKit warm-up", e);
-        }
-        // --- END WARM-UP CODE ---
-        
         initComponents();
         logger.info("init() -- exit ");
     }
@@ -66,8 +51,9 @@ public final class GeminiTopComponent extends TopComponent {
         
         CodeBlockRenderer netbeansRenderer = new NetBeansCodeBlockRenderer();
         geminiPanel = new GeminiPanel();    
-        geminiPanel.init(config);
         geminiPanel.setCodeBlockRenderer(netbeansRenderer);
+        geminiPanel.init(config);
+        
         tabbedPane.addTab("Gemini", geminiPanel);
         geminiPanel.initComponents();
         geminiPanel.initChatInSwingWorker();

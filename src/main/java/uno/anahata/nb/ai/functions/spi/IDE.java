@@ -1,5 +1,6 @@
 package uno.anahata.nb.ai.functions.spi;
 
+import com.google.gson.Gson;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -12,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +28,13 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.EditorKit;
 import javax.swing.text.JTextComponent;
+import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.java.source.JavaSource;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.api.project.Sources;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.cookies.EditorCookie;
@@ -141,6 +150,73 @@ public class IDE {
             }
         }
         throw new IOException("Could not find a readable 'messages.log' file in the primary or fallback locations.");
+    }
+    
+    @AutomaticFunction("Scans all open projects and returns a JSON summary of all errors and warnings detected by the IDE's live parser.")
+    public static String getAllIDEAlerts() throws Exception {
+        List<ProjectDiagnostics> allDiagnostics = new ArrayList<>();
+        Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
+
+        for (Project project : openProjects) {
+            ProjectDiagnostics projectDiags = new ProjectDiagnostics(ProjectUtils.getInformation(project).getDisplayName());
+            Sources sources = ProjectUtils.getSources(project);
+            // Change to TYPE_GENERIC to include all source types
+            SourceGroup[] sourceGroups = sources.getSourceGroups(Sources.TYPE_GENERIC);
+
+            for (SourceGroup sg : sourceGroups) {
+                FileObject root = sg.getRootFolder();
+                // Use a recursive enumeration to visit all files
+                Enumeration<? extends FileObject> files = root.getChildren(true);
+                while (files.hasMoreElements()) {
+                    FileObject fo = files.nextElement();
+                    if (fo.isFolder()) {
+                        continue;
+                    }
+                    try {
+                        // Only process Java files for now
+                        if ("text/x-java".equals(fo.getMIMEType())) {
+                            JavaSource javaSource = JavaSource.forFileObject(fo);
+                            if (javaSource != null) {
+                                javaSource.runUserActionTask(controller -> {
+                                    controller.toPhase(JavaSource.Phase.RESOLVED);
+                                    List<?> diagnostics = controller.getDiagnostics();
+                                    if (!diagnostics.isEmpty()) {
+                                        for (Object d : diagnostics) {
+                                            // Add file path to the alert for better context
+                                            projectDiags.addAlert(fo.getPath() + ": " + d.toString());
+                                        }
+                                    }
+                                }, true);
+                            }
+                        }
+                        // Future enhancement: Add logic for other file types here.
+                    } catch (IOException e) {
+                        projectDiags.addAlert("Error processing file " + fo.getPath() + ": " + e.getMessage());
+                    }
+                }
+            }
+            if (!projectDiags.alerts.isEmpty()) {
+                allDiagnostics.add(projectDiags);
+            }
+        }
+
+        if (allDiagnostics.isEmpty()) {
+            return "No IDE errors or warnings found in any open projects.";
+        }
+        return new Gson().toJson(allDiagnostics);
+    }
+
+    private static class ProjectDiagnostics {
+        String projectName;
+        List<String> alerts = new ArrayList<>();
+
+        ProjectDiagnostics(String projectName) {
+            this.projectName = projectName;
+        }
+
+        void addAlert(String alert) {
+            alerts.add(alert);
+        }
     }
 
     private static String getTabsSummary(List<Component> tabs, int linesToRead) {

@@ -47,7 +47,7 @@ always describe the aspects of the attachment that are relevant inmeditaly.
 
 **Adding notes:** If you need to take down notes of something you have learned, e.g. 
 netbeans apis, "how-to"s, specifics of the users environment (e.g. IP address of the fridge) or you are instructed by the user to do so, 
-just append to the end of the notes file in that same call via java or shell
+just **append** to the end of the notes file (assistant-notes.md) in that same call via java or shell
 
 **batching function calls** Every time you request a local function, the user 
 gets a popup for each function call that you send and if he approves, the 
@@ -55,8 +55,9 @@ function response is sent back to you automatically. So if you need to read 4 fi
 better to read all 4 files in one go.
 
 **editing source files** When creating source files use @{user.name}-ai as author 
-and [@{user.name}-ai] for code comments. Do not delete blank lines, logger calls, 
-System.out calls or any other lines that you consider unnecessary unless ordered to.
+and [@{user.name}-ai] for code comments. Do not delete blank lines, comments on the code, 
+logger calls, commented out code, System.out calls or any other lines that you 
+consider unnecessary unless ordered to do so.
 
 
 When working with the user and making changes to a source file, just present 

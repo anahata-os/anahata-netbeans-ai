@@ -1,7 +1,15 @@
 package uno.anahata.nb.ai;
 
+import java.util.logging.Level;
 import uno.anahata.nb.ai.deprecated.NetBeansListener;
 import java.util.logging.Logger;
+import javax.swing.JEditorPane;
+import javax.swing.SwingUtilities;
+import javax.swing.text.Document;
+import javax.swing.text.EditorKit;
+import org.netbeans.api.editor.mimelookup.MimeLookup;
+import org.netbeans.api.lexer.Language;
+import org.netbeans.api.lexer.TokenHierarchy;
 import org.openide.modules.ModuleInstall;
 import uno.anahata.gemini.functions.spi.RunningJVM;
 
@@ -27,7 +35,36 @@ public class Installer extends ModuleInstall {
     public void restored() {
         logId("restored() begins :");
         ShowDefaultCompilerClassPathAction.initRunningJVM();
+        
+        warmupEditor();
         logId("restored() finished");
+    }
+    
+    private void warmupEditor() {
+        // --- WARM-UP CODE ---
+        // Must be run on the EDT
+        SwingUtilities.invokeLater(() -> {
+            try {
+                log.info("Warming up Java highlighting pipeline...");
+                JEditorPane warmupPane = new JEditorPane();
+                EditorKit kit = MimeLookup.getLookup("text/x-java").lookup(EditorKit.class);
+                if (kit != null) {
+                    warmupPane.setEditorKit(kit);
+                    Document doc = warmupPane.getDocument();
+                    doc.putProperty(Language.class, Language.find("text/x-java"));
+                    doc.putProperty("mimeType", "text/x-java");
+                    TokenHierarchy.get(doc); // This is the key step to force initialization
+                    warmupPane.setText("class Dummy {}"); // Setting text ensures all components are touched
+                    log.info("Java highlighting pipeline successfully warmed up.");
+                } else {
+                    log.warning("Failed to find Java EditorKit during warm-up.");
+                }
+            } catch (Exception e) {
+                log.log(Level.WARNING, "Exception during Java highlighting warm-up", e);
+            }
+        });
+        // --- END WARM-UP CODE ---
+        
     }
     
     @Override

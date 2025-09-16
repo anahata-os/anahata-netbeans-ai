@@ -17,11 +17,16 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
 import uno.anahata.gemini.GeminiAPI;
 import uno.anahata.gemini.functions.spi.LocalFiles;
 import uno.anahata.gemini.functions.spi.RunningJVM;
 import uno.anahata.gemini.functions.GeminiFunctionPrompter;
 import uno.anahata.gemini.GeminiConfig;
+import uno.anahata.nb.ai.functions.spi.Git;
+import uno.anahata.nb.ai.functions.spi.IDE;
+import uno.anahata.nb.ai.functions.spi.Maven;
 import uno.anahata.nb.ai.functions.spi.Workspace;
 
 public class GeminiConfigImpl extends GeminiConfig {
@@ -77,6 +82,18 @@ public class GeminiConfigImpl extends GeminiConfig {
         return api;
     }
 
+    @Override
+    public List<Class<?>> getAutomaticFunctionClasses() {
+        List<Class<?>> ret = new ArrayList<>();
+        ret.add(Git.class);
+        ret.add(IDE.class);
+        ret.add(Maven.class);
+        ret.add(Workspace.class);
+        return ret;
+    }
+    
+    
+
     
     @Override
     public Content getSystemInstruction() {
@@ -84,9 +101,16 @@ public class GeminiConfigImpl extends GeminiConfig {
                 .replace("${netbeans.productversion}", System.getProperty("netbeans.productversion", "an unknown version of NetBeans"))
                 .replace("${work.dir}", PLUGINW_WORK_DIR_PATH);
 
+        String ideAlerts = "Ide.getAllIDEAlerts:";
+        try {
+            ideAlerts+= IDE.getAllIDEAlerts();
+        } catch (Exception e) {
+            ideAlerts+= ExceptionUtils.getStackTrace(e);
+        }
         return Content.fromParts(
                 Part.fromText(processedManual),
-                Part.fromText(dynamicEnvSummary)
+                Part.fromText(dynamicEnvSummary),
+                Part.fromText(ideAlerts)
         );
     }
 

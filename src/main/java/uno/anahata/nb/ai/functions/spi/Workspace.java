@@ -41,6 +41,12 @@ public class Workspace {
                     summary.path = projectDir.getPath();
                     FileObject geminiMd = projectDir.getFileObject("gemini.md");
                     summary.summary = (geminiMd != null) ? geminiMd.asText() : "No gemini.md file found.";
+                    
+                    // --- Start of Change ---
+                    FileObject pomXml = projectDir.getFileObject("pom.xml");
+                    summary.pomXmlContent = (pomXml != null) ? pomXml.asText() : null;
+                    // --- End of Change ---
+                    
                     Sources sources = ProjectUtils.getSources(project);
                     for (String type : new String[]{JavaProjectConstants.SOURCES_TYPE_JAVA, JavaProjectConstants.SOURCES_TYPE_RESOURCES}) {
                         for (SourceGroup sg : sources.getSourceGroups(type)) {
@@ -152,6 +158,9 @@ public class Workspace {
         String name;
         String path;
         String summary;
+        // --- Start of Change ---
+        String pomXmlContent;
+        // --- End of Change ---
         List<String> sourceFiles = new ArrayList<>();
     }
     
