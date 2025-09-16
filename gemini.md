@@ -25,6 +25,7 @@ Continue improving the learning capabilities of the model ensuring the model can
 as needed
 
 ## Todo List
+- [ ] **Create `proposeCodeChange` Gem:** Develop a gem, `proposeCodeChange(String filePath, String newContentSnippet, String explanation)`, to fulfill the ideal interactive editing workflow. This gem should open a non-modal dialog that shows the explanation and a syntax-highlighted (or diff) view of the proposed code, with "Approve" and "Reject" buttons.
 - [ ] Add a "copy to clipboard" button for code blocks, commit messages or any parts in general in the chat UI.
 - [ ] Figure out ways to reduce context usage.
 - [ ] Figure out ways to improve scrolling in the conversation. Currently super laggish after 70.000 tokens and nearly 

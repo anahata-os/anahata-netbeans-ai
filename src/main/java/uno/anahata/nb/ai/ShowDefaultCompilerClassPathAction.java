@@ -42,7 +42,7 @@ import static uno.anahata.nb.ai.deprecated.ModuleInfoHelper.getGeminiModuleJars;
         id = "uno.anahata.nb.ai.ShowDefaultCompilerClassPathAction"
 )
 @ActionRegistration(
-        displayName = "Show Gemini"
+        displayName = "Show Gemini Classpath"
 )
 @ActionReference(path = "Menu/Tools", position = 10)
 public final class ShowDefaultCompilerClassPathAction implements ActionListener {
@@ -94,7 +94,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
                     + netbeansDynamicClassPath + File.pathSeparator
                     + moduleClassPathStr;
             RunningJVM.setDefaultCompilerClasspath(newClassPathString);
-            logger.info("newClassPathString: " + newClassPathString);
+            logger.info("Final Classpath: " + newClassPathString);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Exception initializing RunningJVM default compilers classpath", e);
         }
@@ -105,7 +105,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
     private static Set<File> getModuleClassPath() {
         
         Set<ModuleInfo> processed = new HashSet();
-        ModuleInfo thisModule = Modules.getDefault().ownerOf(GeminiTopComponent.class);
+        ModuleInfo thisModule = Modules.getDefault().ownerOf(Installer.class);
         return getClassPath(thisModule, processed);
     
     }
@@ -190,4 +190,3 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
         return FileUtil.getConfigFile(configFilePath);
     }
 }
-

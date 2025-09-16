@@ -29,7 +29,7 @@ public final class GeminiTopComponent extends TopComponent {
 
     public GeminiPanel geminiPanel;
     
-    private final GeminiConfigProviderImpl configProvider = new GeminiConfigProviderImpl();
+    private final GeminiConfigImpl config = new GeminiConfigImpl();
 
     public GeminiTopComponent() {
         logger.info("init() -- entry ");
@@ -65,9 +65,10 @@ public final class GeminiTopComponent extends TopComponent {
         add(tabbedPane, BorderLayout.CENTER);
         
         CodeBlockRenderer netbeansRenderer = new NetBeansCodeBlockRenderer();
-        geminiPanel = new GeminiPanel(configProvider, netbeansRenderer);        
-        tabbedPane.addTab("Gemini", geminiPanel);   
-        
+        geminiPanel = new GeminiPanel();    
+        geminiPanel.init(config);
+        geminiPanel.setCodeBlockRenderer(netbeansRenderer);
+        tabbedPane.addTab("Gemini", geminiPanel);
         geminiPanel.initComponents();
         geminiPanel.initChatInSwingWorker();
     }
