@@ -1,13 +1,11 @@
 package uno.anahata.nb.ai;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.text.Document;
 import javax.swing.text.EditorKit;
 import org.netbeans.api.editor.mimelookup.MimeLookup;
@@ -42,48 +40,33 @@ public class NetBeansCodeBlockRenderer implements CodeBlockRenderer {
                 codeEditor.setEditorKit(kit);
                 Document doc = codeEditor.getDocument();
                 
-                // This is the critical fix: Associate the language with the document
-                // to ensure the lexer is activated reliably.
                 Language<?> lang = Language.find(mimeType);
                 if (lang != null) {
                     logger.log(Level.INFO, "Found Language for mime type: {0}:" + lang, mimeType);
                     doc.putProperty(Language.class, lang);
                     doc.putProperty("mimeType", mimeType);
-                    // This forces the TokenHierarchy to be created, activating highlighting
-                    Object thd = TokenHierarchy.get(doc); 
-                    //logger.log(Level.INFO, "TokenHierarchy.get(doc) for mime type: {0}:" + thd, mimeType);
+                    TokenHierarchy.get(doc); 
                 } else {
                     logger.log(Level.WARNING, "Could not find a registered Language for mime type: {0}. Highlighting may not be applied.", mimeType);
                 }
                 
-                // Disable hyperlinks
                 doc.putProperty("hyperlink-activation-enabled", false);
-                
                 codeEditor.setText(code);
                 
             } else {
                  logger.log(Level.WARNING, "Could not find an EditorKit for mime type: {0}", mimeType);
-                 codeEditor.setText(code); // Set text even if kit fails
+                 codeEditor.setText(code);
             }
 
         } catch (Throwable e) {
             logger.log(Level.SEVERE, "An unexpected error occurred while setting up the EditorKit for mime type: " + mimeType, e);
-            codeEditor.setText(code); // Ensure text is set on error
+            codeEditor.setText(code);
         }
         
-        // [@pablo-ai] START: Diagnostic Wrapper
-        JPanel wrapper = new JPanel(new BorderLayout());
-        wrapper.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-        wrapper.add(codeEditor, BorderLayout.CENTER);
+        // Prime the component to calculate its size, but do NOT call setPreferredSize.
+        codeEditor.setSize(new Dimension(600, Integer.MAX_VALUE));
 
-        // Log the sizes to the console
-        System.out.println("--- NetBeansCodeBlockRenderer ---");
-        System.out.println("Language: " + language);
-        System.out.println("Code Editor Preferred Size: " + codeEditor.getPreferredSize());
-        System.out.println("Wrapper Preferred Size: " + wrapper.getPreferredSize());
-        System.out.println("---------------------------------");
-        
-        return wrapper;
-        // [@pablo-ai] END: Diagnostic Wrapper
+        // Return the component wrapped in a JScrollPane.
+        return new JScrollPane(codeEditor);
     }
 }

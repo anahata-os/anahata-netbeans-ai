@@ -49,9 +49,8 @@ public final class GeminiTopComponent extends TopComponent {
         JTabbedPane tabbedPane = new JTabbedPane();
         add(tabbedPane, BorderLayout.CENTER);
         
-        CodeBlockRenderer netbeansRenderer = new NetBeansCodeBlockRenderer();
-        geminiPanel = new GeminiPanel();    
-        geminiPanel.setCodeBlockRenderer(netbeansRenderer);
+        //CodeBlockRenderer netbeansRenderer = new NetBeansCodeBlockRenderer();
+        geminiPanel = new GeminiPanel(new NetBeansEditorKitProvider());    
         geminiPanel.init(config);
         
         tabbedPane.addTab("Gemini", geminiPanel);
