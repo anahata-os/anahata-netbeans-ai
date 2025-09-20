@@ -5,14 +5,14 @@ import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.openide.awt.Actions;
 import org.openide.util.Utilities;
-import uno.anahata.gemini.functions.AutomaticFunction;
+import uno.anahata.gemini.functions.AITool;
 
 /**
  * A Core Function provider that groups all functions for interacting with Git.
  */
 public class Git {
 
-    @AutomaticFunction(
+    @AITool(
         "Opens the NetBeans Git Commit dialog. The dialog is context-aware "
                 + "and will automatically find all modified files in the "
                 + "currently open projects."

@@ -13,12 +13,12 @@ import org.netbeans.api.lexer.TokenHierarchy;
 import org.openide.modules.ModuleInstall;
 import uno.anahata.gemini.functions.spi.RunningJVM;
 
-public class Installer extends ModuleInstall {
+public class GeminiInstaller extends ModuleInstall {
     
     private static NetBeansListener listener;
-    private static final Logger log = Logger.getLogger(Installer.class.getName());
+    private static final Logger log = Logger.getLogger(GeminiInstaller.class.getName());
     
-    public Installer() {
+    public GeminiInstaller() {
         logId("init() jva.class.path=" + System.getProperty("java.class.path"));
         logId("init() nb.dynamic.classpath=" + System.getProperty("netbeans.dynamic.classpath"));
         logId("init() RunningJVM.defaultCompilerClasspath=" + RunningJVM.getDefaultCompilerClasspath());

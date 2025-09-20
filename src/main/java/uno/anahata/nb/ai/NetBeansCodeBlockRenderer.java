@@ -13,6 +13,7 @@ import org.netbeans.api.lexer.Language;
 import org.netbeans.api.lexer.TokenHierarchy;
 import uno.anahata.gemini.ui.CodeBlockRenderer;
 
+@Deprecated
 public class NetBeansCodeBlockRenderer implements CodeBlockRenderer {
 
     private static final Logger logger = Logger.getLogger(NetBeansCodeBlockRenderer.class.getName());

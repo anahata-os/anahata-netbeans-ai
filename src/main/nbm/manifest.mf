@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Install: uno/anahata/nb/ai/Installer.class
+OpenIDE-Module-Install: uno/anahata/nb/ai/GeminiInstaller.class
 OpenIDE-Module-Display-Category: AI
 OpenIDE-Module-Display-Class: Artificial Intelligence

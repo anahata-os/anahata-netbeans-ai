@@ -44,12 +44,12 @@ import org.openide.loaders.DataObject;
 import org.openide.modules.Modules;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import uno.anahata.gemini.functions.AutomaticFunction;
+import uno.anahata.gemini.functions.AITool;
 
 public class IDE {
 
-    @AutomaticFunction("Opens a specified file in the NetBeans editor.")
-    public static String openFileInEditor(@AutomaticFunction("The absolute path of the file to open.") String filePath) throws Exception {
+    @AITool("Opens a specified file in the NetBeans editor.")
+    public static String openFileInEditor(@AITool("The absolute path of the file to open.") String filePath) throws Exception {
         if (filePath == null || filePath.trim().isEmpty()) {
             return "Error: The 'filePath' parameter was not set.";
         }
@@ -71,8 +71,8 @@ public class IDE {
         }
     }
 
-    @AutomaticFunction("Reads the content of all tabs in the NetBeans Output Window.")
-    public static String getOutputWindowContent(@AutomaticFunction("The number of lines to retrieve from the end of each tab.") int linesToRead) throws Exception {
+    @AITool("Reads the content of all tabs in the NetBeans Output Window.")
+    public static String getOutputWindowContent(@AITool("The number of lines to retrieve from the end of each tab.") int linesToRead) throws Exception {
         final String[] result = new String[1];
         final Exception[] exception = new Exception[1];
         SwingUtilities.invokeAndWait(() -> {
@@ -90,8 +90,8 @@ public class IDE {
         return result[0];
     }
 
-    @AutomaticFunction("Opens a dialog to propose a code change to the user.")
-    public static boolean proposeCodeChange(@AutomaticFunction("The absolute path of the file.") String filePath, @AutomaticFunction("The new code snippet.") String newContentSnippet, @AutomaticFunction("An explanation of the change.") String explanation) throws Exception {
+    @AITool("Opens a dialog to propose a code change to the user.")
+    public static boolean proposeCodeChange(@AITool("The absolute path of the file.") String filePath, @AITool("The new code snippet.") String newContentSnippet, @AITool("An explanation of the change.") String explanation) throws Exception {
         final AtomicBoolean result = new AtomicBoolean(false);
         final Exception[] exception = new Exception[1];
         SwingUtilities.invokeAndWait(() -> {
@@ -131,8 +131,8 @@ public class IDE {
         return result.get();
     }
 
-    @AutomaticFunction("Reads the last N lines of the NetBeans IDE's log file (messages.log).")
-    public static String getLogs(@AutomaticFunction("The number of lines to read from the end of the log file.") int linesToRead) throws Exception {
+    @AITool("Reads the last N lines of the NetBeans IDE's log file (messages.log).")
+    public static String getLogs(@AITool("The number of lines to read from the end of the log file.") int linesToRead) throws Exception {
         String userHome = System.getProperty("user.home");
         Path netbeansUserDir = Paths.get(System.getProperty("netbeans.user"));
         Path logFilePath = netbeansUserDir.resolve("var/log/messages.log");
@@ -152,7 +152,7 @@ public class IDE {
         throw new IOException("Could not find a readable 'messages.log' file in the primary or fallback locations.");
     }
     
-    @AutomaticFunction("Scans all open projects and returns a JSON summary of all errors and warnings detected by the IDE's live parser.")
+    @AITool("Scans all open projects and returns a JSON summary of all errors and warnings detected by the IDE's live parser.")
     public static String getAllIDEAlerts() throws Exception {
         List<ProjectDiagnostics> allDiagnostics = new ArrayList<>();
         Project[] openProjects = OpenProjects.getDefault().getOpenProjects();

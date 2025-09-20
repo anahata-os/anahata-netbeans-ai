@@ -1,20 +1,11 @@
 package uno.anahata.nb.ai;
 
 import java.awt.BorderLayout;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JEditorPane;
 import javax.swing.JTabbedPane;
-import javax.swing.text.Document;
-import javax.swing.text.EditorKit;
-import org.netbeans.api.editor.mimelookup.MimeLookup;
-import org.netbeans.api.lexer.Language;
-import org.netbeans.api.lexer.TokenHierarchy;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
-
-import uno.anahata.gemini.ui.CodeBlockRenderer;
 import uno.anahata.gemini.ui.GeminiPanel;
 
 
@@ -32,7 +23,7 @@ public final class GeminiTopComponent extends TopComponent {
 
     public GeminiPanel geminiPanel;
     
-    private final GeminiConfigImpl config = new GeminiConfigImpl();
+    private final NetBeansGeminiConfig config = new NetBeansGeminiConfig();
 
     public GeminiTopComponent() {
         logger.info("init() -- entry ");
@@ -49,7 +40,6 @@ public final class GeminiTopComponent extends TopComponent {
         JTabbedPane tabbedPane = new JTabbedPane();
         add(tabbedPane, BorderLayout.CENTER);
         
-        //CodeBlockRenderer netbeansRenderer = new NetBeansCodeBlockRenderer();
         geminiPanel = new GeminiPanel(new NetBeansEditorKitProvider());    
         geminiPanel.init(config);
         

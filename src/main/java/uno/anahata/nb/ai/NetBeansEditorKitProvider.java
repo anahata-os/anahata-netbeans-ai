@@ -11,7 +11,7 @@ import javax.swing.text.EditorKit;
 import org.netbeans.api.editor.mimelookup.MimeLookup;
 import org.netbeans.api.lexer.Language;
 import org.netbeans.api.lexer.TokenHierarchy;
-import uno.anahata.gemini.ui.EditorKitProvider;
+import uno.anahata.gemini.ui.render.editorkit.EditorKitProvider;
 
 public class NetBeansEditorKitProvider implements EditorKitProvider {
     private static final Logger logger = Logger.getLogger(NetBeansEditorKitProvider.class.getName());

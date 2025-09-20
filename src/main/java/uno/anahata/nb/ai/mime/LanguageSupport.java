@@ -1,4 +1,4 @@
-package uno.anahata.nb.ai;
+package uno.anahata.nb.ai.mime;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -4,6 +4,7 @@
  */
 package uno.anahata.nb.ai;
 
+import uno.anahata.nb.ai.deprecated.ClassPathUtils;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -105,7 +106,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
     private static Set<File> getModuleClassPath() {
         
         Set<ModuleInfo> processed = new HashSet();
-        ModuleInfo thisModule = Modules.getDefault().ownerOf(Installer.class);
+        ModuleInfo thisModule = Modules.getDefault().ownerOf(GeminiInstaller.class);
         return getClassPath(thisModule, processed);
     
     }
