@@ -72,7 +72,6 @@ public class NetBeansListener implements LookupListener, FileChangeListener, Pro
             log.info("[" + idx++ + "] " + obj + " \n\t Class:" + obj.getClass().getName());
         }
         
-        
 /*
         if (result.allInstances().isEmpty()) {
             log.info("---- No objects in context --- ");

@@ -48,28 +48,7 @@ import uno.anahata.gemini.functions.AITool;
 
 public class IDE {
 
-    @AITool("Opens a specified file in the NetBeans editor.")
-    public static String openFileInEditor(@AITool("The absolute path of the file to open.") String filePath) throws Exception {
-        if (filePath == null || filePath.trim().isEmpty()) {
-            return "Error: The 'filePath' parameter was not set.";
-        }
-        File file = new File(filePath);
-        if (!file.exists()) {
-            return "Error: File does not exist at path: " + filePath;
-        }
-        FileObject fileObject = FileUtil.toFileObject(FileUtil.normalizeFile(file));
-        if (fileObject == null) {
-            return "Error: Could not find or create a FileObject for: " + filePath;
-        }
-        DataObject dataObject = DataObject.find(fileObject);
-        EditorCookie editorCookie = dataObject.getLookup().lookup(EditorCookie.class);
-        if (editorCookie != null) {
-            SwingUtilities.invokeLater(editorCookie::open);
-            return "Successfully requested to open file in editor: " + filePath;
-        } else {
-            return "Error: The specified file is not an editable text file.";
-        }
-    }
+    
 
     @AITool("Reads the content of all tabs in the NetBeans Output Window.")
     public static String getOutputWindowContent(@AITool("The number of lines to retrieve from the end of each tab.") int linesToRead) throws Exception {
@@ -90,7 +69,7 @@ public class IDE {
         return result[0];
     }
 
-    @AITool("Opens a dialog to propose a code change to the user.")
+    //@AITool("Opens a dialog to propose a code change to the user.")
     public static boolean proposeCodeChange(@AITool("The absolute path of the file.") String filePath, @AITool("The new code snippet.") String newContentSnippet, @AITool("An explanation of the change.") String explanation) throws Exception {
         final AtomicBoolean result = new AtomicBoolean(false);
         final Exception[] exception = new Exception[1];

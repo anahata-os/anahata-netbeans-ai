@@ -65,17 +65,17 @@ public class Workspace {
         if (exception[0] != null) throw exception[0];
         return new Gson().toJson(summaries);
     }
-
-    @AITool("Gets the display names of all currently open projects in the IDE.")
+/*
+    @AITool("Gets the name and display name of all currently open projects in the IDE.")
     public static String getOpenProjects() throws Exception {
         Project[] projects = OpenProjects.getDefault().getOpenProjects();
         if (projects.length == 0) return "There are no projects open in the IDE.";
         return "The following projects are open:\\n" + Arrays.stream(projects)
-                .map(p -> ProjectUtils.getInformation(p).getDisplayName())
+                .map(p -> ProjectUtils.getInformation(p).getName() + " (DisplayName:" +  ProjectUtils.getInformation(p).getDisplayName() + ")")
                 .collect(Collectors.joining("\\n"));
-    }
+    }*/
 
-    @AITool("Reads the content of a specific file within a specific open project.")
+    //@AITool("Reads the content of a specific file within a specific open project.")
     public static String readFile(@AITool("The display name of the open project.") String projectName, @AITool("The path to the file relative to the project's root directory.") String relativeFilePath) throws Exception {
         Optional<Project> targetProjectOpt = Arrays.stream(OpenProjects.getDefault().getOpenProjects())
                 .filter(p -> ProjectUtils.getInformation(p).getDisplayName().equals(projectName)).findFirst();
@@ -86,7 +86,7 @@ public class Workspace {
         return targetFile.asText();
     }
 
-    @AITool("Scans all open projects' source directories. Reads text files, lists binary files, and respects .gitignore.")
+    //@AITool("Scans all open projects' source directories. Reads text files, lists binary files, and respects .gitignore.")
     public static String readAllSourceFiles() throws Exception {
         List<ProjectFileContent> allProjectsContent = new ArrayList<>();
         for (Project project : OpenProjects.getDefault().getOpenProjects()) {

@@ -24,6 +24,18 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
+    <repositories>
+        <repository>
+            <id>apache</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>    
     <dependencies>
         <dependency>
             <groupId>uno.anahata</groupId>
@@ -31,10 +43,15 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         
-        <!--Openide core deps-->
+        <!--12 Openide core deps-->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -92,25 +109,178 @@
             <artifactId>org-openide-explorer</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-execution</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
         
         <!--NetBeans IDE deps-->
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-java</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-java-classpath</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-io</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-dashboard</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-htmlui</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-intent</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-knockout</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-lsp</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-libs-asm</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-libs-git</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        -->
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-maven</artifactId>
+            <version>${netbeans.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jspecify.jspecify</groupId>
+                    <artifactId>jspecify</artifactId>
+                </exclusion>        
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>        
+            </exclusions>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-mobility</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        -->
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-progress</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-scripting</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-search</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-web-webmodule</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-visual</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-templates</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-xml</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-xml-ui</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
         <!--Module IDE deps-->
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-core-ide</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-core-multitabs</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-core-multiview</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectuiapi</artifactId>
@@ -128,12 +298,17 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-source</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-source-base</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-java-source</artifactId>
+            <artifactId>org-netbeans-modules-java-editor-lib</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -153,21 +328,25 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-java-editor-lib</artifactId>
+            <artifactId>org-netbeans-modules-lexer</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-lexer</artifactId>
+            <artifactId>org-netbeans-modules-diff</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <!--
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-projectui</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+-->
 
-        
-    
     </dependencies>
 
     <build>
-        
         <plugins>
             <plugin>
                 <groupId>org.apache.netbeans.utilities</groupId>
@@ -175,10 +354,18 @@
                 <version>14.3</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <author>Project Author</author>
+                    <author>Anahata</author>
                     <homePageUrl>http://anahata.uno</homePageUrl>
                     <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
                     <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
+                    <!--
+<moduleDependencies>
+    <dependency>
+        <id>org.netbeans.modules:org-netbeans-modules-maven</id>
+        <type>impl</type>
+    </dependency>
+</moduleDependencies>
+                    -->
                 </configuration>
             </plugin>
             <plugin>
