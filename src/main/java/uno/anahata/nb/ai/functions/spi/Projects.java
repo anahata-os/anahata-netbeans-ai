@@ -74,7 +74,7 @@ public class Projects {
             sb.append("Actions: (none)\n");
         }
         
-        sb.append("\nLegend: '+' folder  '-'. Folder sizes are recursive\n");
+        sb.append("\nLegend: '+' folder  '-' file, 's=' size (folder sizes are recursive) 'lm=' last modified on disk\n");
 
         // --- Immediate children of project root ---
         sb.append("\n=== Root folder ===\n");
@@ -91,7 +91,7 @@ public class Projects {
 
         for (SourceGroup group : groups) {
             FileObject srcRoot = group.getRootFolder();
-            sb.append(srcRoot);
+            sb.append(toString(srcRoot));
             listFilesRecursivelyTreeWithSize(srcRoot, 1, sb);
         }
 
@@ -108,8 +108,8 @@ public class Projects {
             sb.append(typeShort);
             sb.append(fo.getNameExt())
                     .append(" [")
-                    .append(", ").append(size)
-                    .append(", ").append(lastModifiedOnDisk)
+                    .append("s=").append(size)
+                    .append(", m=").append(lastModifiedOnDisk)
                     .append("]\n");
             return sb.toString();
     }
@@ -148,8 +148,20 @@ public class Projects {
 
     private static void listFilesRecursivelyTreeWithSize(FileObject folder, int indent, StringBuilder sb) {
         String prefix = "  ".repeat(indent * 2);
-        for (FileObject child : folder.getChildren()) {
-            sb.append(prefix).append(toString(child));
+        // Get children and sort them so folders come first, then files, alphabetically
+        FileObject[] children = folder.getChildren();
+        Arrays.sort(children, (f1, f2) -> {
+            if (f1.isFolder() && !f2.isFolder()) return -1;
+            if (!f1.isFolder() && f2.isFolder()) return 1;
+            return f1.getNameExt().compareTo(f2.getNameExt());
+        });
+
+        for (FileObject child : children) {
+            sb.append(prefix).append(toString(child)); // Use the existing toString helper
+            if (child.isFolder()) {
+                // This is the missing recursive call
+                listFilesRecursivelyTreeWithSize(child, indent + 1, sb);
+            }
         }
     }
 
