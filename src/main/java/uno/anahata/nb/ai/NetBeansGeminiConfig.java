@@ -18,7 +18,7 @@ import uno.anahata.nb.ai.functions.spi.Workspace;
 
 public class NetBeansGeminiConfig extends GeminiConfig {
 
-    private final GeminiAPI api = new GeminiAPI();
+    private final GeminiAPI api = new GeminiAPI(getWorkingFolder());
 
     @Override
     public GeminiAPI getApi() {
@@ -47,12 +47,12 @@ public class NetBeansGeminiConfig extends GeminiConfig {
         List<Part> parts = new ArrayList<>();
 
         // Add the NetBeans role and gemini.md directive
-        parts.add(Part.fromText("Your host environment is the  Gemini NetBeans Plugin. "
+        parts.add(Part.fromText("Your host environment is the  Gemini NetBeans Plugin."
                 + "\nThe main TopComponent class of the plugin is:" + GeminiTopComponent.class.getName()
                 + "\nYour netbeans and java notes are your primary persitent memory in this host environment"
                 + "and they must always be in the context of this session"
                 + "\nThe gemini.md file located on the root of each project folder is your persistent memory for anything related to that project, "
-                + "keep it up to date with changes in the code base, goals, todos, etc, "));
+                + "you must read this file if you detect it or create one if it doesnt exist and keep it up to date automatically with changes in the code base, goals, todos, etc, "));
 
         // Add the live IDE alerts
         String ideAlerts = "IDE.getAllIDEAlerts:";
@@ -108,5 +108,10 @@ public class NetBeansGeminiConfig extends GeminiConfig {
         parts.add(Part.fromText(openEditorTabs));
 
         return parts;
+    }
+
+    @Override
+    public String getApplicationInstanceId() {
+        return "netbeans-plugin";
     }
 }
