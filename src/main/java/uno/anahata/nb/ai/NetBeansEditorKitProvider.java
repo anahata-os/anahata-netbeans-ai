@@ -48,8 +48,9 @@ public class NetBeansEditorKitProvider implements EditorKitProvider {
 
         if (mimeType != null) {
             logger.log(Level.INFO, "Found MIME type ''{0}'' for language ''{1}''", new Object[]{mimeType, language});
-            //EditorKit kit = MimeLookup.getLookup(mimeType).lookup(EditorKit.class);
-            EditorKit kit = JEditorPane.createEditorKitForContentType(mimeType);
+            // Use MimeLookup to get the NetBeans-specific EditorKit for syntax highlighting
+            EditorKit kit = MimeLookup.getLookup(mimeType).lookup(EditorKit.class);
+            //EditorKit kit = JEditorPane.createEditorKitForContentType(mimeType);
             if (kit != null) {
                 logger.log(Level.INFO, "Found EditorKit for mime type: {0}: {1}", new Object[]{mimeType, kit});
                 return kit;
@@ -62,22 +63,5 @@ public class NetBeansEditorKitProvider implements EditorKitProvider {
         return null;
     }
 
-    @Override
-    public void initDoc(Document doc, String language) {
-        String langLower = language.toLowerCase().trim();
-        String mimeType = LANGUAGE_TO_MIME_TYPE_MAP.get(langLower);
-        if (mimeType != null) {
-            Language<?> lang = Language.find(mimeType);
-            if (lang != null) {
-                logger.log(Level.INFO, "Found Language for mime type: {0}: {1}", new Object[]{lang.mimeType(), lang});
-                doc.putProperty(Language.class, lang);
-                doc.putProperty("mimeType", mimeType);
-                TokenHierarchy.get(doc); 
-            } else {
-                logger.log(Level.WARNING, "Could not find a registered Language for mime type: {0}. Highlighting may not be applied.", mimeType);
-            }
-        } else {
-            logger.log(Level.WARNING, "Could not find a registered mime type: for language {0}. Highlighting may not be applied.", langLower);
-        }
-    }
+
 }
