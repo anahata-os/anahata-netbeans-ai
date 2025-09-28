@@ -1,55 +1,48 @@
-# Project: anahata-netbeans-ai
+# Project: anahata-netbeans-ai - Gemini NetBeans Plugin
 
-## Purpose
-This project is a NetBeans plugin that integrates the Gemini AI model directly into the IDE. It serves as the primary bridge between the user, the NetBeans environment, and the underlying `gemini-java-client`.
+## 1. Purpose
+This project is a NetBeans plugin that integrates the Gemini AI model directly into the IDE. It serves as the primary bridge between the user, the NetBeans environment, and the underlying `gemini-java-client` library, which provides the core chat UI and API communication logic.
 
-## Key Components / Overview
+This plugin's main responsibilities are:
+-   Providing a `TopComponent` to host the Gemini chat panel.
+-   Implementing a NetBeans-specific configuration (`NetBeansGeminiConfig`).
+-   Supplying a suite of AI tools (`functions.spi`) that allow the model to interact with the NetBeans IDE itself.
 
-### `uno.anahata.nb.ai` package
-*   **Summary**: Contains core NetBeans plugin classes, including the installer, the main TopComponent, and configuration specific to the NetBeans environment.
+## 2. Key Components & Packages
+
+### `uno.anahata.nb.ai`
+*   **Summary**: Contains the core NetBeans integration classes.
 *   **Key Classes**:
-    *   `GeminiInstaller`: Handles module lifecycle events, classpath setup, and editor warm-up.
-    *   `GeminiTopComponent`: The main user interface component for the Gemini chat within NetBeans.
-    *   `NetBeansCodeBlockRenderer`: (Deprecated) Renders code blocks with NetBeans syntax highlighting.
-    *   `NetBeansEditorKitProvider`: Provides NetBeans' own syntax highlighting `EditorKit`s to the `gemini-java-client` UI.
-    *   `NetBeansGeminiConfig`: Concrete `GeminiConfig` implementation for the NetBeans plugin, providing host-specific instructions and functions.
-    *   `ShowDefaultCompilerClassPathAction`: Action to display the compiler's classpath.
+    *   `GeminiTopComponent`: The main window (`TopComponent`) for the Gemini chat UI within NetBeans.
+    *   `NetBeansGeminiConfig`: A concrete `GeminiConfig` implementation that provides host-specific instructions and registers all the NetBeans-specific AI tool classes.
+    *   `NetBeansEditorKitProvider`: A crucial class that implements the `EditorKitProvider` interface from the client library. It bridges NetBeans' powerful syntax highlighting capabilities to the `CodeBlockRenderer` in the `gemini-java-client` UI.
+    *   `GeminiInstaller`: A standard NetBeans module installer class that handles setup tasks.
 
-### `uno.anahata.nb.ai.deprecated` package
-*   **Summary**: Contains deprecated utility classes, kept for historical context or potential future reference. These classes are no longer actively used but might contain useful logic.
+### `uno.anahata.nb.ai.functions.spi`
+*   **Summary**: The Service Provider Interface (SPI) for all NetBeans-specific AI tools. These classes grant the AI model the ability to "see" and interact with the IDE.
 *   **Key Classes**:
-    *   `ClassPathUtils`: Utilities for classpath manipulation (deprecated).
-    *   `ModuleInfoHelper`: Helper for module information (deprecated).
-    *   `NetBeansListener`: Listens for NetBeans events (deprecated).
+    *   `Projects`: Provides tools for listing and querying open NetBeans projects (`getOpenProjects`, `getOverview`).
+    *   `Editor`: Provides tools for interacting with the code editor (`openFile`, `getOpenFiles`).
+    *   `IDE`: Provides general IDE interaction tools (`getAllIDEAlerts`, `getLogs`).
+    *   `Workspace`: Provides tools for getting an overview of the entire workspace.
+    *   `Git`: Provides tools for basic Git integration (`openCommitDialog`).
+    *   And others like `Maven`, `Output`, `TopComponents`.
 
-### `uno.anahata.nb.ai.functions.spi` package
-*   **Summary**: Service Provider Interface (SPI) for NetBeans-specific AI tools, allowing the model to interact with various aspects of the IDE.
-*   **Key Classes**:
-    *   `Editor`: Provides functions for interacting with the NetBeans editor (e.g., opening files, getting open files).
-    *   `Git`: Provides functions for interacting with Git within NetBeans (e.g., opening commit dialog).
-    *   `IDE`: Provides general IDE interaction functions (e.g., getting output window content, logs, alerts).
-    *   `Maven`: (Currently an empty class, intended for future Maven-related functions).
-    *   `Output`: Provides functions for interacting with the NetBeans Output Window.
-    *   `Projects`: Provides functions for managing and querying open NetBeans projects.
-    *   `TopComponents`: Provides functions for listing and interacting with NetBeans TopComponents.
-    *   `Workspace`: Provides functions for getting an overview of the entire NetBeans workspace.
+### `uno.anahata.nb.ai.deprecated`
+*   **Summary**: Contains deprecated utility classes that are no longer in active use but are kept for historical context.
 
-### `uno.anahata.nb.ai.mime` package
-*   **Summary**: Utility classes for handling MIME types and language support within the NetBeans environment.
-*   **Key Classes**:
-    *   `LanguageMimeResolver`: Resolves MIME types for given language names.
-    *   `LanguageSupport`: Provides information about supported languages in NetBeans.
+## 3. Relationship with `gemini-java-client`
+This project is a **host application**. It includes `gemini-java-client` as a Maven dependency.
 
-## Current Goals
-- Improve the plugin's startup performance and context-awareness.
-- Continue improving the learning capabilities of the model by creating, deleting, or evolving functions as needed.
-- Enhance the interactivity between the model and the IDE.
+-   `gemini-java-client` provides the entire user interface (`GeminiPanel`), the rendering pipeline, the `FunctionManager2`, and the core logic for communicating with the Gemini API.
+-   `anahata-netbeans-ai` **launches** this UI and **injects** the NetBeans-specific tools and configurations into it, enabling the AI to perform IDE-aware tasks.
 
-## Todo List
-- [ ] **Refine `proposeCodeChange` Function**: The current `IDE.proposeCodeChange` function works but uses a basic modal dialog. This should be enhanced to be non-modal and ideally show a diff view of the changes for better usability.
-- [ ] **Add a "copy to clipboard" button** for code blocks and other content in the chat UI.
-- [ ] **Improve scrolling performance** in the chat window, which becomes laggy with large contexts.
-- [ ] **Explore more efficient file editing strategies** (e.g., diff/patch) instead of full read/write cycles, potentially leveraging NetBeans' own file system APIs.
-- [ ] **Explore non-blocking function calls** to allow the user to continue interacting with the chat while long-running tasks execute in the background.
-- [ ] **Investigate screenshot functionality on Ubuntu**, which is currently not working.
-- [ ] **Assess Gemini API limitation** regarding local functions vs. web search and implement a robust solution (e.g., the `setTools` function).
+## 4. Current Goals & Todo List
+-   **Improve Startup Performance**: Investigate ways to make the initial loading of the plugin and chat faster.
+-   **Enhance Interactivity**: Continue to evolve the available tools to allow for more complex and seamless interactions between the AI and the IDE.
+-   **Implement Diff/Patch Editing**: Act on the `diff-plan.md` to create a `proposeCodeChange` tool that uses a diff/patch mechanism for efficient and reviewable code modifications.
+-   **Add UI Conveniences**:
+    -   [ ] Add a "copy to clipboard" button for code blocks.
+    -   [ ] Explore non-blocking function calls for long-running tasks.
+-   **Bug Fixes**:
+    -   [ ] Investigate and fix screenshot functionality on Linux environments.
