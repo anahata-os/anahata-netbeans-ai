@@ -337,12 +337,12 @@
             <version>${netbeans.version}</version>
         </dependency>
         <!--
-        <dependency>
-            <groupId>org.netbeans.modules</groupId>
-            <artifactId>org-netbeans-modules-projectui</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
--->
+                <dependency>
+                    <groupId>org.netbeans.modules</groupId>
+                    <artifactId>org-netbeans-modules-projectui</artifactId>
+                    <version>${netbeans.version}</version>
+                </dependency>
+        -->
 
     </dependencies>
 
@@ -375,6 +375,9 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
