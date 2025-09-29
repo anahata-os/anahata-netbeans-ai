@@ -5,8 +5,32 @@
     <artifactId>anahata-netbeans-ai</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
-    <name>Gemini NetBeans Plugin</name>
-    <description>Gemini in NetBeans</description>
+    <name>Anahata NetBeans Plugin</name>
+    <description>THE ONLY PLUGIN YOU NEED!!!!!!!
+
+Get those LLMs to do your NetBeans work.
+
+This plugin is an extension Anahata's "pure java" gemini client (gemini-java-client) with extra 
+@AITools specially crafted so the LLM can actually operate netbeans.
+
+- Gives the LLM an instant overview of yuor IDE on every round including:
+  - directory / source code package structures, 
+  - file and folder sizes 
+  - last modified timestamps
+  - any IDE alerts (compilation errors, warnings, etc)
+
+- Git integration (can open a commit dialog for you)
+
+- Take screenshots of your IDE so the LLM can understand visually what you are saying (specially useful for debugging UI)
+
+- Automatic context window management (tell the model what context window size you want to work with)
+
+- Model choosing (just gemini models supported atm)
+
+- Save chat sessions, load previous chat sessions
+
+- The LLM can write, compile and run java code at runtime inside the NetBeans JVM
+</description>
     <organization>
         <name>Anahata</name>
         <url>http://anahata.uno</url>
