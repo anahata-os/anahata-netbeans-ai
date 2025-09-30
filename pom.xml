@@ -357,6 +357,7 @@
                     <author>Anahata</author>
                     <homePageUrl>http://anahata.uno</homePageUrl>
                     <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
+                    <brandingToken>anahata</brandingToken>
                     <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
                     <!--
 <moduleDependencies>
