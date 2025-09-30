@@ -1,3 +1,5 @@
+[![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
+
 # Anahata AI Assistant for NetBeans
 
 An unprecedented, deeply integrated AI assistant for the Apache NetBeans IDE, powered by Google's Gemini models.
