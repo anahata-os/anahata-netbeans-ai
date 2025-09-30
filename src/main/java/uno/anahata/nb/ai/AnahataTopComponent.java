@@ -14,7 +14,7 @@ import uno.anahata.gemini.ui.GeminiPanel;
 @ActionReference(path = "Menu/Window", position = 333)
 @TopComponent.Description(
         preferredID = "gemini",
-        iconBase = "icons/anahata.png",
+        iconBase = "icons/anahata_32.png",
         persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "output", openAtStartup = false)
 @TopComponent.OpenActionRegistration(displayName = "Anahata", preferredID = "anahata")
