@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+:root {
+    --primary-color: #2c7a7b; /* Teal from logo */
+    --secondary-color: #319795;
+    --light-gray: #f7fafc;
+    --dark-gray: #2d3748;
+    --text-color: #4a5568;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background: var(--light-gray);
+    color: var(--text-color);
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header {
+    background: var(--dark-gray);
+    color: #fff;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+header .logo {
+    max-width: 200px;
+    margin-bottom: 1rem;
+}
+
+header p {
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+main {
+    padding: 2rem 0;
+}
+
+section {
+    background: #fff;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+section h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    border-bottom: 2px solid var(--light-gray);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.button {
+    display: inline-block;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background: var(--secondary-color);
+}
+
+#features ul {
+    list-style: none;
+    padding: 0;
+}
+
+#features li {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+#features li::before {
+    content: '';
+    color: var(--primary-color);
+    position: absolute;
+    left: 0;
+}
+
+footer {
+    text-align: center;
+    padding: 2rem 0;
+    background: var(--dark-gray);
+    color: #fff;
+}
