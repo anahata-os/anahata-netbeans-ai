@@ -5,48 +5,8 @@
     <artifactId>anahata-netbeans-ai</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
-    <name>Anahata NetBeans Plugin</name>
-    <description>THE ONLY PLUGIN YOU NEED!!!!!!!
-
-Get those LLMs to do your NetBeans work.
-
-This plugin is an extension Anahata's "pure java" gemini client (gemini-java-client) with extra 
-@AITools specially crafted so the LLM can actually operate netbeans.
-
-- Gives the LLM an instant overview of yuor IDE on every round including:
-  - directory / source code package structures, 
-  - file and folder sizes 
-  - last modified timestamps
-  - any IDE alerts (compilation errors, warnings, etc)
-
-- The LLM can write, compile and run java code at runtime inside the NetBeans JVM
-        
-- Built in netbeans syntax highlighting for all code snippets, diff patches, executable code, etc.
-        
-- Full Shell access
-        
-- File System integration
-                
-- Git integration (can open a commit dialog for you)
-
-- Take screenshots of your IDE so the LLM can understand visually what you are saying (specially useful for debugging UI)
-
-- Automatic context window management (tell the model what context window size you want to work with and how to dynamically manage it)
-
-- Model choosing (just gemini models supported at the moment)
-
-- Save chat sessions, list saved sessions, load previous chat sessions
-
-- Drag and drop files straight onto your chat window
-        
-- Inline rendering of image type blobs in chat
-        
-- Automatically backup your current context / chat (look for autosave-xxxx.json files in your sessions dir)
-        
-- Built in AI "buttler" type assistant that can figure out things and persist any findings in his "work" directory such as:
-        take notes, use your pc, user your network, learn details about your pc, network or other pcs or devices on your network, etc.
-        Just try: "turn the volume down on my smart tv" it will find it on the network, figure it out and write a note on how to do it next time.
-</description>
+    <name>Anahata AI Assistant</name>
+    <description>Elevate your coding experience with an AI partner that understands your workflow. Powered by Google Gemini, Anahata provides deep IDE integration, enabling intuitive interaction with your projects, code, and development environment. It's more than a toolit's a harmonious extension of your creative process, designed to bring flow and intelligence to your work.</description>
     <organization>
         <name>Anahata</name>
         <url>http://anahata.uno</url>
