@@ -10,6 +10,14 @@ This plugin is not just a chatbot in a side panel. It's a true AI partner with d
 
 In Sanskrit, "Anahata" refers to the heart chakrathe center of balance, compassion, and connection. This plugin is named with that spirit in mind. Our goal is to create an AI assistant that doesn't just execute commands, but works in harmony with the developer. Anahata is designed to be an intuitive partner, one that understands the context of your work and helps you stay in the creative flow, making the development process feel less like a task and more like a seamless extension of your thoughts.
 
+---
+### **Powered by the Gemini Java Client**
+
+The Anahata AI Assistant is the premier showcase for the [**`gemini-java-client`**](https://github.com/anahata-os/gemini-java-client), our powerful, enterprise-ready library for integrating Google Gemini into any Java application. 
+
+While this plugin provides a complete solution for NetBeans users, the underlying `gemini-java-client` is available for developers to build their own custom AI-powered tools and applications. It features a robust tool-calling framework, built-in Swing UI components, and a flexible configuration system. The client is available under a dual-license model (AGPLv3 for open-source, commercial for proprietary use).
+---
+
 ## Features
 
 - **Deep Context Awareness:** The assistant has real-time knowledge of your workspace. On every request, it knows which projects are open, which files are in the editor, and what errors or warnings the IDE has detected.
