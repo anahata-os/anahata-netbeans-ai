@@ -1,4 +1,4 @@
-package uno.anahata.nb.ai;
+package uno.anahata.nb.ai.gemini;
 
 import com.google.genai.types.Part;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import uno.anahata.gemini.GeminiAPI;
 import uno.anahata.gemini.GeminiConfig;
+import uno.anahata.nb.ai.AnahataTopComponent;
 import uno.anahata.nb.ai.functions.spi.Editor;
 import uno.anahata.nb.ai.functions.spi.Git;
 import uno.anahata.nb.ai.functions.spi.IDE;
@@ -47,8 +48,8 @@ public class NetBeansGeminiConfig extends GeminiConfig {
         List<Part> parts = new ArrayList<>();
 
         // Add the NetBeans role and gemini.md directive
-        parts.add(Part.fromText("Your host environment is the  Gemini NetBeans Plugin."
-                + "\nThe main TopComponent class of the plugin is:" + GeminiTopComponent.class.getName()
+        parts.add(Part.fromText("Your host environment is the Anahata NetBeans Plugin."
+                + "\nThe main TopComponent class of the plugin is:" + AnahataTopComponent.class.getName()
                 + "\nYour netbeans and java notes are your primary persitent memory in this host environment"
                 + "and they must always be in the context of this session"
                 + "\nThe gemini.md file located on the root of each project folder is your persistent memory for anything related to that project, "
@@ -72,6 +73,14 @@ public class NetBeansGeminiConfig extends GeminiConfig {
             logger.log(Level.SEVERE, "Exception in Projects.getOpenProjects()", e);
             parts.add(Part.fromText(openProjects + "\n" + ExceptionUtils.getStackTrace(e)));
         }
+        
+        // Add the critical file modification rule
+        parts.add(Part.fromText(
+            "**CRITICAL FILE MODIFICATION RULE:** Before using any tool that writes to disk (e.g., `writeFile`, `applyPatch`), you MUST perform this check:\n" +
+            "1. Find the file's `lm=` (last modified) timestamp in the `Projects.getOverview` output below.\n" +
+            "2. Compare this `lm=` timestamp with the `lastModified` timestamp of the same file that you have in your current context (from a previous `readFile` or `writeFile` operation).\n" +
+            "3. **If the `lm=` timestamp from the overview is NEWER**, your context is stale. You MUST use `readFile` to get the latest version of the file *before* attempting to write or patch it. This is not optional; it is required to prevent overwriting user changes."
+        ));
         
         try {
             for (String projectId : Projects.getOpenProjects()) {

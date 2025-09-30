@@ -109,7 +109,7 @@ public class Projects {
             sb.append(fo.getNameExt())
                     .append(" [")
                     .append("s=").append(size)
-                    .append(", m=").append(lastModifiedOnDisk)
+                    .append(", lm=").append(lastModifiedOnDisk)
                     .append("]\n");
             return sb.toString();
     }

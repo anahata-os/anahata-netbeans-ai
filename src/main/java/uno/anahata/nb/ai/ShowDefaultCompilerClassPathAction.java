@@ -106,7 +106,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
     private static Set<File> getModuleClassPath() {
         
         Set<ModuleInfo> processed = new HashSet();
-        ModuleInfo thisModule = Modules.getDefault().ownerOf(GeminiInstaller.class);
+        ModuleInfo thisModule = Modules.getDefault().ownerOf(AnahataInstaller.class);
         return getClassPath(thisModule, processed);
     
     }

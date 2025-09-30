@@ -1,5 +1,6 @@
 package uno.anahata.nb.ai;
 
+import uno.anahata.nb.ai.gemini.NetBeansGeminiConfig;
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
@@ -13,21 +14,21 @@ import uno.anahata.gemini.ui.GeminiPanel;
 @ActionReference(path = "Menu/Window", position = 333)
 @TopComponent.Description(
         preferredID = "gemini",
-        iconBase = "uno/anahata/nb/ai/gemini.png",
+        iconBase = "icons/anahata.png",
         persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "output", openAtStartup = false)
-@TopComponent.OpenActionRegistration(displayName = "Gemini Assistant", preferredID = "gemini")
-public final class GeminiTopComponent extends TopComponent {
+@TopComponent.OpenActionRegistration(displayName = "Anahata", preferredID = "anahata")
+public final class AnahataTopComponent extends TopComponent {
 
-    private static final Logger logger = Logger.getLogger(GeminiTopComponent.class.getName());
+    private static final Logger logger = Logger.getLogger(AnahataTopComponent.class.getName());
 
     public GeminiPanel geminiPanel;
     
     private final NetBeansGeminiConfig config = new NetBeansGeminiConfig();
 
-    public GeminiTopComponent() {
+    public AnahataTopComponent() {
         logger.info("init() -- entry ");
-        setName("Gemini");
+        setName("Anahata");
         setToolTipText("Get Gemini to do your work");
         
         initComponents();

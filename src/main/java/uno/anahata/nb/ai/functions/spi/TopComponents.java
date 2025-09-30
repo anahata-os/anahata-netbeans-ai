@@ -80,7 +80,7 @@ public class TopComponents {
         if (tc.getClass().getName().equals("org.netbeans.core.io.ui.IOWindow$IOWindowImpl")) {
             return "'Output' [IDE Output Window]";
         }
-        if (tc.getClass().getName().equals("uno.anahata.nb.ai.GeminiTopComponent")) {
+        if (tc.getClass().getName().equals("uno.anahata.nb.ai.ATopComponent")) {
             return "'Gemini AI Assistant'";
         }
         DataObject dataObject = tc.getLookup().lookup(DataObject.class);
