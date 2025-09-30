@@ -4,6 +4,8 @@
 
 An unprecedented, deeply integrated AI assistant for the Apache NetBeans IDE, powered by Google's Gemini models.
 
+**Visit our new website: [anahata.uno](https://anahata.uno)**
+
 This plugin is not just a chatbot in a side panel. It's a true AI partner with direct, programmatic access to the IDE's core functionalities. It can read and understand your open projects, check for IDE errors, interact with the editor, and even invoke project actions like `build` and `run`.
 
 ## The Anahata Philosophy: Coding from the Heart
