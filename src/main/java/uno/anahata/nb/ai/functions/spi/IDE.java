@@ -44,14 +44,13 @@ import org.openide.loaders.DataObject;
 import org.openide.modules.Modules;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import uno.anahata.gemini.functions.AITool;
+import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.gemini.functions.AIToolParam;
 
 public class IDE {
 
-    
-
-    @AITool("Reads the content of all tabs in the NetBeans Output Window.")
-    public static String getOutputWindowContent(@AITool("The number of lines to retrieve from the end of each tab.") int linesToRead) throws Exception {
+    @AIToolMethod("Reads the content of all tabs in the NetBeans Output Window.")
+    public static String getOutputWindowContent(@AIToolParam("The number of lines to retrieve from the end of each tab.") int linesToRead) throws Exception {
         final String[] result = new String[1];
         final Exception[] exception = new Exception[1];
         SwingUtilities.invokeAndWait(() -> {
@@ -69,49 +68,8 @@ public class IDE {
         return result[0];
     }
 
-    //@AITool("Opens a dialog to propose a code change to the user.")
-    public static boolean proposeCodeChange(@AITool("The absolute path of the file.") String filePath, @AITool("The new code snippet.") String newContentSnippet, @AITool("An explanation of the change.") String explanation) throws Exception {
-        final AtomicBoolean result = new AtomicBoolean(false);
-        final Exception[] exception = new Exception[1];
-        SwingUtilities.invokeAndWait(() -> {
-            try {
-                JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-                mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                JTextPane explanationPane = new JTextPane();
-                explanationPane.setContentType("text/plain");
-                explanationPane.setText(explanation);
-                explanationPane.setEditable(false);
-                explanationPane.setOpaque(false);
-                mainPanel.add(explanationPane, BorderLayout.NORTH);
-                JEditorPane codePane = new JEditorPane();
-                codePane.setEditable(false);
-                String mimeType = FileUtil.getMIMEType(FileUtil.toFileObject(new java.io.File(filePath)));
-                if (mimeType == null) mimeType = "text/plain";
-                if ("text/x-java".equals(mimeType)) {
-                    try {
-                        Class.forName("org.netbeans.modules.java.source.parsing.JavacParser", true, Modules.getDefault().findCodeNameBase("org.netbeans.modules.java.source").getClassLoader());
-                    } catch (ClassNotFoundException e) { System.err.println("Could not pre-load Java source module."); }
-                }
-                EditorKit editorKit = JEditorPane.createEditorKitForContentType(mimeType);
-                if (editorKit == null) editorKit = JEditorPane.createEditorKitForContentType("text/plain");
-                codePane.setEditorKit(editorKit);
-                codePane.setText(newContentSnippet);
-                mainPanel.add(new JScrollPane(codePane), BorderLayout.CENTER);
-                JButton approveButton = new JButton("Approve");
-                DialogDescriptor descriptor = new DialogDescriptor(mainPanel, "Propose Code Change", true, new Object[]{approveButton, new JButton("Reject")}, approveButton, DialogDescriptor.DEFAULT_ALIGN, null, null);
-                Dialog dialog = DialogDisplayer.getDefault().createDialog(descriptor);
-                dialog.setVisible(true);
-                if (descriptor.getValue() == approveButton) result.set(true);
-            } catch (Exception e) {
-                exception[0] = e;
-            }
-        });
-        if (exception[0] != null) throw exception[0];
-        return result.get();
-    }
-
-    @AITool("Reads the last N lines of the NetBeans IDE's log file (messages.log).")
-    public static String getLogs(@AITool("The number of lines to read from the end of the log file.") int linesToRead) throws Exception {
+    @AIToolMethod("Reads the last N lines of the NetBeans IDE's log file (messages.log).")
+    public static String getLogs(@AIToolParam("The number of lines to read from the end of the log file.") int linesToRead) throws Exception {
         String userHome = System.getProperty("user.home");
         Path netbeansUserDir = Paths.get(System.getProperty("netbeans.user"));
         Path logFilePath = netbeansUserDir.resolve("var/log/messages.log");
@@ -131,7 +89,7 @@ public class IDE {
         throw new IOException("Could not find a readable 'messages.log' file in the primary or fallback locations.");
     }
     
-    @AITool("Scans all open projects and returns a JSON summary of all errors and warnings detected by the IDE's live parser.")
+    @AIToolMethod("Scans all open projects and returns a JSON summary of all errors and warnings detected by the IDE's live parser.")
     public static String getAllIDEAlerts() throws Exception {
         List<ProjectDiagnostics> allDiagnostics = new ArrayList<>();
         Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
@@ -139,12 +97,10 @@ public class IDE {
         for (Project project : openProjects) {
             ProjectDiagnostics projectDiags = new ProjectDiagnostics(ProjectUtils.getInformation(project).getDisplayName());
             Sources sources = ProjectUtils.getSources(project);
-            // Change to TYPE_GENERIC to include all source types
             SourceGroup[] sourceGroups = sources.getSourceGroups(Sources.TYPE_GENERIC);
 
             for (SourceGroup sg : sourceGroups) {
                 FileObject root = sg.getRootFolder();
-                // Use a recursive enumeration to visit all files
                 Enumeration<? extends FileObject> files = root.getChildren(true);
                 while (files.hasMoreElements()) {
                     FileObject fo = files.nextElement();
@@ -152,7 +108,6 @@ public class IDE {
                         continue;
                     }
                     try {
-                        // Only process Java files for now
                         if ("text/x-java".equals(fo.getMIMEType())) {
                             JavaSource javaSource = JavaSource.forFileObject(fo);
                             if (javaSource != null) {
@@ -161,14 +116,12 @@ public class IDE {
                                     List<?> diagnostics = controller.getDiagnostics();
                                     if (!diagnostics.isEmpty()) {
                                         for (Object d : diagnostics) {
-                                            // Add file path to the alert for better context
                                             projectDiags.addAlert(fo.getPath() + ": " + d.toString());
                                         }
                                     }
                                 }, true);
                             }
                         }
-                        // Future enhancement: Add logic for other file types here.
                     } catch (IOException e) {
                         projectDiags.addAlert("Error processing file " + fo.getPath() + ": " + e.getMessage());
                     }

@@ -22,7 +22,8 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
-import uno.anahata.gemini.functions.AITool;
+import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.gemini.functions.AIToolParam;
 
 /**
  *
@@ -30,11 +31,7 @@ import uno.anahata.gemini.functions.AITool;
  */
 public class Projects {
 
-    /**
-     * Returns a List of project IDs (folder names) for all currently open
-     * projects.
-     */
-    @AITool("Returns a List of project IDs (folder names) for all currently open projects.")
+    @AIToolMethod("Returns a List of project IDs (folder names) for all currently open projects.")
     public static List<String> getOpenProjects() {
         List<String> projectIds = new ArrayList<>();
         for (Project project : OpenProjects.getDefault().getOpenProjects()) {
@@ -44,8 +41,8 @@ public class Projects {
         return projectIds;
     }
 
-    @AITool("Gets an overview of a project: name, display name, listing of the project's root directory and directory tree of all source java files")
-    public static String getOverview(@AITool("The project id (not the 'display name'")String projectId) {
+    @AIToolMethod("Gets an overview of a project: name, display name, listing of the project's root directory and directory tree of all source java files")
+    public static String getOverview(@AIToolParam("The project id (not the 'display name'")String projectId) {
         Project target = null;
         for (Project p : OpenProjects.getDefault().getOpenProjects()) {
             if (p.getProjectDirectory().getNameExt().equals(projectId)) {
@@ -114,10 +111,10 @@ public class Projects {
             return sb.toString();
     }
 
-    @AITool("Runs a standard high-level action (like 'run' or 'build') on a given open project.")
+    @AIToolMethod("Runs a standard high-level action (like 'run' or 'build') on a given open project.")
     public static String invokeAction(
-            @AITool("The netbeans project name (not the display name)") String projectId,
-            @AITool("The action to invoke") String action) throws Exception {
+            @AIToolParam("The netbeans project name (not the display name)") String projectId,
+            @AIToolParam("The action to invoke") String action) throws Exception {
         Project project = findProject(projectId);
         ActionProvider ap = project.getLookup().lookup(ActionProvider.class);
         if (ap == null) {

@@ -27,7 +27,8 @@ import org.netbeans.api.diff.StreamSource;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.windows.WindowManager;
-import uno.anahata.gemini.functions.AITool;
+import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.gemini.functions.AIToolParam;
 
 
 /**
@@ -35,10 +36,10 @@ import uno.anahata.gemini.functions.AITool;
  */
 public class Coding {
 
-    @AITool("Proposes a change to a file by showing an editable, modal diff dialog to the user. Returns the user-approved content or null if cancelled.")
+    @AIToolMethod("Proposes a change to a file by showing an editable, modal diff dialog to the user. Returns the user-approved content or null if cancelled.")
     public static String proposeChange(
-            @AITool("The absolute path of the file to modify.") String filePath,
-            @AITool("The full, new proposed content for the file.") String proposedContent) throws Exception {
+            @AIToolParam("The absolute path of the file to modify.") String filePath,
+            @AIToolParam("The full, new proposed content for the file.") String proposedContent) throws Exception {
 
         final File originalFile = new File(filePath);
         if (!originalFile.exists()) {

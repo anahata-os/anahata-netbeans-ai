@@ -5,17 +5,18 @@ import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.openide.awt.Actions;
 import org.openide.util.Utilities;
-import uno.anahata.gemini.functions.AITool;
+import uno.anahata.gemini.functions.AIToolMethod;
 
 /**
  * A Core Function provider that groups all functions for interacting with Git.
  */
 public class Git {
 
-    @AITool(
-        "Opens the NetBeans Git Commit dialog. The dialog is context-aware "
+    @AIToolMethod(
+        value = "Opens the NetBeans Git Commit dialog. The dialog is context-aware "
                 + "and will automatically find all modified files in the "
-                + "currently open projects."
+                + "currently open projects.",
+        requiresApproval = true
     )
     public static String openCommitDialog() throws Exception {
         final String actionCategory = "Git";

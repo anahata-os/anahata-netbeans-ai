@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package uno.anahata.nb.ai.functions.spi;
 
 import java.io.File;
@@ -17,7 +13,8 @@ import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
-import uno.anahata.gemini.functions.AITool;
+import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.gemini.functions.AIToolParam;
 
 /**
  *
@@ -25,8 +22,8 @@ import uno.anahata.gemini.functions.AITool;
  */
 public class Editor {
     
-    @AITool("Opens a specified file in the NetBeans editor.")
-    public static String openFile(@AITool("The absolute path of the file to open.") String filePath) throws Exception {
+    @AIToolMethod("Opens a specified file in the NetBeans editor.")
+    public static String openFile(@AIToolParam("The absolute path of the file to open.") String filePath) throws Exception {
         if (filePath == null || filePath.trim().isEmpty()) {
             return "Error: The 'filePath' parameter was not set.";
         }
@@ -48,8 +45,7 @@ public class Editor {
         }
     }
     
-     // --- Open Files (with dirty flag) ---
-    @AITool("Gets a list of all files open in the editor")
+    @AIToolMethod("Gets a list of all files open in the editor")
     public static String getOpenFiles() {
         StringBuilder sb = new StringBuilder();
         int total = 0;
@@ -81,13 +77,4 @@ public class Editor {
         }
         return sb.toString();
     }
-    /*
-    public static FileObject getSelectedEditorFile() {
-    JTextComponent editor = EditorRegistry.lastFocusedComponent();
-    if (editor != null) {
-        DataObject dobj = DataObject.find(editor.getDocument());
-        return dobj.getPrimaryFile();
-    }
-    return null;
-}*/
 }
