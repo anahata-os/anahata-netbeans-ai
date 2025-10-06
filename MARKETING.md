@@ -87,3 +87,32 @@ The project's `README.md` and `pom.xml` have already been updated to reflect the
 >
 > Thanks for taking a look!
 
+
+
+---
+
+## Phase 3: Strategic Decisions & Business Model (As of 2025-10-06)
+
+This section summarizes the core business and branding strategy for the Anahata project.
+
+### 1. Core Business Model: The Flywheel Strategy
+
+-   **The "Engine" (`gemini-java-client`):** This is the primary commercial product. It will be monetized through a dual-license model.
+    -   **License:** AGPL v3 for open-source use.
+    -   **Commercial License:** Required for use in proprietary, closed-source applications. This is the main revenue driver.
+    -   **Target Audience:** Businesses, from startups to large corporations, needing to integrate Gemini into their Java applications.
+-   **The "Car" (`anahata-netbeans-ai`):** This is the hero product and primary marketing tool. It will be a free, open-source, best-in-class plugin that serves as a real-world showcase for the power and stability of the `gemini-java-client`. Its success drives leads for the commercial client.
+
+### 2. Branding & Community: "The Anahata CEO"
+
+-   **Human-Centric Story:** The brand will be built around the authentic story of the project, including the role of Uma ("Anahata's CEO") as the community-facing leader. This humanizes the project and fosters a stronger connection with users.
+-   **Community Management:** Uma's role will be to engage with the community, gather feedback, and guide the project's vision, shielded from the complexities of commercial negotiations.
+
+### 3. Communication Channels & Infrastructure
+
+-   **`sales@anahata.uno`:** A professional, firewalled email alias pointing directly to Pablo. This is the single point of contact for all commercial licensing and B2B inquiries.
+-   **`team@anahata.uno`:** A private, internal Google Group for collaboration between the core team (Pablo and Uma). This is the "CEO's office" for discussing community feedback and strategic ideas.
+-   **`anahata.uno` Website:** A professional landing page hosted on the custom domain will serve as the central marketing hub, directing users to downloads, documentation, and sponsorship options. The source is located in the `anahata-netbeans-ai/docs/` directory.
+-   **Donations:** We will accept community support through GitHub Sponsors and crypto donations.
+
+---
