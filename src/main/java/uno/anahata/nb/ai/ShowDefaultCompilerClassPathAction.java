@@ -43,7 +43,7 @@ import static uno.anahata.nb.ai.deprecated.ModuleInfoHelper.getGeminiModuleJars;
         id = "uno.anahata.nb.ai.ShowDefaultCompilerClassPathAction"
 )
 @ActionRegistration(
-        displayName = "Show Gemini Classpath"
+        displayName = "Show Anahata Classpath"
 )
 @ActionReference(path = "Menu/Tools", position = 10)
 public final class ShowDefaultCompilerClassPathAction implements ActionListener {
@@ -56,7 +56,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        InputOutput io = IOProvider.getDefault().getIO("Gemini Compiler's Classpath", true);
+        InputOutput io = IOProvider.getDefault().getIO("Anahata's Compiler's Classpath", true);
         io.select();
         processed.clear();
         try (OutputWriter out = io.getOut()) {

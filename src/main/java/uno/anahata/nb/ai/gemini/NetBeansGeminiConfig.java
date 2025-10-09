@@ -8,24 +8,22 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import uno.anahata.gemini.GeminiAPI;
 import uno.anahata.gemini.GeminiConfig;
+import static uno.anahata.gemini.GeminiConfig.logger;
+import uno.anahata.gemini.ui.SwingGeminiConfig;
 import uno.anahata.nb.ai.AnahataTopComponent;
+import uno.anahata.nb.ai.functions.spi.Coding;
 import uno.anahata.nb.ai.functions.spi.Editor;
 import uno.anahata.nb.ai.functions.spi.Git;
 import uno.anahata.nb.ai.functions.spi.IDE;
 import uno.anahata.nb.ai.functions.spi.Maven;
 import uno.anahata.nb.ai.functions.spi.Projects;
 import uno.anahata.nb.ai.functions.spi.Output;
+import uno.anahata.nb.ai.functions.spi.TopComponents;
 import uno.anahata.nb.ai.functions.spi.Workspace;
 
-public class NetBeansGeminiConfig extends GeminiConfig {
+public class NetBeansGeminiConfig extends SwingGeminiConfig {
 
-    private final GeminiAPI api = new GeminiAPI(getWorkingFolder());
-
-    @Override
-    public GeminiAPI getApi() {
-        return api;
-    }
-
+    
     @Override
     public List<Class<?>> getAutomaticFunctionClasses() {
         List<Class<?>> ret = new ArrayList<>();
@@ -36,6 +34,8 @@ public class NetBeansGeminiConfig extends GeminiConfig {
         ret.add(Output.class);
         ret.add(Projects.class);
         ret.add(Editor.class);
+        ret.add(Coding.class);
+        ret.add(TopComponents.class);
         return ret;
     }
 

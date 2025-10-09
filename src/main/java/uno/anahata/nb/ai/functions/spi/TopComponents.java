@@ -21,7 +21,7 @@ import uno.anahata.gemini.functions.AIToolMethod;
 public class TopComponents {
 
     @AIToolMethod("gets a list of all TopComponent(s) open in the IDE")
-    public String getOpenTopComponents() throws Exception {
+    public static String getOpenTopComponents() throws Exception {
         final StringBuilder sb = new StringBuilder();
         sb.append("=== Open TopComponents by Class ===\n");
         EventQueue.invokeAndWait(() -> {
@@ -41,7 +41,7 @@ public class TopComponents {
         return sb.toString();
     }
 
-    private String getTopComponentDescription(TopComponent tc) {
+    private static String getTopComponentDescription(TopComponent tc) {
         String displayName = tc.getDisplayName();
         if (displayName == null) {
             displayName = tc.getName();

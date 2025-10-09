@@ -1,1 +1,0 @@
-STATEMENT#>System.out.println(org.netbeans.api.project.ui.OpenProjects.getDefault().getOpenProjects());
