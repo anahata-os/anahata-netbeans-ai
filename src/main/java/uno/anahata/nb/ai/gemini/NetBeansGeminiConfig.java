@@ -48,10 +48,10 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
         List<Part> parts = new ArrayList<>();
 
         // Add the NetBeans role and gemini.md directive
-        parts.add(Part.fromText("Your host environment is the Anahata NetBeans Plugin."
+        parts.add(Part.fromText("Your host environment is the Anahata AI Assistant NetBeans plugin."
                 + "\nThe main TopComponent class of the plugin is:" + AnahataTopComponent.class.getName()
                 + "\nYour netbeans and java notes are your primary persitent memory in this host environment"
-                + "and they must always be in the context of this session"
+                + "and they must always be in the context of this session."
                 + "\nThe gemini.md file located on the root of each project folder is your persistent memory for anything related to that project, "
                 + "you must read this file if you detect it or create one if it doesnt exist and keep it up to date automatically with changes in the code base, goals, todos, etc, "));
 
@@ -76,11 +76,13 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
         
         // Add the critical file modification rule
         parts.add(Part.fromText(
-            "**CRITICAL FILE MODIFICATION RULE:** Before using any tool that writes to disk (e.g., `writeFile`, `applyPatch`), you MUST perform this check:\n" +
+            "**CRITICAL FILE READ/MODIFICATION RULEs:** Before using any tool that reads or writes a stateful resource (e.g., `writeFile`, `readFile`, `proposeChange`, etc), you MUST perform this check:\n" +
             "1. Find the file's `lm=` (last modified) timestamp in the `Projects.getOverview` output below.\n" +
-            "2. Compare this `lm=` timestamp with the `lastModified` timestamp of the same file that you have in your current context (from a previous `readFile` or `writeFile` operation).\n" +
-            "3. **If the `lm=` timestamp from the overview is NEWER**, your context is stale. You MUST use `readFile` to get the latest version of the file *before* attempting to write or patch it. This is not optional; it is required to prevent overwriting user changes."
+            "2. Compare this `lm=` timestamp with the `lastModified` timestamp of the same file that you have in your current context (from a previous read/write operation such as `readFile`, `writeFile`, 'proposeChange').\n" +
+            "3. **If the `lm=` timestamp from the overview is NEWER**, your context is stale. You MUST use `readFile` to get the latest version of the file *before* attempting to write or patch it. This is not optional; it is required to prevent overwriting user changes." +
+            "4. **If the `lm=` timestamp from the overview is THE SAME** as the file in context, your context is valid. You DO NOT use `readFile` again as it is a waste of api, token and user time"
         ));
+        
         
         try {
             for (String projectId : Projects.getOpenProjects()) {
