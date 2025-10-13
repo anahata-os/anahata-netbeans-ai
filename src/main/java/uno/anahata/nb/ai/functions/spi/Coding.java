@@ -46,7 +46,7 @@ import uno.anahata.gemini.functions.pojos.FileInfo;
  */
 public class Coding {
 
-    @AIToolMethod(value = "Proposes a change to a file by showing an editable, modal diff dialog to the user. Returns a FileInfo object if the change is accepted, or null if cancelled.", behavior = ContextBehavior.STATEFUL_REPLACE)
+    @AIToolMethod(value = "Proposes a change to a file by showing an editable, modal diff dialog to the user. Writes the changes to disk and returns the output of LocalFiles.readFile if the change is accepted, or null if cancelled.", behavior = ContextBehavior.STATEFUL_REPLACE)
     public static FileInfo proposeChange(
             @AIToolParam("The absolute path of the file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
