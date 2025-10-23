@@ -1,74 +1,80 @@
 package uno.anahata.nb.ai.nodes;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.net.URL;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
+import java.util.stream.Collectors;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.ImageDecorator;
+import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
-import static uno.anahata.nb.ai.context.ContextFiles.ATTR_IN_AI_CONTEXT;
+import uno.anahata.nb.ai.context.ContextFiles;
 
-@ServiceProvider(service = ImageDecorator.class, position = 900)
-public class ContextFileImageDecorator implements ImageDecorator {
-
+@ServiceProvider(service = ImageDecorator.class, position = 100)
+public class ContextFileImageDecorator implements ImageDecorator, PropertyChangeListener {
     private static final Logger log = Logger.getLogger(ContextFileImageDecorator.class.getName());
-    private static final Image ANAHATA_ICON;
+    private static final Image ANNOTATION_ICON = ImageUtilities.loadImage("uno/anahata/nb/ai/nodes/anahata_16.png", true);
 
-    static {
-        // Standardized path, loaded from the classpath root.
-        URL iconUrl = ContextFileImageDecorator.class.getResource("/icons/anahata_16.png");
-        if (iconUrl != null) {
-            ANAHATA_ICON = new ImageIcon(iconUrl).getImage();
-            log.info("Successfully loaded Anahata icon for ImageDecorator.");
-        } else {
-            ANAHATA_ICON = null;
-            log.warning("Failed to load Anahata icon for ImageDecorator!");
-        }
+    public ContextFileImageDecorator() {
+        log.info("ENTRY ContextFileImageDecorator()");
+        ContextFiles.getInstance().addPropertyChangeListener(this);
+        log.info("EXIT ContextFileImageDecorator()");
     }
 
     @Override
-    public Image annotateIcon(Image originalIcon, int type, Set<? extends FileObject> files) {
-        if (files == null || files.size() != 1) {
-            return originalIcon;
+    public Image annotateIcon(Image icon, int type, Set<? extends FileObject> files) {
+        final String fileNames = files.stream().map(FileObject::getNameExt).collect(Collectors.joining(", "));
+        log.log(Level.INFO, "ENTRY annotateIcon(icon={0}, type={1}, files=[{2}])", new Object[]{icon, type, fileNames});
+        
+        if (files.size() != 1) {
+            log.log(Level.INFO, "EXIT annotateIcon: Returning original icon because file count is not 1.");
+            return icon;
         }
-        FileObject fileObject = files.iterator().next();
-        log.log(Level.INFO, "annotateIcon called for file: {0}, type: {1}", new Object[]{fileObject.getNameExt(), type});
+        FileObject fo = files.iterator().next();
+        File file = FileUtil.toFile(fo);
 
-        if (ANAHATA_ICON == null) {
-            return originalIcon;
+        if (file != null && ContextFiles.getInstance().contains(file)) {
+            log.log(Level.INFO, "Decorating icon for: {0}", fo.getNameExt());
+            Image merged = ImageUtilities.mergeImages(icon, ANNOTATION_ICON, 8, 8);
+            log.log(Level.INFO, "EXIT annotateIcon: Returning decorated icon for {0}", file.getName());
+            return merged;
         }
+        log.log(Level.INFO, "EXIT annotateIcon: Returning original icon for {0}", file != null ? file.getName() : "null file");
+        return icon;
+    }
 
-        if (Boolean.TRUE.equals(fileObject.getAttribute(ATTR_IN_AI_CONTEXT))) {
-            log.log(Level.INFO, "File is in context (via attribute), decorating icon for: {0}", fileObject.getName());
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        log.log(Level.INFO, "ENTRY propertyChange(evt={0})", evt);
+        if (ContextFiles.CONTEXT_FILES_PROPERTY.equals(evt.getPropertyName())) {
+            log.info("Received context files change event.");
 
-            int width = originalIcon.getWidth(null);
-            int height = originalIcon.getHeight(null);
+            Set<String> oldFiles = (Set<String>) evt.getOldValue();
+            Set<String> newFiles = (Set<String>) evt.getNewValue();
 
-            if (width <= 0 || height <= 0) {
-                return originalIcon;
+            Set<String> changedPaths = new HashSet<>();
+            changedPaths.addAll(oldFiles);
+            changedPaths.addAll(newFiles);
+
+            for (String path : changedPaths) {
+                FileObject fo = FileUtil.toFileObject(new File(path));
+                if (fo != null) {
+                    try {
+                        fo.setAttribute("inAiContext", newFiles.contains(path));
+                        log.log(Level.INFO, "Fired attribute change for: {0}", path);
+                    } catch (IOException e) {
+                        log.log(Level.SEVERE, "Could not fire attribute change for: {0}", e);
+                    }
+                }
             }
-
-            BufferedImage mergedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g = mergedImage.createGraphics();
-
-            g.drawImage(originalIcon, 0, 0, null);
-
-            int badgeWidth = ANAHATA_ICON.getWidth(null);
-            int badgeHeight = ANAHATA_ICON.getHeight(null);
-            int x = width - badgeWidth;
-            int y = height - badgeHeight;
-
-            g.drawImage(ANAHATA_ICON, x, y, null);
-            g.dispose();
-
-            return mergedImage;
         }
-
-        return originalIcon;
+        log.log(Level.INFO, "EXIT propertyChange(evt={0})", evt);
     }
 }

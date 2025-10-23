@@ -47,12 +47,12 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
     public List<Part> getHostSpecificSystemInstructionParts() {
         List<Part> parts = new ArrayList<>();
 
-        // Add the NetBeans role and gemini.md directive
+        // Add the NetBeans role and anahata.md directive
         parts.add(Part.fromText("Your host environment is the Anahata AI Assistant NetBeans plugin."
                 + "\nThe main TopComponent class of the plugin is:" + AnahataTopComponent.class.getName()
                 + "\nYour netbeans and java notes are your primary persitent memory in this host environment"
                 + "and they must always be in the context of this session."
-                + "\nThe gemini.md file located on the root of each project folder is your persistent memory for anything related to that project, "
+                + "\nThe anahata.md file located on the root of each project folder is your persistent memory for anything related to that project, "
                 + "you must read this file if you detect it or create one if it doesnt exist and keep it up to date automatically with changes in the code base, goals, todos, etc, "));
 
         // Add the live IDE alerts

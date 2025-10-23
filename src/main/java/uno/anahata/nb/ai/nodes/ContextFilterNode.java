@@ -1,84 +1,97 @@
 package uno.anahata.nb.ai.nodes;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.net.URL;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
+import org.openide.filesystems.FileObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
+import uno.anahata.nb.ai.context.ContextFiles;
 
-public class ContextFilterNode extends FilterNode {
-    
+public class ContextFilterNode extends FilterNode implements PropertyChangeListener {
     private static final Logger log = Logger.getLogger(ContextFilterNode.class.getName());
+    private static final Image ANNOTATION_ICON = ImageUtilities.loadImage("uno/anahata/nb/ai/nodes/anahata_16.png", true);
 
-    private static final Image ANAHATA_ICON;
-    private static final String ICON_PATH = "icons/anahata_16.png"; // Standardized path
-    private static final URL ICON_URL = ContextFilterNode.class.getResource("/" + ICON_PATH);
-
-    static {
-        log.info("ContextFilterNode static block initializing...");
-        if (ICON_URL != null) {
-            ANAHATA_ICON = new ImageIcon(ICON_URL).getImage();
-            log.info("Successfully loaded icon for ContextFilterNode from /icons/anahata_16.png");
-        } else {
-            ANAHATA_ICON = ImageUtilities.loadImage("org/openide/nodes/defaultNode.gif");
-            log.warning("Could not load icon for ContextFilterNode, fallback used.");
-        }
-    }
+    private final FileObject fileObject;
 
     public ContextFilterNode(Node original) {
-        super(original);
-        log.log(Level.INFO, "ContextFilterNode created for: {0}", original.getName());
+        super(original, new FilterNode.Children(original));
+        log.log(Level.INFO, "ENTRY ContextFilterNode(original={0})", original.getName());
+        this.fileObject = original.getLookup().lookup(FileObject.class);
+        if (this.fileObject != null) {
+            ContextFiles.getInstance().addPropertyChangeListener(this);
+            log.log(Level.INFO, "Attached listener to node: {0}", fileObject.getNameExt());
+        } else {
+            log.warning("ContextFilterNode created for a node without a FileObject in its lookup.");
+        }
+        log.log(Level.INFO, "EXIT ContextFilterNode(original={0})", original.getName());
     }
 
-    @Override
-    public String getHtmlDisplayName() {
-        log.log(Level.INFO, "getHtmlDisplayName called for node: {0}", getOriginal().getName());
-        String originalName = super.getDisplayName();
-        if (ICON_URL != null) {
-            return "<html><img src=\"nbresloc:/" + ICON_PATH + "\">&nbsp;" + originalName;
+    private boolean isFileInContext() {
+        log.log(Level.INFO, "ENTRY isFileInContext()");
+        if (fileObject == null) {
+            log.log(Level.INFO, "EXIT isFileInContext(): false (fileObject is null)");
+            return false;
         }
-        return "<html>" + originalName + " <font color='!controlShadow'>[c]</font>";
+        File file = new File(fileObject.getPath());
+        boolean result = ContextFiles.getInstance().contains(file);
+        log.log(Level.INFO, "EXIT isFileInContext(): {0} for file {1}", new Object[]{result, file.getName()});
+        return result;
     }
 
     @Override
     public Image getIcon(int type) {
-        log.log(Level.INFO, "getIcon called for node: {0} with type: {1}", new Object[]{getOriginal().getName(), type});
+        log.log(Level.INFO, "ENTRY getIcon(type={0}) for {1}", new Object[]{type, fileObject != null ? fileObject.getNameExt() : "unknown"});
         Image originalIcon = super.getIcon(type);
-        
-        if (ANAHATA_ICON == null) {
-            return originalIcon;
+        if (isFileInContext()) {
+            log.log(Level.INFO, "Decorating icon for: {0}", fileObject.getNameExt());
+            Image merged = ImageUtilities.mergeImages(originalIcon, ANNOTATION_ICON, 8, 8);
+            log.log(Level.INFO, "EXIT getIcon: Returning decorated icon.");
+            return merged;
         }
-
-        int width = originalIcon.getWidth(null);
-        int height = originalIcon.getHeight(null);
-
-        if (width <= 0 || height <= 0) {
-            return originalIcon;
+        log.log(Level.INFO, "EXIT getIcon: Returning original icon.");
+        return originalIcon;
+    }
+    
+    @Override
+    public Image getOpenedIcon(int type) {
+        log.log(Level.INFO, "ENTRY getOpenedIcon(type={0}) for {1}", new Object[]{type, fileObject != null ? fileObject.getNameExt() : "unknown"});
+        Image originalIcon = super.getOpenedIcon(type);
+        if (isFileInContext()) {
+            log.log(Level.INFO, "Decorating opened icon for: {0}", fileObject.getNameExt());
+            Image merged = ImageUtilities.mergeImages(originalIcon, ANNOTATION_ICON, 8, 8);
+            log.log(Level.INFO, "EXIT getOpenedIcon: Returning decorated icon.");
+            return merged;
         }
-
-        BufferedImage mergedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = mergedImage.createGraphics();
-        g.drawImage(originalIcon, 0, 0, null);
-
-        int badgeWidth = ANAHATA_ICON.getWidth(null);
-        int badgeHeight = ANAHATA_ICON.getHeight(null);
-        int x = width - badgeWidth;
-        int y = height - badgeHeight;
-
-        g.drawImage(ANAHATA_ICON, x, y, null);
-        g.dispose();
-
-        return mergedImage;
+        log.log(Level.INFO, "EXIT getOpenedIcon: Returning original icon.");
+        return originalIcon;
     }
 
     @Override
-    public String getShortDescription() {
-        log.log(Level.INFO, "getShortDescription called for node: {0}", getOriginal().getName());
-        return super.getShortDescription() + " (In AI Context)";
+    public void propertyChange(PropertyChangeEvent evt) {
+        log.log(Level.INFO, "ENTRY propertyChange(evt={0}) for {1}", new Object[]{evt, fileObject != null ? fileObject.getNameExt() : "unknown"});
+        if (ContextFiles.CONTEXT_FILES_PROPERTY.equals(evt.getPropertyName()) && fileObject != null) {
+            log.log(Level.INFO, "Received context files change event for node: {0}", fileObject.getNameExt());
+            fireIconChange();
+            fireOpenedIconChange();
+            fireDisplayNameChange(null, getDisplayName());
+        }
+        log.log(Level.INFO, "EXIT propertyChange(evt={0})", evt);
+    }
+
+    @Override
+    public void destroy() throws IOException {
+        log.log(Level.INFO, "ENTRY destroy() for {0}", fileObject != null ? fileObject.getNameExt() : "unknown");
+        if (fileObject != null) {
+            ContextFiles.getInstance().removePropertyChangeListener(this);
+            log.log(Level.INFO, "Detached listener from node: {0}", fileObject.getNameExt());
+        }
+        super.destroy();
+        log.log(Level.INFO, "EXIT destroy()");
     }
 }

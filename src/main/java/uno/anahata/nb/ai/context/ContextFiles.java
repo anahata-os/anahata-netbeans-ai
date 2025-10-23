@@ -2,15 +2,16 @@ package uno.anahata.nb.ai.context;
 
 import com.google.genai.types.FunctionResponse;
 import com.google.genai.types.Part;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import uno.anahata.gemini.ChatMessage;
 import uno.anahata.gemini.ContextListener;
 import uno.anahata.gemini.GeminiChat;
@@ -22,44 +23,60 @@ public class ContextFiles implements ContextListener {
     private static final Logger log = Logger.getLogger(ContextFiles.class.getName());
     private static final ContextFiles INSTANCE = new ContextFiles();
 
-    /**
-     * The key for the FileObject attribute used to mark a file as being in the
-     * AI context. The UI decorators listen for changes to this attribute.
-     */
+    public static final String CONTEXT_FILES_PROPERTY = "contextFiles";
     public static final String ATTR_IN_AI_CONTEXT = "inAiContext"; // NOI18N
 
     private final Set<String> contextFiles = new HashSet<>();
     private FunctionManager functionManager;
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     private ContextFiles() {
+        log.info("ENTRY ContextFiles()");
+        log.info("EXIT ContextFiles()");
     }
 
     public static ContextFiles getInstance() {
+        // Static, no entry/exit needed as it's trivial
         return INSTANCE;
     }
 
-    public void setFunctionManager(FunctionManager functionManager) {
-        this.functionManager = functionManager;
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        log.log(Level.INFO, "ENTRY addPropertyChangeListener(listener={0})", listener);
+        pcs.addPropertyChangeListener(listener);
+        log.log(Level.INFO, "EXIT addPropertyChangeListener()");
     }
 
-    /**
-     * This method is now for internal state tracking only. Decorators should
-     * NOT use this, they should check the FileObject attribute directly.
-     */
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        log.log(Level.INFO, "ENTRY removePropertyChangeListener(listener={0})", listener);
+        pcs.removePropertyChangeListener(listener);
+        log.log(Level.INFO, "EXIT removePropertyChangeListener()");
+    }
+
+    public void setFunctionManager(FunctionManager functionManager) {
+        log.log(Level.INFO, "ENTRY setFunctionManager(functionManager={0})", functionManager);
+        this.functionManager = functionManager;
+        log.log(Level.INFO, "EXIT setFunctionManager()");
+    }
+
     public boolean contains(File file) {
+        log.log(Level.INFO, "ENTRY contains(file={0})", file.getName());
         try {
             String canonicalPath = file.getCanonicalPath();
-            return contextFiles.contains(canonicalPath);
+            boolean result = contextFiles.contains(canonicalPath);
+            log.log(Level.INFO, "EXIT contains(): returning {0} for canonical path {1}", new Object[]{result, canonicalPath});
+            return result;
         } catch (IOException e) {
             log.log(Level.WARNING, "Could not get canonical path for " + file, e);
-            return contextFiles.contains(file.getAbsolutePath());
+            boolean result = contextFiles.contains(file.getAbsolutePath());
+            log.log(Level.INFO, "EXIT contains(): returning {0} for absolute path {1}", new Object[]{result, file.getAbsolutePath()});
+            return result;
         }
     }
 
     private void rescanContext(GeminiChat source) {
-        log.info("Rescanning context for files...");
+        log.info("ENTRY rescanContext()");
         Set<String> oldFiles = new HashSet<>(contextFiles);
-        contextFiles.clear();
+        Set<String> newFiles = new HashSet<>();
 
         if (functionManager != null) {
             for (ChatMessage message : source.getContext()) {
@@ -72,10 +89,10 @@ public class ContextFiles implements ContextListener {
                                 String resourcePath = resourceIdOpt.get();
                                 try {
                                     String canonicalPath = new File(resourcePath).getCanonicalPath();
-                                    contextFiles.add(canonicalPath);
+                                    newFiles.add(canonicalPath);
                                 } catch (IOException e) {
                                     log.log(Level.WARNING, "Could not get canonical path for " + resourcePath, e);
-                                    contextFiles.add(resourcePath);
+                                    newFiles.add(resourcePath);
                                 }
                             }
                         }
@@ -86,62 +103,41 @@ public class ContextFiles implements ContextListener {
             log.warning("FunctionManager is null, cannot scan for context files.");
         }
 
-        if (!oldFiles.equals(contextFiles)) {
-            log.info("Context files changed. Old: " + oldFiles.size() + ", New: " + contextFiles.size());
-
-            Set<String> addedFiles = new HashSet<>(contextFiles);
-            addedFiles.removeAll(oldFiles);
-
-            Set<String> removedFiles = new HashSet<>(oldFiles);
-            removedFiles.removeAll(contextFiles);
-
-            // Set attribute for newly added files to trigger UI update
-            for (String path : addedFiles) {
-                setFileObjectAttribute(path, true);
+        if (!oldFiles.equals(newFiles)) {
+            log.log(Level.INFO, "Context files changed. Old: {0}, New: {1}. Firing property change.", new Object[]{oldFiles.size(), newFiles.size()});
+            synchronized (this) {
+                contextFiles.clear();
+                contextFiles.addAll(newFiles);
             }
-
-            // Clear attribute for removed files to trigger UI update
-            for (String path : removedFiles) {
-                setFileObjectAttribute(path, false);
-            }
+            pcs.firePropertyChange(CONTEXT_FILES_PROPERTY,
+                                   Collections.unmodifiableSet(oldFiles),
+                                   Collections.unmodifiableSet(newFiles));
         } else {
             log.info("No change in context files.");
         }
-    }
-
-    private void setFileObjectAttribute(String path, boolean isInContext) {
-        File file = new File(path);
-        FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(file));
-        if (fo == null) {
-            log.log(Level.WARNING, "Could not find FileObject for path: {0}", path);
-            return;
-        }
-        try {
-            log.log(Level.INFO, "Setting {0} attribute to {1} for: {2}", new Object[]{ATTR_IN_AI_CONTEXT, isInContext, path});
-            // This is the official way to trigger a UI refresh for decorators.
-            // Set to Boolean.TRUE or null (to remove it).
-            fo.setAttribute(ATTR_IN_AI_CONTEXT, isInContext ? Boolean.TRUE : null);
-        } catch (IOException e) {
-            log.log(Level.SEVERE, "Failed to set attribute on FileObject: " + path, e);
-        }
+        log.info("EXIT rescanContext()");
     }
 
     @Override
     public void contextChanged(GeminiChat source) {
-        log.info("Context changed event received.");
+        log.info("ENTRY contextChanged()");
         rescanContext(source);
+        log.info("EXIT contextChanged()");
     }
 
     @Override
     public void contextCleared(GeminiChat source) {
-        log.info("Context cleared event received.");
+        log.info("ENTRY contextCleared()");
         Set<String> oldFiles = new HashSet<>(contextFiles);
-        contextFiles.clear();
-        if (!oldFiles.isEmpty()) {
-            log.info("Context files cleared. Triggering UI refresh for " + oldFiles.size() + " files.");
-            for (String path : oldFiles) {
-                setFileObjectAttribute(path, false);
-            }
+        synchronized (this) {
+            contextFiles.clear();
         }
+        if (!oldFiles.isEmpty()) {
+            log.log(Level.INFO, "Context files cleared. Triggering UI refresh for {0} files.", oldFiles.size());
+            pcs.firePropertyChange(CONTEXT_FILES_PROPERTY,
+                                   Collections.unmodifiableSet(oldFiles),
+                                   Collections.emptySet());
+        }
+        log.info("EXIT contextCleared()");
     }
 }
