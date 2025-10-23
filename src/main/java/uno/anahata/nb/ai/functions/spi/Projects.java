@@ -1,26 +1,26 @@
 package uno.anahata.nb.ai.functions.spi;
 
-import com.google.gson.Gson;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import javax.swing.text.JTextComponent;
-import org.netbeans.api.editor.EditorRegistry;
 import org.netbeans.api.java.project.JavaProjectConstants;
-import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
-import org.netbeans.modules.editor.NbEditorUtilities;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
-import org.openide.loaders.DataObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
@@ -41,8 +41,66 @@ public class Projects {
         return projectIds;
     }
 
+    @AIToolMethod("Opens a project in the IDE, waiting for the asynchronous open operation to complete.")
+    public static String openProject(@AIToolParam("The project id (folder name) to open.") String projectId) throws Exception {
+        // Assuming projects are in the default NetBeansProjects folder in the user's home directory
+        String projectsFolderPath = System.getProperty("user.home") + File.separator + "NetBeansProjects";
+        File projectDir = new File(projectsFolderPath, projectId);
+
+        if (!projectDir.exists() || !projectDir.isDirectory()) {
+            return "Error: Project directory not found at " + projectDir.getAbsolutePath();
+        }
+
+        FileObject projectFob = FileUtil.toFileObject(FileUtil.normalizeFile(projectDir));
+        if (projectFob == null) {
+            return "Error: Could not find project directory: " + projectDir.getAbsolutePath();
+        }
+
+        // Check if already open
+        for (Project p : OpenProjects.getDefault().getOpenProjects()) {
+            if (p.getProjectDirectory().equals(projectFob)) {
+                return "Success: Project '" + projectId + "' is already open.";
+            }
+        }
+
+        Project projectToOpen = ProjectManager.getDefault().findProject(projectFob);
+        if (projectToOpen == null) {
+            return "Error: Could not find a project in the specified directory: " + projectDir.getAbsolutePath();
+        }
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (OpenProjects.PROPERTY_OPEN_PROJECTS.equals(evt.getPropertyName())) {
+                    for (Project p : OpenProjects.getDefault().getOpenProjects()) {
+                        if (p.equals(projectToOpen)) {
+                            latch.countDown();
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+
+        OpenProjects.getDefault().addPropertyChangeListener(listener);
+
+        try {
+            OpenProjects.getDefault().open(new Project[]{projectToOpen}, false, true);
+
+            // Wait for a maximum of 30 seconds for the project to open
+            if (latch.await(30, TimeUnit.SECONDS)) {
+                return "Success: Project '" + projectId + "' opened successfully.";
+            } else {
+                return "Error: Timed out after 30 seconds waiting for project '" + projectId + "' to open.";
+            }
+        } finally {
+            OpenProjects.getDefault().removePropertyChangeListener(listener);
+        }
+    }
+
     @AIToolMethod("Gets an overview of a project: name, display name, listing of the project's root directory and directory tree of all source java files")
-    public static String getOverview(@AIToolParam("The project id (not the 'display name'")String projectId) {
+    public static String getOverview(@AIToolParam("The project id (not the 'display name'") String projectId) {
         Project target = null;
         for (Project p : OpenProjects.getDefault().getOpenProjects()) {
             if (p.getProjectDirectory().getNameExt().equals(projectId)) {
@@ -59,7 +117,7 @@ public class Projects {
         FileObject root = target.getProjectDirectory();
 
         // --- Project header ---
-        sb.append("=== Project Info ===\n");        
+        sb.append("=== Project Info ===\n");
         sb.append("Id: ").append(root.getNameExt()).append("\n");
         sb.append("Display Name: ").append(info.getDisplayName()).append("\n");
         sb.append("Project Directory: ").append(root.getPath()).append("\n");
@@ -70,12 +128,12 @@ public class Projects {
         } else {
             sb.append("Actions: (none)\n");
         }
-        
+
         sb.append("\nLegend: '+' folder  '-' file, 's=' size (folder sizes are recursive) 'lm=' last modified on disk\n");
 
         // --- Immediate children of project root ---
         sb.append("\n=== Root folder ===\n");
-        
+
         for (FileObject child : root.getChildren()) {
             sb.append(toString(child));
         }
@@ -83,7 +141,7 @@ public class Projects {
         // --- Source files (tree structure with folder sizes) ---
         sb.append("\n=== Java sources ===\n");
         Sources sources = ProjectUtils.getSources(target);
-        
+
         SourceGroup[] groups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
 
         for (SourceGroup group : groups) {
@@ -94,21 +152,21 @@ public class Projects {
 
         return sb.toString();
     }
-    
+
     private static String toString(FileObject fo) {
         StringBuilder sb = new StringBuilder();
         //String type = fo.isFolder() ? "folder" : "file";
-            String typeShort = fo.isFolder() ? "+" : "-";
-            boolean folder = fo.isFolder();
-            long size = folder ? folderSize(fo) : fo.getSize();
-            long lastModifiedOnDisk = fo.lastModified().getTime();
-            sb.append(typeShort);
-            sb.append(fo.getNameExt())
-                    .append(" [")
-                    .append("s=").append(size)
-                    .append(", lm=").append(lastModifiedOnDisk)
-                    .append("]\n");
-            return sb.toString();
+        String typeShort = fo.isFolder() ? "+" : "-";
+        boolean folder = fo.isFolder();
+        long size = folder ? folderSize(fo) : fo.getSize();
+        long lastModifiedOnDisk = fo.lastModified().getTime();
+        sb.append(typeShort);
+        sb.append(fo.getNameExt())
+                .append(" [")
+                .append("s=").append(size)
+                .append(", lm=").append(lastModifiedOnDisk)
+                .append("]\n");
+        return sb.toString();
     }
 
     @AIToolMethod("Runs a standard high-level action (like 'run' or 'build') on a given open project.")
@@ -148,8 +206,12 @@ public class Projects {
         // Get children and sort them so folders come first, then files, alphabetically
         FileObject[] children = folder.getChildren();
         Arrays.sort(children, (f1, f2) -> {
-            if (f1.isFolder() && !f2.isFolder()) return -1;
-            if (!f1.isFolder() && f2.isFolder()) return 1;
+            if (f1.isFolder() && !f2.isFolder()) {
+                return -1;
+            }
+            if (!f1.isFolder() && f2.isFolder()) {
+                return 1;
+            }
             return f1.getNameExt().compareTo(f2.getNameExt());
         });
 
@@ -191,20 +253,20 @@ public class Projects {
         }
         throw new IllegalArgumentException("No open project with id: " + id + " all open projects: " + sb.toString());
     }
-    
+
     /**
-     * Lists preferences of a project for all known public modules that store project preferences.
+     * Lists preferences of a project for all known public modules that store
+     * project preferences.
      */
     public static String listAllKnownPreferences(String projectId) {
         Project project = findProject(projectId);
         StringBuilder sb = new StringBuilder();
 
         // List of known public context classes for core modules
-        Class<?>[] contextClasses = new Class<?>[] {
-            
+        Class<?>[] contextClasses = new Class<?>[]{
             org.netbeans.api.project.ProjectUtils.class, // Project UI API
-            //org.netbeans.modules.java.project.ui.JavaProject.class, // Java project
-            //org.netbeans.modules.maven.api.NbMavenProject.class // Maven project API
+        //org.netbeans.modules.java.project.ui.JavaProject.class, // Java project
+        //org.netbeans.modules.maven.api.NbMavenProject.class // Maven project API
         };
 
         for (Class<?> ctx : contextClasses) {
@@ -217,7 +279,7 @@ public class Projects {
                 } else {
                     for (String key : keys) {
                         sb.append("  ").append(key)
-                          .append(" = ").append(prefs.get(key, "<no value>")).append("\n");
+                                .append(" = ").append(prefs.get(key, "<no value>")).append("\n");
                     }
                 }
             } catch (BackingStoreException e) {
