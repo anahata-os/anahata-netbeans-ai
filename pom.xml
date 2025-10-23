@@ -44,14 +44,10 @@
         </dependency>
         
         <!--12 Openide core deps-->
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-windows</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-nodes</artifactId>
+            <artifactId>org-openide-actions</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -61,22 +57,17 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util</artifactId>
+            <artifactId>org-openide-dialogs</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
+            <artifactId>org-openide-execution</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-ui</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-modules</artifactId>
+            <artifactId>org-openide-explorer</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -91,7 +82,27 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-io</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-loaders</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-options</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -101,24 +112,34 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-io</artifactId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-enumerations</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-dialogs</artifactId>
+            <artifactId>org-openide-util-ui</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-explorer</artifactId>
+            <artifactId>org-openide-windows</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-execution</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
+        
+        
         
         <!--NetBeans IDE deps-->
         
@@ -175,19 +196,6 @@
             <artifactId>org-netbeans-api-lsp</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-libs-asm</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-libs-git</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        -->
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -259,6 +267,22 @@
             <artifactId>org-netbeans-api-xml-ui</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        
+        <!--NetBeans Libs-->
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-libs-asm</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <!--
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-libs-git</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        -->
         
         <!--Module IDE deps-->
         
