@@ -40,6 +40,7 @@ import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.gemini.functions.ContextBehavior;
 import uno.anahata.gemini.functions.pojos.FileInfo;
+import uno.anahata.gemini.functions.pojos.ProposeChangeResult;
 
 /**
  * Tools related to coding tasks and modifying source files.
@@ -47,7 +48,7 @@ import uno.anahata.gemini.functions.pojos.FileInfo;
 public class Coding {
 
     @AIToolMethod(value = "Proposes a change to a file by showing an editable, modal diff dialog to the user. Writes the changes to disk and returns the output of LocalFiles.readFile if the change is accepted, or null if cancelled.", behavior = ContextBehavior.STATEFUL_REPLACE)
-    public static FileInfo proposeChange(
+    public static ProposeChangeResult proposeChange(
             @AIToolParam("The absolute path of the file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
             @AIToolParam("A clear and concise explanation of the proposed change.") String explanation) throws Exception {
@@ -57,9 +58,8 @@ public class Coding {
             throw new IOException("The source file does not exist: " + filePath);
         }
 
-        final AtomicReference<FileInfo> resultHolder = new AtomicReference<>();
+        final AtomicReference<ProposeChangeResult> resultHolder = new AtomicReference<>();
         final CountDownLatch dialogLatch = new CountDownLatch(1);
-        final AtomicReference<String> userComment = new AtomicReference<>("");
 
         SwingUtilities.invokeLater(() -> {
             try {
@@ -119,33 +119,30 @@ public class Coding {
                                 updatedFile.lastModified(),
                                 updatedFile.length()
                             );
-                            resultHolder.set(fileInfo);
-                            userComment.set(commentTextArea.getText());
+                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ACCEPTED, "File updated successfully.", fileInfo));
                             
                         } catch (IOException ex) {
-                            // In a real app, show an error dialog
-                            ex.printStackTrace();
-                            resultHolder.set(null); 
+                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ERROR, "Error saving file: " + ex.getMessage(), null));
                         }
                         dialog.dispose();
                     });
                     
                     cancelButton.addActionListener(e -> {
-                        resultHolder.set(null);
-                        userComment.set(commentTextArea.getText());
+                        resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, "User cancelled the operation.", null));
                         dialog.dispose();
                     });
                     
                     dialog.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosed(WindowEvent e) {
+                            // Ensure a result is set if the dialog is closed via the 'X' button
+                            resultHolder.compareAndSet(null, new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, "User closed the dialog.", null));
                             dialogLatch.countDown();
                         }
                     });
 
                     dialog.pack();
                     
-                    // Calculate 90% of the screen size
                     GraphicsConfiguration gc = mainWindow.getGraphicsConfiguration();
                     Rectangle screenBounds = gc.getBounds();
                     int dialogWidth = (int) (screenBounds.width * 0.9);
@@ -157,16 +154,12 @@ public class Coding {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
-                resultHolder.set(null);
+                resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ERROR, "An unexpected error occurred: " + e.getMessage(), null));
                 dialogLatch.countDown();
             }
         });
 
         dialogLatch.await();
-        
-        // Here you could potentially use the userComment, e.g., by returning a more complex object.
-        // For now, we just return the FileInfo or null.
         
         return resultHolder.get();
     }
