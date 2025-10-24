@@ -69,15 +69,12 @@ public class Projects {
         }
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final PropertyChangeListener listener = new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (OpenProjects.PROPERTY_OPEN_PROJECTS.equals(evt.getPropertyName())) {
-                    for (Project p : OpenProjects.getDefault().getOpenProjects()) {
-                        if (p.equals(projectToOpen)) {
-                            latch.countDown();
-                            break;
-                        }
+        final PropertyChangeListener listener = (PropertyChangeEvent evt) -> {
+            if (OpenProjects.PROPERTY_OPEN_PROJECTS.equals(evt.getPropertyName())) {
+                for (Project p : OpenProjects.getDefault().getOpenProjects()) {
+                    if (p.equals(projectToOpen)) {
+                        latch.countDown();
+                        break;
                     }
                 }
             }

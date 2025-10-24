@@ -13,8 +13,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uno.anahata.gemini.ChatMessage;
-import uno.anahata.gemini.ContextListener;
 import uno.anahata.gemini.GeminiChat;
+import uno.anahata.gemini.context.ContextListener;
 import uno.anahata.gemini.functions.FunctionManager;
 import uno.anahata.gemini.internal.FunctionUtils;
 

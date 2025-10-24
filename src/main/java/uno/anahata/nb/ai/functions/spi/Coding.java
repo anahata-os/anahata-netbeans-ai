@@ -47,7 +47,11 @@ import uno.anahata.gemini.functions.pojos.ProposeChangeResult;
  */
 public class Coding {
 
-    @AIToolMethod(value = "Proposes a change to a file by showing an editable, modal diff dialog to the user. Writes the changes to disk and returns the output of LocalFiles.readFile if the change is accepted, or null if cancelled.", behavior = ContextBehavior.STATEFUL_REPLACE)
+    @AIToolMethod(value = "Proposes a change to a file by showing the netbeans modal diff dialog to the user."
+            + "Returns a ProposeChangeResult object with:"
+            + "\n-status : the users approval status, "
+            + "\n-message : user response to the proposal and "
+            + "\n-fileInfo : the resulting FileInfo object given by LocalFiles.writeFile if the change is approved, or null if rejected.", behavior = ContextBehavior.STATEFUL_REPLACE)
     public static ProposeChangeResult proposeChange(
             @AIToolParam("The absolute path of the file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
@@ -119,7 +123,8 @@ public class Coding {
                                 updatedFile.lastModified(),
                                 updatedFile.length()
                             );
-                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ACCEPTED, "File updated successfully.", fileInfo));
+                            String userComment = commentTextArea.getText();
+                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ACCEPTED, userComment.isEmpty() ? "File updated successfully." : userComment, fileInfo));
                             
                         } catch (IOException ex) {
                             resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ERROR, "Error saving file: " + ex.getMessage(), null));
@@ -128,15 +133,17 @@ public class Coding {
                     });
                     
                     cancelButton.addActionListener(e -> {
-                        resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, "User cancelled the operation.", null));
+                        String userComment = commentTextArea.getText();
+                        resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment.isEmpty() ? "User cancelled the operation." : userComment, null));
                         dialog.dispose();
                     });
                     
                     dialog.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosed(WindowEvent e) {
+                            String userComment = commentTextArea.getText();
                             // Ensure a result is set if the dialog is closed via the 'X' button
-                            resultHolder.compareAndSet(null, new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, "User closed the dialog.", null));
+                            resultHolder.compareAndSet(null, new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment.isEmpty() ? "User closed the dialog." : userComment, null));
                             dialogLatch.countDown();
                         }
                     });
