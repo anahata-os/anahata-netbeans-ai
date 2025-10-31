@@ -136,9 +136,7 @@ public class Projects {
         
         for (SourceGroup group : allSourceGroups) {
             FileObject srcRoot = group.getRootFolder();
-            if (rootFolderNames.contains(srcRoot.getNameExt())) {
-                 sourceFolders.add(buildSourceFolderTree(srcRoot, group.getDisplayName(), statusMap));
-            }
+            sourceFolders.add(buildSourceFolderTree(srcRoot, group.getDisplayName(), statusMap));
         }
 
         return new ProjectOverview(
