@@ -46,3 +46,9 @@ This project is a **host application**. It includes `gemini-java-client` as a Ma
     -   [ ] Explore non-blocking function calls for long-running tasks.
 -   **Bug Fixes**:
     -   [ ] Investigate and fix screenshot functionality on Linux environments.
+
+## TODO - 2025-10-31
+
+-   **`proposeChange` Dialog Context:** The modal diff dialog for `Coding.proposeChange` blocks the main UI, preventing the user from seeing the conversational context (my rationale) for the change. The `explanation` parameter should be displayed prominently within the dialog itself.
+-   **EDT Responsiveness:** Investigate and fix performance issues where the Swing Event Dispatch Thread (EDT) becomes unresponsive for long periods during model responses. This likely involves moving more processing off the EDT.
+-   **In-Context File Decoration:** The file decoration in the NetBeans project tree for files that are "in-context" is not working. This needs to be diagnosed and fixed to provide better visual feedback.
