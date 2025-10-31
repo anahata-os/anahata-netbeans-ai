@@ -31,7 +31,7 @@ public class ProjectOverviewInstructionsProvider extends SystemInstructionProvid
             StringBuilder sb = new StringBuilder();
             sb.append("#Output of Project.getOverview2(**").append(projectId).append("**)\n");
             try {
-                sb.append(GsonUtils.prettyPrint(Projects.getOverview2(projectId)));
+                sb.append(GsonUtils.prettyPrint(Projects.getOverview(projectId)));
             } catch (Exception e) {
                 ExceptionUtils.getStackTrace(e);
             }
