@@ -1,24 +1,23 @@
 package uno.anahata.nb.ai.functions.spi;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -30,14 +29,15 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import uno.anahata.gemini.GeminiChat;
 import uno.anahata.gemini.context.ContextManager;
+import uno.anahata.gemini.context.ResourceStatus;
 import uno.anahata.gemini.context.StatefulResourceStatus;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.nb.ai.project.overview.ProjectFile;
+import uno.anahata.nb.ai.project.overview.ProjectOverview;
+import uno.anahata.nb.ai.project.overview.SourceFolder;
 
-/**
- *
- * @author pablo
- */
+@Slf4j
 public class Projects {
 
     @AIToolMethod("Returns a List of project IDs (folder names) for all currently open projects.")
@@ -52,7 +52,6 @@ public class Projects {
 
     @AIToolMethod("Opens a project in the IDE, waiting for the asynchronous open operation to complete.")
     public static String openProject(@AIToolParam("The project id (folder name) to open.") String projectId) throws Exception {
-        // Assuming projects are in the default NetBeansProjects folder in the user's home directory
         String projectsFolderPath = System.getProperty("user.home") + File.separator + "NetBeansProjects";
         File projectDir = new File(projectsFolderPath, projectId);
 
@@ -65,7 +64,6 @@ public class Projects {
             return "Error: Could not find project directory: " + projectDir.getAbsolutePath();
         }
 
-        // Check if already open
         for (Project p : OpenProjects.getDefault().getOpenProjects()) {
             if (p.getProjectDirectory().equals(projectFob)) {
                 return "Success: Project '" + projectId + "' is already open.";
@@ -93,8 +91,6 @@ public class Projects {
 
         try {
             OpenProjects.getDefault().open(new Project[]{projectToOpen}, false, true);
-
-            // Wait for a maximum of 30 seconds for the project to open
             if (latch.await(30, TimeUnit.SECONDS)) {
                 return "Success: Project '" + projectId + "' opened successfully.";
             } else {
@@ -105,182 +101,105 @@ public class Projects {
         }
     }
 
-    @AIToolMethod("Gets an overview of a project: name, display name, listing of the project's root directory and directory tree of all source java files")
-    public static String getOverview(@AIToolParam("The project id (not the 'display name'") String projectId) {
-        Project target = null;
-        for (Project p : OpenProjects.getDefault().getOpenProjects()) {
-            if (p.getProjectDirectory().getNameExt().equals(projectId)) {
-                target = p;
-                break;
-            }
-        }
-        if (target == null) {
-            return "Project not found: " + projectId;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        ProjectInformation info = ProjectUtils.getInformation(target);
-        FileObject root = target.getProjectDirectory();
-
-        // --- Project header ---
-        sb.append("=== Project Overview ===\n");
-        sb.append("Id: ").append(root.getNameExt()).append("\n");
-        sb.append("Display Name: ").append(info.getDisplayName()).append("\n");
-        sb.append("Project Directory: ").append(root.getPath()).append("\n");
-
-        ActionProvider ap = target.getLookup().lookup(ActionProvider.class);
-        if (ap != null) {
-            sb.append("Actions: ").append(Arrays.toString(ap.getSupportedActions())).append("\n");
-        } else {
-            sb.append("Actions: (none)\n");
-        }
-
-        sb.append("\nLegend: '+' folder  '-' file, 's=' size (folder sizes are recursive) 'lm=' last modified on disk\n");
-
-        // --- Immediate children of project root ---
-        sb.append("\n=== Root folder ===\n");
-
-        for (FileObject child : root.getChildren()) {
-            sb.append(toString(child));
-        }
-
-        // --- Source files (tree structure with folder sizes) ---
-        sb.append("\n=== Java sources ===\n");
-        Sources sources = ProjectUtils.getSources(target);
-
-        SourceGroup[] groups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
-
-        for (SourceGroup group : groups) {
-            FileObject srcRoot = group.getRootFolder();
-            sb.append(toString(srcRoot));
-            listFilesRecursivelyTreeWithSize(srcRoot, 1, sb);
-        }
-
-        return sb.toString();
-    }
-
-    @AIToolMethod("Gets a structured overview of a project, including VCS and in-context status.")
-    public static ProjectOverview getOverview2(@AIToolParam("The project id (not the 'display name')") String projectId) throws FileStateInvalidException {
+    @AIToolMethod("Gets a structured, context-aware overview of a project, including root files, source tree, and the in-context status of each file.")
+    public static ProjectOverview getOverview(@AIToolParam("The project id (not the 'display name')") String projectId) throws FileStateInvalidException {
         Project target = findProject(projectId);
         if (target == null) {
-            // Returning null will be serialized to JSON null by the framework
             return null;
         }
 
+        Map<String, ResourceStatus> statusMap = getContextStatusMap();
         ProjectInformation info = ProjectUtils.getInformation(target);
         FileObject root = target.getProjectDirectory();
-        ProjectOverview overview = new ProjectOverview();
-        overview.setId(root.getNameExt());
-        overview.setDisplayName(info.getDisplayName());
-        overview.setProjectDirectory(root.getPath());
-
+        List<String> actions = Collections.emptyList();
         ActionProvider ap = target.getLookup().lookup(ActionProvider.class);
         if (ap != null) {
-            overview.setActions(Arrays.asList(ap.getSupportedActions()));
+            actions = Arrays.asList(ap.getSupportedActions());
         }
 
         List<ProjectFile> rootFiles = new ArrayList<>();
-        for (FileObject child : root.getChildren()) {
-            rootFiles.add(toProjectFile(child));
-        }
-        overview.setRootFiles(rootFiles);
+        List<String> rootFolderNames = new ArrayList<>();
+        List<SourceFolder> sourceFolders = new ArrayList<>();
 
-        List<ProjectFile> sourceFiles = new ArrayList<>();
+        for (FileObject child : root.getChildren()) {
+            if (child.isFolder()) {
+                rootFolderNames.add(child.getNameExt());
+            } else {
+                rootFiles.add(createProjectFile(child, statusMap));
+            }
+        }
+
         Sources sources = ProjectUtils.getSources(target);
         SourceGroup[] javaGroups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
         for (SourceGroup group : javaGroups) {
             FileObject srcRoot = group.getRootFolder();
-            addFilesRecursively(srcRoot, sourceFiles);
+            if (rootFolderNames.contains(srcRoot.getNameExt())) {
+                 sourceFolders.add(buildSourceFolderTree(srcRoot, statusMap));
+            }
         }
-        overview.setSourceFiles(sourceFiles);
 
-        List<ProjectFile> resourceFiles = new ArrayList<>();
-        // Use constant for generic resources type
-        SourceGroup[] resourceGroups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_RESOURCES);
-        for (SourceGroup group : resourceGroups) {
-            FileObject resRoot = group.getRootFolder();
-            addFilesRecursively(resRoot, resourceFiles);
-        }
-        overview.setResourceFiles(resourceFiles);
-
-        return overview;
+        return new ProjectOverview(
+            root.getNameExt(),
+            info.getDisplayName(),
+            root.getPath(),
+            rootFiles,
+            rootFolderNames,
+            sourceFolders,
+            actions
+        );
     }
 
-    private static ProjectFile toProjectFile(FileObject fo) throws FileStateInvalidException {
-        ProjectFile pf = new ProjectFile();
-        pf.setName(fo.getNameExt());
-        pf.setPath(fo.getPath());
-        pf.setFolder(fo.isFolder());
-        pf.setSize(fo.isFolder() ? folderSize(fo) : fo.getSize());
-        pf.setLastModified(fo.lastModified().getTime());
-
-        // In-context status
+    private static Map<String, ResourceStatus> getContextStatusMap() {
         try {
             GeminiChat chat = GeminiChat.getCallingInstance();
             if (chat != null) {
                 ContextManager cm = chat.getContextManager();
-                List<StatefulResourceStatus> statuses = cm.getStatefulResourcesOverview(chat.getFunctionManager());
-                for (StatefulResourceStatus status : statuses) {
-                    if (status.getResourceId().equals(fo.getPath())) {
-                        pf.setInContextStatus(status.getStatus().name());
-                        break;
-                    }
-                }
+                return cm.getStatefulResourcesOverview(chat.getFunctionManager())
+                         .stream()
+                         .collect(Collectors.toMap(
+                             StatefulResourceStatus::getResourceId,
+                             StatefulResourceStatus::getStatus,
+                             (s1, s2) -> s2
+                         ));
             }
         } catch (Exception e) {
-            // log is not available in this static context, so we'll just ignore the error
-            // This can happen if called outside a tool execution thread.
+            log.warn("Could not get context status map, possibly not in a tool call context.", e);
         }
-
-        // VCS Status
-        pf.setVcsStatus(getVCSStatus(fo));
-
-        return pf;
+        return Collections.emptyMap();
     }
 
-    private static VCSStatus getVCSStatus(FileObject fo) throws FileStateInvalidException {
-        String annotation = fo.getFileSystem().getDecorator().annotateName(fo.getNameExt(), Set.of(fo));
-
-        // Simple parsing of common annotations from the file name itself
-        // Note: This is a heuristic and might not cover all VCS systems or states.
-        // The annotation might be part of the HTML display name.
-        String lowerAnnotation = annotation.toLowerCase();
-
-        if (lowerAnnotation.contains("[new]")) {
-            return VCSStatus.NEW;
-        } else if (lowerAnnotation.contains("[modified]")) {
-            return VCSStatus.MODIFIED;
-        } else if (lowerAnnotation.contains("[ignored]")) {
-            return VCSStatus.IGNORED;
-        } else if (lowerAnnotation.contains("<b>")) { // A common indicator of change
-            return VCSStatus.MODIFIED;
+    private static SourceFolder buildSourceFolderTree(FileObject folder, Map<String, ResourceStatus> statusMap) throws FileStateInvalidException {
+        if (!folder.isFolder()) {
+            throw new IllegalArgumentException("FileObject must be a folder: " + folder.getPath());
         }
 
-        return VCSStatus.UP_TO_DATE;
-    }
-
-    private static void addFilesRecursively(FileObject folder, List<ProjectFile> fileList) throws FileStateInvalidException {
+        List<ProjectFile> files = new ArrayList<>();
+        List<SourceFolder> subfolders = new ArrayList<>();
+        
         for (FileObject child : folder.getChildren()) {
-            fileList.add(toProjectFile(child));
             if (child.isFolder()) {
-                addFilesRecursively(child, fileList);
+                subfolders.add(buildSourceFolderTree(child, statusMap));
+            } else {
+                files.add(createProjectFile(child, statusMap));
             }
         }
+
+        long recursiveSize = files.stream().mapToLong(ProjectFile::getSize).sum()
+                           + subfolders.stream().mapToLong(SourceFolder::getRecursiveSize).sum();
+
+        return new SourceFolder(folder.getNameExt(), folder.getPath(), recursiveSize, files, subfolders);
     }
 
-    private static String toString(FileObject fo) {
-        StringBuilder sb = new StringBuilder();
-        String typeShort = fo.isFolder() ? "+" : "-";
-        boolean folder = fo.isFolder();
-        long size = folder ? folderSize(fo) : fo.getSize();
-        long lastModifiedOnDisk = fo.lastModified().getTime();
-        sb.append(typeShort);
-        sb.append(fo.getNameExt())
-                .append(" [")
-                .append("s=").append(size)
-                .append(", lm=").append(lastModifiedOnDisk)
-                .append("]\n");
-        return sb.toString();
+    private static ProjectFile createProjectFile(FileObject fo, Map<String, ResourceStatus> statusMap) throws FileStateInvalidException {
+        String path = fo.getPath();
+        ResourceStatus status = statusMap.getOrDefault(path, ResourceStatus.NOT_IN_CONTEXT);
+        return new ProjectFile(
+            fo.getNameExt(),
+            path,
+            fo.getSize(),
+            fo.lastModified().getTime(),
+            status
+        );
     }
 
     @AIToolMethod("Runs a standard high-level action (like 'run' or 'build') on a given open project.")
@@ -300,52 +219,13 @@ public class Projects {
             return "Successfully invoked the '" + action + "' action on project '" + project + "'.";
         } else {
             String[] supportedActions = ap.getSupportedActions();
-            boolean isSupported = false;
-            for (String supportedAction : supportedActions) {
-                if (supportedAction.equals(action)) {
-                    isSupported = true;
-                    break;
-                }
-            }
+            boolean isSupported = Arrays.asList(supportedActions).contains(action);
             if (isSupported) {
                 throw new IllegalArgumentException("The '" + action + "' action is supported but not currently enabled for project '" + project + "'.");
             } else {
                 throw new IllegalArgumentException("The '" + action + "' action is not supported by project '" + project + "'. Supported actions are: " + String.join(", ", supportedActions));
             }
         }
-    }
-
-    private static void listFilesRecursivelyTreeWithSize(FileObject folder, int indent, StringBuilder sb) {
-        String prefix = "  ".repeat(indent * 2);
-        FileObject[] children = folder.getChildren();
-        Arrays.sort(children, (f1, f2) -> {
-            if (f1.isFolder() && !f2.isFolder()) {
-                return -1;
-            }
-            if (!f1.isFolder() && f2.isFolder()) {
-                return 1;
-            }
-            return f1.getNameExt().compareTo(f2.getNameExt());
-        });
-
-        for (FileObject child : children) {
-            sb.append(prefix).append(toString(child));
-            if (child.isFolder()) {
-                listFilesRecursivelyTreeWithSize(child, indent + 1, sb);
-            }
-        }
-    }
-
-    private static long folderSize(FileObject folder) {
-        long total = 0;
-        for (FileObject child : folder.getChildren()) {
-            if (child.isFolder()) {
-                total += folderSize(child);
-            } else {
-                total += child.getSize();
-            }
-        }
-        return total;
     }
 
     public static Project findProject(String id) {
@@ -388,63 +268,5 @@ public class Projects {
         }
 
         return sb.toString();
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Schema(description = "Represents an overview of a project.")
-    public static class ProjectOverview {
-
-        @Schema(description = "The project ID (folder name).")
-        private String id;
-        @Schema(description = "The display name of the project.")
-        private String displayName;
-        @Schema(description = "The absolute path to the project directory.")
-        private String projectDirectory;
-        @Schema(description = "A list of available actions for the project.")
-        private List<String> actions;
-        @Schema(description = "A list of files and folders in the project's root directory.")
-        private List<ProjectFile> rootFiles;
-        @Schema(description = "A list of source files in the project.")
-        private List<ProjectFile> sourceFiles;
-        @Schema(description = "A list of resource files in the project.")
-        private List<ProjectFile> resourceFiles;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Schema(description = "Represents a file or folder within a project.")
-    public static class ProjectFile {
-
-        @Schema(description = "The name of the file or folder.")
-        private String name;
-        @Schema(description = "The absolute path to the file or folder.")
-        private String path;
-        @Schema(description = "True if this is a folder, false if it is a file.")
-        private boolean folder;
-        @Schema(description = "The size of the file in bytes, or the recursive size if it is a folder.")
-        private long size;
-        @Schema(description = "The last modified timestamp of the file.")
-        private long lastModified;
-        @Schema(description = "The in-context status of the file (e.g., VALID, STALE).")
-        private String inContextStatus;
-        @Schema(description = "The Version Control System (VCS) status of the file.")
-        private VCSStatus vcsStatus;
-    }
-
-    @Schema(description = "Represents the Version Control System (VCS) status of a file.")
-    public enum VCSStatus {
-        @Schema(description = "File is new and not yet committed.")
-        NEW,
-        @Schema(description = "File has been modified.")
-        MODIFIED,
-        @Schema(description = "File is ignored by version control.")
-        IGNORED,
-        @Schema(description = "File is up-to-date with the repository.")
-        UP_TO_DATE,
-        @Schema(description = "The VCS status could not be determined.")
-        UNKNOWN
     }
 }
