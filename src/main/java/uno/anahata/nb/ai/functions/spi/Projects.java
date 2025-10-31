@@ -130,11 +130,14 @@ public class Projects {
         }
 
         Sources sources = ProjectUtils.getSources(target);
-        SourceGroup[] javaGroups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
-        for (SourceGroup group : javaGroups) {
+        List<SourceGroup> allSourceGroups = new ArrayList<>();
+        allSourceGroups.addAll(Arrays.asList(sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA)));
+        allSourceGroups.addAll(Arrays.asList(sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_RESOURCES)));
+        
+        for (SourceGroup group : allSourceGroups) {
             FileObject srcRoot = group.getRootFolder();
             if (rootFolderNames.contains(srcRoot.getNameExt())) {
-                 sourceFolders.add(buildSourceFolderTree(srcRoot, statusMap));
+                 sourceFolders.add(buildSourceFolderTree(srcRoot, group.getDisplayName(), statusMap));
             }
         }
 
@@ -168,7 +171,7 @@ public class Projects {
         return Collections.emptyMap();
     }
 
-    private static SourceFolder buildSourceFolderTree(FileObject folder, Map<String, ResourceStatus> statusMap) throws FileStateInvalidException {
+    private static SourceFolder buildSourceFolderTree(FileObject folder, String displayName, Map<String, ResourceStatus> statusMap) throws FileStateInvalidException {
         if (!folder.isFolder()) {
             throw new IllegalArgumentException("FileObject must be a folder: " + folder.getPath());
         }
@@ -178,7 +181,7 @@ public class Projects {
         
         for (FileObject child : folder.getChildren()) {
             if (child.isFolder()) {
-                subfolders.add(buildSourceFolderTree(child, statusMap));
+                subfolders.add(buildSourceFolderTree(child, child.getNameExt(), statusMap));
             } else {
                 files.add(createProjectFile(child, statusMap));
             }
@@ -187,7 +190,7 @@ public class Projects {
         long recursiveSize = files.stream().mapToLong(ProjectFile::getSize).sum()
                            + subfolders.stream().mapToLong(SourceFolder::getRecursiveSize).sum();
 
-        return new SourceFolder(folder.getNameExt(), folder.getPath(), recursiveSize, files, subfolders);
+        return new SourceFolder(folder.getNameExt(), displayName, folder.getPath(), recursiveSize, files, subfolders);
     }
 
     private static ProjectFile createProjectFile(FileObject fo, Map<String, ResourceStatus> statusMap) throws FileStateInvalidException {

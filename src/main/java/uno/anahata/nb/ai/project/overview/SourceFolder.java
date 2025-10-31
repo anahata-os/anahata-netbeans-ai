@@ -18,6 +18,9 @@ public final class SourceFolder {
 
     @Schema(description = "The name of the folder.")
     private final String name;
+    
+    @Schema(description = "The display name of the source folder (e.g., 'Source Packages').")
+    private final String displayName;
 
     @Schema(description = "The absolute path to the folder.")
     private final String path;

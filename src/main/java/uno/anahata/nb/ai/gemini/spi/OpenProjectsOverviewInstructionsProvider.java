@@ -10,16 +10,16 @@ import uno.anahata.gemini.internal.GsonUtils;
 import uno.anahata.gemini.systeminstructions.SystemInstructionProvider;
 import uno.anahata.nb.ai.functions.spi.Projects;
 
-public class ProjectOverviewInstructionsProvider extends SystemInstructionProvider {
+public class OpenProjectsOverviewInstructionsProvider extends SystemInstructionProvider {
 
     @Override
     public String getId() {
-        return "netbeans-project-overview";
+        return "netbeans-open-projects-overview";
     }
 
     @Override
     public String getDisplayName() {
-        return "Project Overview";
+        return "Open Projects Overview";
     }
 
     @Override
@@ -29,7 +29,7 @@ public class ProjectOverviewInstructionsProvider extends SystemInstructionProvid
         List<String> openProjects = Projects.getOpenProjects();
         for (String projectId : openProjects) {
             StringBuilder sb = new StringBuilder();
-            sb.append("#Output of Project.getOverview2(**").append(projectId).append("**)\n");
+            sb.append("#Output of Projects.getOverview(**").append(projectId).append("**)\n");
             try {
                 sb.append(GsonUtils.prettyPrint(Projects.getOverview(projectId)));
             } catch (Exception e) {

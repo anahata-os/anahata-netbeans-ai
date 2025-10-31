@@ -16,7 +16,7 @@ import uno.anahata.nb.ai.functions.spi.Workspace;
 import uno.anahata.nb.ai.gemini.spi.CoreNetBeansInstructionsProvider;
 import uno.anahata.nb.ai.gemini.spi.IdeAlertsInstructionsProvider;
 import uno.anahata.nb.ai.gemini.spi.OpenFilesInEditorInstructionsProvider;
-import uno.anahata.nb.ai.gemini.spi.ProjectOverviewInstructionsProvider;
+import uno.anahata.nb.ai.gemini.spi.OpenProjectsOverviewInstructionsProvider;
 
 public class NetBeansGeminiConfig extends SwingGeminiConfig {
 
@@ -45,7 +45,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
         List<SystemInstructionProvider> providers = new ArrayList<>();
         providers.add(new CoreNetBeansInstructionsProvider());
         providers.add(new IdeAlertsInstructionsProvider());
-        providers.add(new ProjectOverviewInstructionsProvider());
+        providers.add(new OpenProjectsOverviewInstructionsProvider());
         providers.add(new OpenFilesInEditorInstructionsProvider());
         return providers;
     }
