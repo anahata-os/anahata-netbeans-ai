@@ -15,7 +15,7 @@ import org.openide.filesystems.StatusDecorator;
 import org.openide.util.lookup.ServiceProvider;
 import uno.anahata.nb.ai.context.ContextFiles;
 
-@ServiceProvider(service = StatusDecorator.class, position = 100)
+//@ServiceProvider(service = StatusDecorator.class, position = 100)
 public class ContextFileStatusDecorator implements StatusDecorator, PropertyChangeListener {
     private static final Logger log = Logger.getLogger(ContextFileStatusDecorator.class.getName());
 
