@@ -16,7 +16,7 @@ public class OpenFilesInEditorInstructionsProvider extends SystemInstructionProv
 
     @Override
     public String getDisplayName() {
-        return "Open Files";
+        return "Editor.getOpenFiles()";
     }
 
     @Override

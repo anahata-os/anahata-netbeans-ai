@@ -67,9 +67,9 @@ public class Editor {
                 }
 
                 sb.append("File: ").append(fo.getPath())
-                  .append(" [lastModifiedOnDisk=").append(dobj.getPrimaryFile().lastModified()).append("]")
+                  //.append(" [lastModifiedOnDisk=").append(dobj.getPrimaryFile().lastModified()).append("]")
                   .append(" [unsavedChanges=").append(modified).append("]")
-                  .append(" (Project: ").append(projName).append(")")
+                  //.append(" (Project: id=").append(projName).append(")")
                   .append("\n");
             } else {
                 sb.append("\n-No dataObjet for" + comp);
