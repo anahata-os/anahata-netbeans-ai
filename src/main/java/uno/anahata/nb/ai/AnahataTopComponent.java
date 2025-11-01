@@ -42,7 +42,7 @@ public final class AnahataTopComponent extends TopComponent {
         //contextFiles.setFunctionManager(chat.getFunctionManager());
         //chat.getContextManager().addListener(contextFiles);
         
-        geminiPanel.initChatInSwingWorker();
+        geminiPanel.completeInitialisation();
         
         // Manually trigger a rescan in case context was loaded from history
         //contextFiles.contextChanged(chat);
