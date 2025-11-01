@@ -15,8 +15,9 @@ import java.util.logging.Logger;
 import uno.anahata.gemini.ChatMessage;
 import uno.anahata.gemini.GeminiChat;
 import uno.anahata.gemini.context.ContextListener;
+import uno.anahata.gemini.context.stateful.ResourceTracker;
 import uno.anahata.gemini.functions.FunctionManager;
-import uno.anahata.gemini.internal.FunctionUtils;
+
 
 public class ContextFiles implements ContextListener {
 
@@ -84,7 +85,7 @@ public class ContextFiles implements ContextListener {
                     for (Part part : message.getContent().parts().get()) {
                         if (part.functionResponse().isPresent()) {
                             FunctionResponse fr = part.functionResponse().get();
-                            Optional<String> resourceIdOpt = FunctionUtils.getResourceIdIfStateful(fr, functionManager);
+                            Optional<String> resourceIdOpt = ResourceTracker.getResourceIdIfStateful(fr, functionManager);
                             if (resourceIdOpt.isPresent()) {
                                 String resourcePath = resourceIdOpt.get();
                                 try {
