@@ -47,13 +47,13 @@ import uno.anahata.nb.ai.functions.spi.pojos.ProposeChangeResult;
  */
 public class Coding {
 
-    @AIToolMethod(value = "Proposes a change to a file by showing the netbeans modal diff dialog to the user."
+    @AIToolMethod(value = "Proposes a change to a an existing file by showing the netbeans modal diff dialog to the user. Do not use for creating new files."
             + "Returns a ProposeChangeResult object with:"
             + "\n-status : the users approval status, "
             + "\n-message : user response to the proposal and "
             + "\n-fileInfo : the resulting FileInfo object given by LocalFiles.writeFile if the change is approved, or null if rejected.", behavior = ContextBehavior.STATEFUL_REPLACE)
     public static ProposeChangeResult proposeChange(
-            @AIToolParam("The absolute path of the file to modify.") String filePath,
+            @AIToolParam("The absolute path of the existing file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
             @AIToolParam("A clear and concise explanation of the proposed change.") String explanation) throws Exception {
 
