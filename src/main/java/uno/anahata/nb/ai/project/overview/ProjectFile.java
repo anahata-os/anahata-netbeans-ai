@@ -3,7 +3,7 @@ package uno.anahata.nb.ai.project.overview;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import uno.anahata.gemini.context.ResourceStatus;
+import uno.anahata.gemini.context.stateful.ResourceStatus;
 
 /**
  * Represents a single file within a project, including its metadata and status.

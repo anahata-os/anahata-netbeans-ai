@@ -29,8 +29,8 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import uno.anahata.gemini.GeminiChat;
 import uno.anahata.gemini.context.ContextManager;
-import uno.anahata.gemini.context.ResourceStatus;
-import uno.anahata.gemini.context.StatefulResourceStatus;
+import uno.anahata.gemini.context.stateful.ResourceStatus;
+import uno.anahata.gemini.context.stateful.StatefulResourceStatus;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.nb.ai.project.overview.ProjectFile;
@@ -103,12 +103,16 @@ public class Projects {
 
     @AIToolMethod("Gets a structured, context-aware overview of a project, including root files, source tree, and the in-context status of each file.")
     public static ProjectOverview getOverview(@AIToolParam("The project id (not the 'display name')") String projectId) throws FileStateInvalidException {
+        return getOverview(projectId, GeminiChat.getCallingInstance());
+    }
+    
+    public static ProjectOverview getOverview(String projectId, GeminiChat chat) throws FileStateInvalidException {
         Project target = findProject(projectId);
         if (target == null) {
             return null;
         }
 
-        Map<String, ResourceStatus> statusMap = getContextStatusMap();
+        Map<String, ResourceStatus> statusMap = getContextStatusMap(chat);
         ProjectInformation info = ProjectUtils.getInformation(target);
         FileObject root = target.getProjectDirectory();
         List<String> actions = Collections.emptyList();
@@ -150,12 +154,11 @@ public class Projects {
         );
     }
 
-    private static Map<String, ResourceStatus> getContextStatusMap() {
+    private static Map<String, ResourceStatus> getContextStatusMap(GeminiChat chat) {
         try {
-            GeminiChat chat = GeminiChat.getCallingInstance();
             if (chat != null) {
                 ContextManager cm = chat.getContextManager();
-                return cm.getStatefulResourcesOverview(chat.getFunctionManager())
+                return cm.getResourceTracker().getStatefulResourcesOverview()
                          .stream()
                          .collect(Collectors.toMap(
                              StatefulResourceStatus::getResourceId,

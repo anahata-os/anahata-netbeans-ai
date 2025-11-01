@@ -53,7 +53,7 @@ public final class AnahataTopComponent extends TopComponent {
         if (geminiPanel != null) {
             GeminiChat chat = geminiPanel.getChat();
             if (chat != null) {
-                chat.getContextManager().removeListener(ContextFiles.getInstance());
+                //chat.getContextManager().removeListener(ContextFiles.getInstance());
             }
         }
     }

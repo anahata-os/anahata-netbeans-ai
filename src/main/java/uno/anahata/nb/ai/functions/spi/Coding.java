@@ -39,8 +39,8 @@ import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.gemini.functions.ContextBehavior;
-import uno.anahata.gemini.functions.pojos.FileInfo;
-import uno.anahata.gemini.functions.pojos.ProposeChangeResult;
+import uno.anahata.gemini.functions.spi.pojos.FileInfo;
+import uno.anahata.nb.ai.functions.spi.pojos.ProposeChangeResult;
 
 /**
  * Tools related to coding tasks and modifying source files.
