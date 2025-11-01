@@ -1,7 +1,6 @@
 package uno.anahata.nb.ai;
 
 import java.util.logging.Level;
-import uno.anahata.nb.ai.deprecated.NetBeansListener;
 import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.SwingUtilities;
@@ -15,7 +14,7 @@ import uno.anahata.gemini.functions.spi.RunningJVM;
 
 public class AnahataInstaller extends ModuleInstall {
     
-    private static NetBeansListener listener;
+    
     private static final Logger log = Logger.getLogger(AnahataInstaller.class.getName());
     
     public AnahataInstaller() {
@@ -69,13 +68,6 @@ public class AnahataInstaller extends ModuleInstall {
     
     @Override
     public void uninstalled() {
-        if (listener != null) {
-            logId("uninstalled() calling listener.cleanup()");
-            listener.cleanup();
-            logId("uninstalled() finished listener.cleanup()");
-        } else {
-            logId("uninstalled() no listener was created");
-        }
         
         logId("uninstalled()");
         super.uninstalled();
