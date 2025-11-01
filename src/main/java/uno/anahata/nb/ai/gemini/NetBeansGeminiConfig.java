@@ -22,7 +22,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
 
     @Override
     public List<Class<?>> getAutomaticFunctionClasses() {
-        List<Class<?>> ret = new ArrayList<>();
+        List<Class<?>> ret = super.getAutomaticFunctionClasses();
         ret.add(Git.class);
         ret.add(IDE.class);
         ret.add(Maven.class);
