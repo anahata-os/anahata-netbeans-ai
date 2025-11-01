@@ -63,6 +63,7 @@ public class Coding {
         }
 
         final AtomicReference<ProposeChangeResult> resultHolder = new AtomicReference<>();
+        final AtomicReference<Exception> exceptionHolder = new AtomicReference<>();
         final CountDownLatch dialogLatch = new CountDownLatch(1);
 
         SwingUtilities.invokeLater(() -> {
@@ -124,17 +125,18 @@ public class Coding {
                                 updatedFile.length()
                             );
                             String userComment = commentTextArea.getText();
-                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ACCEPTED, userComment.isEmpty() ? "File updated successfully." : userComment, fileInfo));
+                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ACCEPTED, userComment, fileInfo));
                             
                         } catch (IOException ex) {
-                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ERROR, "Error saving file: " + ex.getMessage(), null));
+                            exceptionHolder.set(ex);
+                        } finally {
+                            dialog.dispose();
                         }
-                        dialog.dispose();
                     });
                     
                     cancelButton.addActionListener(e -> {
                         String userComment = commentTextArea.getText();
-                        resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment.isEmpty() ? "User cancelled the operation." : userComment, null));
+                        resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment, null));
                         dialog.dispose();
                     });
                     
@@ -142,8 +144,7 @@ public class Coding {
                         @Override
                         public void windowClosed(WindowEvent e) {
                             String userComment = commentTextArea.getText();
-                            // Ensure a result is set if the dialog is closed via the 'X' button
-                            resultHolder.compareAndSet(null, new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment.isEmpty() ? "User closed the dialog." : userComment, null));
+                            resultHolder.compareAndSet(null, new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment, null));
                             dialogLatch.countDown();
                         }
                     });
@@ -161,12 +162,16 @@ public class Coding {
                 }
 
             } catch (Exception e) {
-                resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ERROR, "An unexpected error occurred: " + e.getMessage(), null));
+                exceptionHolder.set(e);
                 dialogLatch.countDown();
             }
         });
 
         dialogLatch.await();
+        
+        if (exceptionHolder.get() != null) {
+            throw exceptionHolder.get();
+        }
         
         return resultHolder.get();
     }
