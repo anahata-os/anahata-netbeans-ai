@@ -17,7 +17,10 @@ import uno.anahata.gemini.functions.spi.pojos.FileInfo;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Represents the result of a proposeChange operation, indicating the user's action and providing the updated file details if accepted.")
+@Schema(description = "Represents the result of a proposeChange operation, indicating:"
+        + "- The user's approval (Accepted / Cancelled), "
+        + "- Any message from the user regarding the proposed change (regardless of whether the user approved it or not)  "
+        + "- The updated file details if accepted.")
 public class ProposeChangeResult implements StatefulResource {
 
     public enum Status {
@@ -33,9 +36,9 @@ public class ProposeChangeResult implements StatefulResource {
     @Schema(description = "The final outcome of the operation, indicating whether the user accepted or cancelled the change.", required = true)
     private Status status;
 
-    /** A descriptive message for the user. */
-    @Schema(description = "A descriptive message detailing the result, including any user comments or error details.", required = true)
-    private String message;
+    /** A descriptive userMessage from the user. */
+    @Schema(description = "A message from the user when reviewing the diff", required = true)
+    private String userMessage;
 
     /** The updated file information, only present if the status is ACCEPTED. */
     @Schema(description = "The updated file information, which is present only if the status is 'ACCEPTED'.")
@@ -67,7 +70,7 @@ public class ProposeChangeResult implements StatefulResource {
     public String toString() {
         return "ProposeChangeResult{" +
                 "status=" + status +
-                ", message='" + message + '\'' +
+                ", message='" + userMessage + '\'' +
                 ", fileInfo=" + (fileInfo != null ? fileInfo.toString() : "null") +
                 '}';
     }

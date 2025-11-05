@@ -1,74 +1,171 @@
 package uno.anahata.nb.ai.functions.spi;
 
-
-import org.openide.windows.WindowManager;
-import org.openide.windows.TopComponent;
-import org.openide.loaders.DataObject;
-import java.util.Set;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.awt.EventQueue;
-import org.netbeans.core.api.multiview.MultiViewHandler;
-import org.netbeans.core.api.multiview.MultiViews;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.swing.Action;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileStateInvalidException;
+import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
+import org.openide.nodes.Node;
+import org.openide.windows.Mode;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.nb.ai.functions.spi.pojos.TopComponentInfo;
 
-
-/**
- *
- * @author pablo
- */
 public class TopComponents {
 
-    @AIToolMethod("gets a list of all TopComponent(s) open in the IDE")
-    public static String getOpenTopComponents() throws Exception {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("=== Open TopComponents by Class ===\n");
-        EventQueue.invokeAndWait(() -> {
-            Set<TopComponent> opened = WindowManager.getDefault().getRegistry().getOpened();
-            if (opened.isEmpty()) {
-                sb.append("No open TopComponents found.\n");
-                return;
-            }
-            Map<String, List<TopComponent>> groupedByClass = opened.stream().collect(Collectors.groupingBy(tc -> tc.getClass().getName()));
-            groupedByClass.entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> {
-                sb.append("\n").append(entry.getKey()).append(":\n");
-                for (TopComponent tc : entry.getValue()) {
-                    sb.append("  - ").append(getTopComponentDescription(tc)).append("\n");
-                }
+    private static List<TopComponentInfo> gatherTopComponentInfo() throws InterruptedException, InvocationTargetException {
+        if (EventQueue.isDispatchThread()) {
+            return gatherInfoOnEDT();
+        } else {
+            final List<TopComponentInfo> results = new ArrayList<>();
+            EventQueue.invokeAndWait(() -> {
+                results.addAll(gatherInfoOnEDT());
             });
-        });
+            return results;
+        }
+    }
+
+    private static List<TopComponentInfo> gatherInfoOnEDT() {
+        List<TopComponentInfo> results = new ArrayList<>();
+        Set<TopComponent> opened = WindowManager.getDefault().getRegistry().getOpened();
+        if (opened.isEmpty()) {
+            return Collections.emptyList();
+        }
+        TopComponent activated = WindowManager.getDefault().getRegistry().getActivated();
+
+        for (TopComponent tc : opened) {
+            String id = WindowManager.getDefault().findTopComponentID(tc);
+            String name = tc.getName();
+            String displayName = tc.getDisplayName();
+            String htmlDisplayName = tc.getHtmlDisplayName();
+            String tooltip = tc.getToolTipText();
+            String className = tc.getClass().getName();
+            boolean isActivated = (tc == activated);
+            Mode mode = WindowManager.getDefault().findMode(tc);
+            String modeName = (mode != null) ? mode.getName() : "N/A";
+
+            String activatedNodes = "N/A";
+            Node[] nodes = tc.getActivatedNodes();
+            if (nodes != null && nodes.length > 0) {
+                activatedNodes = Arrays.stream(nodes)
+                        .map(Node::getDisplayName)
+                        .collect(Collectors.joining(", "));
+            }
+
+            String supportedActions = "N/A";
+            Action[] actions = tc.getActions();
+            if (actions != null && actions.length > 0) {
+                supportedActions = Arrays.stream(actions)
+                        .filter(a -> a != null && a.getValue(Action.NAME) != null)
+                        .map(action -> action.getValue(Action.NAME).toString())
+                        .collect(Collectors.joining(", "));
+            }
+
+            String filePath = "N/A";
+            FileObject fileObject = tc.getLookup().lookup(FileObject.class);
+            if (fileObject != null) {
+                filePath = fileObject.getPath();
+            }
+
+            String primaryFilePath = "N/A";
+            long sizeInBytes = -1;
+            DataObject dataObject = tc.getLookup().lookup(DataObject.class);
+            if (dataObject != null) {
+                FileObject primaryFile = dataObject.getPrimaryFile();
+                if (primaryFile != null) {
+                    sizeInBytes = primaryFile.getSize();
+                    try {
+                        File f = FileUtil.toFile(primaryFile);
+                        if (f != null) {
+                            primaryFilePath = f.getAbsolutePath();
+                        } else {
+                            URL url = primaryFile.getURL();
+                            primaryFilePath = url.toExternalForm();
+                        }
+                    } catch (FileStateInvalidException e) {
+                        primaryFilePath = "Error getting path: " + e.getMessage();
+                    }
+                }
+            }
+
+            results.add(new TopComponentInfo(id, name, isActivated, displayName, htmlDisplayName, tooltip, className, modeName, activatedNodes, supportedActions, filePath, primaryFilePath, sizeInBytes));
+        }
+        return results;
+    }
+
+    @AIToolMethod("Gets a detailed list of all open IDE windows as a structured list of objects.")
+    public static List<TopComponentInfo> getOpenTopComponentsOverview() throws Exception {
+        return gatherTopComponentInfo();
+    }
+
+    @AIToolMethod("Gets a detailed list of all open IDE windows, formatted as a Markdown table.")
+    public static String getOpenTopComponentsMarkdown() throws Exception {
+        List<TopComponentInfo> infos = gatherTopComponentInfo();
+        if (infos.isEmpty()) {
+            return "No TopComponents are currently open.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // Header
+        sb.append("| Id | Name | Selected | Mode | Activated Nodes | Size | Path | Tooltip | ClassName |\n");
+        sb.append("|---|---|---|---|---|---|---|---|---|\n");
+
+        // Rows
+        for (TopComponentInfo info : infos) {
+            String bestName = info.htmlDisplayName() != null ? info.htmlDisplayName() : 
+                              info.displayName() != null ? info.displayName() : info.name();
+
+            sb.append(String.format("| %s | %s | %s | %s | %s | %d | %s | %s | %s |\n",
+                    info.id() != null ? info.id().replace("|", "\\\\|") : "N/A",
+                    bestName != null ? bestName.replace("|", "\\\\|") : "N/A",
+                    info.selected() ? "Y" : "N",
+                    info.mode() != null ? info.mode().replace("|", "\\\\|") : "N/A",
+                    info.activatedNodes() != null ? info.activatedNodes().replace("|", "\\\\|") : "N/A",
+                    info.sizeInBytes(),
+                    info.primaryFilePath() != null ? info.primaryFilePath().replace("|", "\\\\|") : "N/A",
+                    info.tooltip() != null ? info.tooltip().replace("|", "\\\\|") : "N/A",
+                    info.className() != null ? info.className().replace("|", "\\\\|") : "N/A"
+            ));
+        }
         return sb.toString();
     }
 
-    private static String getTopComponentDescription(TopComponent tc) {
-        String displayName = tc.getDisplayName();
-        if (displayName == null) {
-            displayName = tc.getName();
+    @AIToolMethod("Gets a detailed list of all open IDE windows, formatted as a simple string.")
+    public static String getOpenTopComponentsDetailedString() throws Exception {
+        List<TopComponentInfo> infos = gatherTopComponentInfo();
+        if (infos.isEmpty()) {
+            return "No TopComponents are currently open.";
         }
-        MultiViewHandler mvh = MultiViews.findMultiViewHandler(tc);
-        
-        if (mvh != null) {
-            DataObject dataObject = tc.getLookup().lookup(DataObject.class);
-            if (dataObject != null && dataObject.getPrimaryFile() != null) {
-                return String.format("'%s' [File: %s]", displayName, dataObject.getPrimaryFile().getPath());
-            }
-            return String.format("'%s' [Non-file MultiView]", displayName);
+
+        StringBuilder sb = new StringBuilder();
+        for (TopComponentInfo info : infos) {
+            sb.append("--------------------------------------------------\n");
+            sb.append(String.format("ID: %s\n", info.id() != null ? info.id() : "N/A"));
+            sb.append(String.format("Name: %s\n", info.name()));
+            sb.append(String.format("Selected: %s\n", info.selected() ? "Y" : "N"));
+            sb.append(String.format("DisplayName: %s\n", info.displayName()));
+            sb.append(String.format("HtmlDisplayName: %s\n", info.htmlDisplayName()));
+            sb.append(String.format("Tooltip: %s\n", info.tooltip()));
+            sb.append(String.format("ClassName: %s\n", info.className()));
+            sb.append(String.format("Mode: %s\n", info.mode()));
+            sb.append(String.format("Activated Nodes: %s\n", info.activatedNodes()));
+            sb.append(String.format("Supported Actions: %s\n", info.supportedActions()));
+            sb.append(String.format("File Path: %s\n", info.filePath()));
+            sb.append(String.format("Primary File Path: %s\n", info.primaryFilePath()));
+            sb.append(String.format("Size (bytes): %d\n", info.sizeInBytes()));
+            sb.append("--------------------------------------------------\n\n");
         }
-        
-        if (tc.getClass().getName().equals("org.netbeans.modules.git.ui.status.GitVersioningTopComponent")) {
-            return String.format("'%s' [Git Status View]", displayName);
-        }
-        if (tc.getClass().getName().equals("org.netbeans.core.io.ui.IOWindow$IOWindowImpl")) {
-            return "'Output' [IDE Output Window]";
-        }
-        if (tc.getClass().getName().equals("uno.anahata.nb.ai.AnahataTopComponent")) {
-            return "'Anahata AI Assistant'";
-        }
-        DataObject dataObject = tc.getLookup().lookup(DataObject.class);
-        if (dataObject != null && dataObject.getPrimaryFile() != null) {
-            return String.format("'%s' [File: %s] (Generic)", displayName, dataObject.getPrimaryFile().getPath());
-        }
-        return String.format("'%s' (Generic)", displayName);
+        return sb.toString();
     }
 }

@@ -1,11 +1,8 @@
 package uno.anahata.nb.ai.functions.spi;
 
 import com.google.gson.Gson;
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dialog;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,38 +13,44 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JEditorPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import javax.swing.text.EditorKit;
 import javax.swing.text.JTextComponent;
-import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
-import org.openide.modules.Modules;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 
 public class IDE {
+
+    private static volatile String cachedIdeAlerts = "IDE Alert scanner is initializing...";
+
+    static {
+        Thread alertScannerThread = new Thread(() -> {
+            while (true) {
+                try {
+                    cachedIdeAlerts = performScan();
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    cachedIdeAlerts = "IDE Alert scanner was interrupted.";
+                    break; 
+                } catch (Exception e) {
+                    cachedIdeAlerts = "An error occurred during IDE alert scanning: " + e.getMessage();
+                }
+            }
+        }, "IDE-Alert-Scanner");
+        alertScannerThread.setDaemon(true);
+        alertScannerThread.start();
+    }
 
     @AIToolMethod("Reads the content of all tabs in the NetBeans Output Window.")
     public static String getOutputWindowContent(@AIToolParam("The number of lines to retrieve from the end of each tab.") int linesToRead) throws Exception {
@@ -88,9 +91,18 @@ public class IDE {
         }
         throw new IOException("Could not find a readable 'messages.log' file in the primary or fallback locations.");
     }
+
+    @AIToolMethod("Gets a cached JSON summary of all errors and warnings from the IDE's live parser. A background thread updates this cache continuously.")
+    public static String getCachedIDEAlerts() {
+        return cachedIdeAlerts;
+    }
     
-    @AIToolMethod("Scans all open projects and returns a JSON summary of all errors and warnings detected by the IDE's live parser.")
+    @AIToolMethod("Performs a full scan of all open projects and returns a JSON summary of all errors and warnings detected by the IDE's live parser.")
     public static String getAllIDEAlerts() throws Exception {
+        return performScan();
+    }
+
+    private static String performScan() throws Exception {
         List<ProjectDiagnostics> allDiagnostics = new ArrayList<>();
         Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
 

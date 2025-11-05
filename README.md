@@ -49,6 +49,10 @@ By providing this live, structured data directly to the model, the assistant can
 
 *(Instructions to be added once the plugin is packaged for distribution).*
 
-## License
+## Licensing: Open Core Model
 
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+This project is available under a dual-license model to accommodate both open-source and commercial needs.
+
+-   **Open Source:** For use in open-source projects, the software is licensed under the **GNU Affero General Public License v3 (AGPLv3)**. See the [LICENSE](LICENSE) file for the full license text.
+
+-   **Commercial Use:** For use in proprietary, closed-source applications, a **commercial license is required**. Please see the [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) file for more information on how to obtain a commercial license.

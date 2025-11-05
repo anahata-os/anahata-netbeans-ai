@@ -13,7 +13,14 @@ import org.openide.modules.Modules;
 import uno.anahata.gemini.functions.spi.RunningJVM;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
+/**
+ * Utility class for introspecting modules and their classpaths. Primary used for RunningJVM.
+ * 
+ * @author priyanahata
+ */
 public final class NetBeansModuleUtils {
 
     private static final Logger logger = Logger.getLogger(NetBeansModuleUtils.class.getName());
@@ -21,8 +28,8 @@ public final class NetBeansModuleUtils {
     private NetBeansModuleUtils() {
         // Utility class
     }
-
-    // --- Classpath Initialization Logic (from ShowDefaultCompilerClassPathAction) ---
+    
+    // --- Classpath Initialization Logic 
 
     public static void initRunningJVM() {
         try {
@@ -87,5 +94,19 @@ public final class NetBeansModuleUtils {
             logger.log(Level.SEVERE, "Exception in getAllModuleJarsUsingReflection for module " + thisModule.getCodeNameBase(), ex);
         }
         return Collections.emptyList();
+    }
+    
+    /**
+     * Gets the XML configuration file for a given module using the NetBeans
+     * APIs.
+     *
+     * @param module The module to inspect.
+     * @return The FileObject for the module's config file, or null if not
+     * found.
+     */
+    public static FileObject getModuleConfigFile(ModuleInfo module) {
+        String codeNameBase = module.getCodeNameBase().replace('.', '-');
+        String configFilePath = "Modules/" + codeNameBase + ".xml";
+        return FileUtil.getConfigFile(configFilePath);
     }
 }

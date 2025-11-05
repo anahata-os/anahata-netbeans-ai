@@ -10,9 +10,13 @@ import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.modules.editor.NbEditorUtilities;
 import org.openide.cookies.EditorCookie;
+import org.openide.cookies.LineCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
+import org.openide.text.Line;
+import org.openide.text.Line.ShowOpenType;
+import org.openide.text.Line.ShowVisibilityType;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 
@@ -21,9 +25,11 @@ import uno.anahata.gemini.functions.AIToolParam;
  * @author pablo
  */
 public class Editor {
-    
-    @AIToolMethod("Opens a specified file in the NetBeans editor.")
-    public static String openFile(@AIToolParam("The absolute path of the file to open.") String filePath) throws Exception {
+
+    @AIToolMethod("Opens a specified file in the NetBeans editor and optionally scrolls to a specific line.")
+    public static String openFile(
+            @AIToolParam("The absolute path of the file to open.") String filePath,
+            @AIToolParam("The line number to scroll to (1-based).") Integer scrollToLine) throws Exception {
         if (filePath == null || filePath.trim().isEmpty()) {
             return "Error: The 'filePath' parameter was not set.";
         }
@@ -38,13 +44,31 @@ public class Editor {
         DataObject dataObject = DataObject.find(fileObject);
         EditorCookie editorCookie = dataObject.getLookup().lookup(EditorCookie.class);
         if (editorCookie != null) {
-            SwingUtilities.invokeLater(editorCookie::open);
-            return "Successfully requested to open file in editor: " + filePath + " with cookie " + editorCookie;
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    editorCookie.open();
+                    if (scrollToLine != null && scrollToLine > 0) {
+                        LineCookie lineCookie = dataObject.getLookup().lookup(LineCookie.class);
+                        if (lineCookie != null) {
+                            int lineIndex = scrollToLine - 1;
+                            Line.Set lineSet = lineCookie.getLineSet();
+                            if (lineIndex < lineSet.getLines().size()) {
+                                Line line = lineSet.getLines().get(lineIndex);
+                                line.show(ShowOpenType.OPEN, ShowVisibilityType.FOCUS);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            String scrollMessage = (scrollToLine != null) ? " and scroll to line " + scrollToLine : "";
+            return "Successfully requested to open file: " + filePath + scrollMessage;
         } else {
             return "Error: The specified file is not an editable text file.";
         }
     }
-    
+
     @AIToolMethod("Gets a list of all files open in the editor")
     public static String getOpenFiles() {
         StringBuilder sb = new StringBuilder();
@@ -67,9 +91,7 @@ public class Editor {
                 }
 
                 sb.append("File: ").append(fo.getPath())
-                  //.append(" [lastModifiedOnDisk=").append(dobj.getPrimaryFile().lastModified()).append("]")
                   .append(" [unsavedChanges=").append(modified).append("]")
-                  //.append(" (Project: id=").append(projName).append(")")
                   .append("\n");
             } else {
                 sb.append("\n-No dataObjet for" + comp);

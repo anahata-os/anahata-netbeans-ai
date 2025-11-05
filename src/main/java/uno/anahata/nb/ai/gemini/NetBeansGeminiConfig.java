@@ -15,10 +15,18 @@ import uno.anahata.nb.ai.functions.spi.TopComponents;
 import uno.anahata.nb.ai.functions.spi.Workspace;
 import uno.anahata.nb.ai.gemini.spi.CoreNetBeansInstructionsProvider;
 import uno.anahata.nb.ai.gemini.spi.IdeAlertsInstructionsProvider;
-import uno.anahata.nb.ai.gemini.spi.OpenFilesInEditorInstructionsProvider;
 import uno.anahata.nb.ai.gemini.spi.OpenProjectsOverviewInstructionsProvider;
+import uno.anahata.nb.ai.gemini.spi.OpenTopComponentsInstructionsProvider;
 
 public class NetBeansGeminiConfig extends SwingGeminiConfig {
+
+    String topComponentId;
+    
+    public NetBeansGeminiConfig(String topComponentId) {
+        this.topComponentId = topComponentId;
+    }
+    
+    
 
     @Override
     public List<Class<?>> getAutomaticFunctionClasses() {
@@ -37,7 +45,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
 
     @Override
     public String getApplicationInstanceId() {
-        return "netbeans-plugin";
+        return "netbeans-" + topComponentId;
     }
 
     @Override
@@ -46,7 +54,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
         providers.add(new CoreNetBeansInstructionsProvider());
         providers.add(new IdeAlertsInstructionsProvider());
         providers.add(new OpenProjectsOverviewInstructionsProvider());
-        providers.add(new OpenFilesInEditorInstructionsProvider());
+        providers.add(new OpenTopComponentsInstructionsProvider());
         return providers;
     }
 }

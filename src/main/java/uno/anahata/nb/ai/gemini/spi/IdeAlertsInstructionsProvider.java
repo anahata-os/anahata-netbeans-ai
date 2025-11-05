@@ -22,7 +22,7 @@ public class IdeAlertsInstructionsProvider extends SystemInstructionProvider {
     @Override
     public List<Part> getInstructionParts(GeminiChat chat) {
         try {
-            String alerts = IDE.getAllIDEAlerts();
+            String alerts = IDE.getCachedIDEAlerts();
             return Collections.singletonList(Part.fromText(alerts));
         } catch (Exception e) {
             return Collections.singletonList(Part.fromText("Error getting IDE alerts: " + e.getMessage()));

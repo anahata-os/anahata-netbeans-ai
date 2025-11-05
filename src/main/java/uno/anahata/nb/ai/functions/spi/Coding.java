@@ -47,11 +47,15 @@ import uno.anahata.nb.ai.functions.spi.pojos.ProposeChangeResult;
  */
 public class Coding {
 
-    @AIToolMethod(value = "Proposes a change to a an existing file by showing the netbeans modal diff dialog to the user. Do not use for creating new files."
+    @AIToolMethod(value = "Proposes a change to a an existing file by showing the netbeans modal diff dialog to the user."
+            + "Do not use for creating new files, just for updating existing ones. This method has no lastModified timestamp as a parameter so do not use it unless you know the file you are proposing to update is stale. Also dont try to do: LocalFiles.readFile and proposeCodeChange for the same file on the same message."
             + "Returns a ProposeChangeResult object with:"
             + "\n-status : the users approval status, "
             + "\n-message : user response to the proposal and "
-            + "\n-fileInfo : the resulting FileInfo object given by LocalFiles.writeFile if the change is approved, or null if rejected.", behavior = ContextBehavior.STATEFUL_REPLACE)
+            + "\n-fileInfo : the resulting FileInfo object given by LocalFiles.writeFile if the change is approved, or null if rejected."
+            + "\n\n"
+            + "Note: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Batch a call to readFile for this same resource on your next message. "
+            + "This will trigger the autoprune of the token heavy proposeChange FunctionCall / FunctionResponse pair.", behavior = ContextBehavior.STATEFUL_REPLACE)
     public static ProposeChangeResult proposeChange(
             @AIToolParam("The absolute path of the existing file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,

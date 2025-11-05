@@ -3,25 +3,27 @@ package uno.anahata.nb.ai.gemini.spi;
 import com.google.genai.types.Part;
 import java.util.Collections;
 import java.util.List;
+import lombok.SneakyThrows;
 import uno.anahata.gemini.GeminiChat;
 import uno.anahata.gemini.systeminstructions.SystemInstructionProvider;
-import uno.anahata.nb.ai.functions.spi.Editor;
+import uno.anahata.nb.ai.functions.spi.TopComponents;
 
-public class OpenFilesInEditorInstructionsProvider extends SystemInstructionProvider {
+public class OpenTopComponentsInstructionsProvider extends SystemInstructionProvider {
 
     @Override
     public String getId() {
-        return "netbeans-open-files";
+        return "netbeans-open-topcomponents";
     }
 
     @Override
     public String getDisplayName() {
-        return "Editor.getOpenFiles()";
+        return "TopComponents.getOpenTopComponentsMarkdown()";
     }
 
     @Override
+    @SneakyThrows
     public List<Part> getInstructionParts(GeminiChat chat) {
-        String openFiles = Editor.getOpenFiles();
+        String openFiles = TopComponents.getOpenTopComponentsMarkdown();
         return Collections.singletonList(Part.fromText(openFiles));
     }
 }

@@ -45,17 +45,13 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
     
     private static final Logger logger = Logger.getLogger(ShowDefaultCompilerClassPathAction.class.getName());
 
-    OutputWriter out;
-
-    Set<ModuleInfo> processed = new HashSet<>();
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         InputOutput io = IOProvider.getDefault().getIO("Anahata's Compiler's Classpath", true);
         io.select();
-        processed.clear();
         try (OutputWriter out = io.getOut()) {
-            this.out = out;
+            
             //initExecuteJavaCode();
             String cp = RunningJVM.getDefaultCompilerClasspath();
             out.println("-----------------------------------------------------------------------");
@@ -71,7 +67,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
         }
     }
     
-    
+    /*
     
     public static void initRunningJVM() {
 
@@ -172,17 +168,7 @@ public final class ShowDefaultCompilerClassPathAction implements ActionListener 
 
     }
 
-    /**
-     * Gets the XML configuration file for a given module using the NetBeans
-     * APIs.
-     *
-     * @param module The module to inspect.
-     * @return The FileObject for the module's config file, or null if not
-     * found.
-     */
-    private FileObject getModuleConfigFile(ModuleInfo module) {
-        String codeNameBase = module.getCodeNameBase().replace('.', '-');
-        String configFilePath = "Modules/" + codeNameBase + ".xml";
-        return FileUtil.getConfigFile(configFilePath);
-    }
+    
+    
+    */
 }
