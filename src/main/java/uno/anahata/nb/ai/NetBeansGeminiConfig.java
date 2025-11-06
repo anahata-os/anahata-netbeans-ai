@@ -20,6 +20,7 @@ import uno.anahata.nb.ai.systeminstructions.CoreNetBeansInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.IdeAlertsInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.OpenProjectsOverviewInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.OpenTopComponentsInstructionsProvider;
+import uno.anahata.nb.ai.tools.JavaDocs;
 
 public class NetBeansGeminiConfig extends SwingGeminiConfig {
 
@@ -44,6 +45,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
         ret.add(TopComponents.class);
         ret.add(JavaIntrospection.class);
         ret.add(JavaSources.class);
+        ret.add(JavaDocs.class);
         // NetBeansJavaQueryUtils is being deprecated in favor of JavaIntrospection and a future Javadoc/Sources tool
         // ret.add(NetBeansJavaQueryUtils.class); 
         return ret;
