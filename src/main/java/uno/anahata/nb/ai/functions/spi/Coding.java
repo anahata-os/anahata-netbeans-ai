@@ -48,14 +48,17 @@ import uno.anahata.nb.ai.functions.spi.pojos.ProposeChangeResult;
 public class Coding {
 
     @AIToolMethod(value = "Proposes a change to a an existing file by showing the netbeans modal diff dialog to the user."
-            + "Do not use for creating new files, just for updating existing ones. This method has no lastModified timestamp as a parameter so do not use it unless you know the file you are proposing to update is stale. Also dont try to do: LocalFiles.readFile and proposeCodeChange for the same file on the same message."
-            + "Returns a ProposeChangeResult object with:"
-            + "\n-status : the users approval status, "
-            + "\n-message : user response to the proposal and "
-            + "\n-fileInfo : the resulting FileInfo object given by LocalFiles.writeFile if the change is approved, or null if rejected."
-            + "\n\n"
-            + "Note: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Batch a call to readFile for this same resource on your next message. "
-            + "This will trigger the autoprune of the token heavy proposeChange FunctionCall / FunctionResponse pair.", behavior = ContextBehavior.STATEFUL_REPLACE)
+            + "\n*Important Note*: while the user may approve the execution of this tool (or if it gets 'autopilot' approved), "
+            + "the approval of the tool execution does not imply the change was approved: "
+            + "Approving this tool only displays the diff dialog to the user but it is ultimatly up to the user to manually approve the change or not. This is indicated in the returned ProposeChangeResult. "
+            + "\nIn other words: this tool has a two step approval process: The approval of the tool call (proposeCodChange) which only implies that the user got to see the diff dialog and produces a FunctionRespons AND the approval of the code change it self (as seen in the 'status' and 'userMessage' fields of the returned object). "
+            + "\nDo not assume the user approved your change or that any changes have actually been written to disk on the basis that you see a FunctionResponse for this tool or an autopilot message indicating the tool call got approved that."
+            + "\n\nNever call this tool for a stale resource (a resource showing as stale or a file that has modifications on the netbeans editor."
+            + "\nDo not use this tool for creating new files, just for updating existing ones. "
+            //+ "\nAlso dont try to do: LocalFiles.readFile and proposeCodeChange for the same file on the same batch (on the same message, on the same response)."
+
+            + "\n\nNote: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Calling LocalFiles.readFile for the returned resource on your next trip will auto prune the FunctionCall/FunctionResponse paris of proposeChange and will reduce the overall token usage of the file modification to half.",
+             behavior = ContextBehavior.STATEFUL_REPLACE)
     public static ProposeChangeResult proposeChange(
             @AIToolParam("The absolute path of the existing file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
@@ -79,7 +82,7 @@ public class Coding {
                 }
 
                 StreamSource source1 = StreamSource.createSource("Original", "Original", "text/x-java", originalFile);
-                
+
                 try (Reader reader = new InputStreamReader(proposedFileObject.getInputStream())) {
                     StreamSource source2 = StreamSource.createSource("Proposed Change", "Proposed", "text/x-java", reader);
                     DiffView view = Diff.getDefault().createDiff(source1, source2);
@@ -89,7 +92,7 @@ public class Coding {
                     JFrame mainWindow = (JFrame) WindowManager.getDefault().getMainWindow();
                     JDialog dialog = new JDialog(mainWindow, "Proposing Change for " + originalFile.getName(), true);
                     dialog.setLayout(new BorderLayout(10, 10));
-                    
+
                     JTextArea explanationArea = new JTextArea(explanation);
                     explanationArea.setEditable(false);
                     explanationArea.setWrapStyleWord(true);
@@ -103,17 +106,17 @@ public class Coding {
                     JPanel commentPanel = new JPanel(new BorderLayout());
                     commentPanel.setBorder(new TitledBorder("Add Comment (Optional)"));
                     commentPanel.add(new JScrollPane(commentTextArea), BorderLayout.CENTER);
-                    
+
                     JButton acceptButton = new JButton("Accept & Save");
                     JButton cancelButton = new JButton("Cancel");
                     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
                     buttonPanel.add(cancelButton);
                     buttonPanel.add(acceptButton);
-                    
+
                     JPanel bottomPanel = new JPanel(new BorderLayout(0, 5));
                     bottomPanel.add(commentPanel, BorderLayout.NORTH);
                     bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
-                    
+
                     dialog.add(bottomPanel, BorderLayout.SOUTH);
 
                     acceptButton.addActionListener(e -> {
@@ -121,29 +124,29 @@ public class Coding {
                             String finalText = new String(proposedFileObject.asBytes());
                             Files.writeString(Paths.get(filePath), finalText);
                             File updatedFile = new File(filePath);
-                            
+
                             FileInfo fileInfo = new FileInfo(
-                                filePath,
-                                finalText,
-                                updatedFile.lastModified(),
-                                updatedFile.length()
+                                    filePath,
+                                    finalText,
+                                    updatedFile.lastModified(),
+                                    updatedFile.length()
                             );
                             String userComment = commentTextArea.getText();
                             resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ACCEPTED, userComment, fileInfo));
-                            
+
                         } catch (IOException ex) {
                             exceptionHolder.set(ex);
                         } finally {
                             dialog.dispose();
                         }
                     });
-                    
+
                     cancelButton.addActionListener(e -> {
                         String userComment = commentTextArea.getText();
                         resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment, null));
                         dialog.dispose();
                     });
-                    
+
                     dialog.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosed(WindowEvent e) {
@@ -154,13 +157,13 @@ public class Coding {
                     });
 
                     dialog.pack();
-                    
+
                     GraphicsConfiguration gc = mainWindow.getGraphicsConfiguration();
                     Rectangle screenBounds = gc.getBounds();
                     int dialogWidth = (int) (screenBounds.width * 0.9);
                     int dialogHeight = (int) (screenBounds.height * 0.9);
                     dialog.setSize(new Dimension(dialogWidth, dialogHeight));
-                    
+
                     dialog.setLocationRelativeTo(mainWindow);
                     dialog.setVisible(true);
                 }
@@ -172,11 +175,11 @@ public class Coding {
         });
 
         dialogLatch.await();
-        
+
         if (exceptionHolder.get() != null) {
             throw exceptionHolder.get();
         }
-        
+
         return resultHolder.get();
     }
 
