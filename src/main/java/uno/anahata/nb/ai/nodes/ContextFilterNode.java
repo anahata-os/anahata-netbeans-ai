@@ -11,7 +11,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
-import uno.anahata.nb.ai.context.ContextFiles;
 
 public class ContextFilterNode extends FilterNode implements PropertyChangeListener {
     private static final Logger log = Logger.getLogger(ContextFilterNode.class.getName());

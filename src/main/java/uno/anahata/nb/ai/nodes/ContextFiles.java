@@ -1,4 +1,4 @@
-package uno.anahata.nb.ai.context;
+package uno.anahata.nb.ai.nodes;
 
 import com.google.genai.types.FunctionResponse;
 import com.google.genai.types.Part;

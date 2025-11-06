@@ -18,7 +18,7 @@ import org.openide.util.Lookup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import uno.anahata.nb.ai.NetBeansModuleUtils;
+import uno.anahata.nb.ai.util.NetBeansModuleUtils;
 
 public final class DisabledModulesMimeUtils {
 

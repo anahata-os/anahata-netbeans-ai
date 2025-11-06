@@ -1,5 +1,6 @@
 package uno.anahata.nb.ai;
 
+import uno.anahata.nb.ai.util.NetBeansModuleUtils;
 import java.util.logging.Logger;
 import lombok.extern.slf4j.Slf4j;
 import org.openide.modules.ModuleInstall;

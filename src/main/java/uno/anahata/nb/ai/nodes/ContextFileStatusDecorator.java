@@ -13,7 +13,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.StatusDecorator;
 import org.openide.util.lookup.ServiceProvider;
-import uno.anahata.nb.ai.context.ContextFiles;
 
 //@ServiceProvider(service = StatusDecorator.class, position = 100)
 public class ContextFileStatusDecorator implements StatusDecorator, PropertyChangeListener {

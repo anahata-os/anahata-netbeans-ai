@@ -9,6 +9,7 @@ import javax.swing.text.EditorKit;
 import org.netbeans.api.editor.mimelookup.MimeLookup;
 import uno.anahata.gemini.ui.render.editorkit.EditorKitProvider;
 import uno.anahata.nb.ai.mime.DisabledModulesMimeUtils.MimeInfo;
+import uno.anahata.nb.ai.mime.MimeUtils;
 
 public class NetBeansEditorKitProvider implements EditorKitProvider {
     private static final Logger logger = Logger.getLogger(NetBeansEditorKitProvider.class.getName());

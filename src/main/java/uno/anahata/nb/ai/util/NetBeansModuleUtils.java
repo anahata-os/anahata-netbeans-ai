@@ -1,4 +1,4 @@
-package uno.anahata.nb.ai;
+package uno.anahata.nb.ai.util;
 
 import uno.anahata.nb.ai.util.ClassPathUtils;
 import java.io.File;
@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import uno.anahata.nb.ai.AnahataInstaller;
 
 /**
  * Utility class for introspecting modules and their classpaths. Primary used for RunningJVM.

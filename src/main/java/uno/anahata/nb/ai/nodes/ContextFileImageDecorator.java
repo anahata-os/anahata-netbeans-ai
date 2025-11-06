@@ -15,7 +15,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.ImageDecorator;
 import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
-import uno.anahata.nb.ai.context.ContextFiles;
 
 @ServiceProvider(service = ImageDecorator.class, position = 100)
 public class ContextFileImageDecorator implements ImageDecorator, PropertyChangeListener {
