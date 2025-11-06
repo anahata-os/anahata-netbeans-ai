@@ -10,7 +10,6 @@ import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import uno.anahata.gemini.ui.GeminiPanel;
-import uno.anahata.nb.ai.gemini.NetBeansGeminiConfig;
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenAnahataAction")
 @ActionReference(path = "Menu/Window", position = 333)

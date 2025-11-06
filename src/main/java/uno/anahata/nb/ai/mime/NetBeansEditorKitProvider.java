@@ -28,7 +28,8 @@ public class NetBeansEditorKitProvider implements EditorKitProvider {
             "javascript", "text/javascript",
             "json", "text/x-json",
             "sql", "text/x-sql",
-            "properties", "text/x-properties"
+            "properties", "text/x-properties",
+            "bash", "text/plain" // Added explicit bash fallback
         );
         languageToMimeTypeMap.putAll(hardcodedMap);
         logger.log(Level.INFO, "Populated cache with {0} hardcoded languaget to mime type.", languageToMimeTypeMap.size());

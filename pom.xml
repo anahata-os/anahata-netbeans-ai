@@ -319,13 +319,19 @@
             <version>${netbeans.version}</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-libs-javacapi</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
         <!--
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-libs-git</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        -->
+-->
 
         <!--Module IDE deps-->
         
@@ -361,6 +367,11 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectuiapi-base</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-platform</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
@@ -415,7 +426,24 @@
                     <version>${netbeans.version}</version>
                 </dependency>
         -->
-
+        
+        <!--
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-platform-ui</artifactId>
+            <version>RELEASE270</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-project-ui</artifactId>
+            <version>RELEASE270</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-sourceui</artifactId>
+            <version>RELEASE270</version>
+        </dependency>
+-->
     </dependencies>
 
     <build>
@@ -431,14 +459,16 @@
                     <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
                     <brandingToken>anahata</brandingToken>
                     <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
-                    <!--
                     <moduleDependencies>
                         <dependency>
-                            <id>org.netbeans.modules:org-netbeans-modules-maven</id>
-                            <type>impl</type>
+                            <id>org.netbeans.api:org-netbeans-modules-java-platform</id>
+                            <type>spec</type>
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.api:org-netbeans-modules-java-source</id>
+                            <type>spec</type>
                         </dependency>
                     </moduleDependencies>
-                    -->
                 </configuration>
             </plugin>
             <plugin>

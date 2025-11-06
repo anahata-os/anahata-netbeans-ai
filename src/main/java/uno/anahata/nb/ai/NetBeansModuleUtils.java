@@ -1,6 +1,6 @@
 package uno.anahata.nb.ai;
 
-import uno.anahata.nb.ai.deprecated.ClassPathUtils;
+import uno.anahata.nb.ai.util.ClassPathUtils;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;

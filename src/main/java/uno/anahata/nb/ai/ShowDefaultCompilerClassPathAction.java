@@ -4,7 +4,7 @@
  */
 package uno.anahata.nb.ai;
 
-import uno.anahata.nb.ai.deprecated.ClassPathUtils;
+import uno.anahata.nb.ai.util.ClassPathUtils;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
