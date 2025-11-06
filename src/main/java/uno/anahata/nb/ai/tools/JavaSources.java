@@ -53,7 +53,7 @@ public class JavaSources {
 
         final AtomicReference<String> sourceCodeRef = new AtomicReference<>();
         
-        javaSource.runUserActionTask(new Task<CompilationController>() {
+        javaSource.runUserActionTask(new Task<>() {
             @Override
             public void run(CompilationController controller) throws Exception {
                 controller.toPhase(JavaSource.Phase.RESOLVED);

@@ -1,11 +1,17 @@
 package uno.anahata.nb.ai.tools;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import com.sun.source.doctree.DocCommentTree;
+import com.sun.source.tree.ClassTree;
+import com.sun.source.tree.MethodTree;
+import com.sun.source.util.DocTrees;
+import com.sun.source.util.TreePath;
+import com.sun.source.util.TreePathScanner;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import org.netbeans.api.java.queries.JavadocForBinaryQuery;
+import org.netbeans.api.java.source.JavaSource;
 import org.openide.filesystems.FileObject;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
@@ -17,83 +23,155 @@ import uno.anahata.nb.ai.util.NetBeansJavaQueryUtils;
  */
 public class JavaDocs {
 
-    // Regex to find the method signature and its preceding Javadoc block
-    private static final Pattern METHOD_PATTERN = Pattern.compile(
-            "(/\\*\\*(?:.|\\n)*?\\*/)?\\s*.*\\b(public|protected|private|static|final|abstract|synchronized|transient|volatile)\\s+.*\\b%s\\b\\s*\\([^)]*\\)\\s*(\\{|;)",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL
-    );
-
     /**
      * Gets the Javadoc URL for a given fully qualified class name by searching all open projects and their dependencies.
      * @param fqn The fully qualified class name (e.g., 'java.lang.String')
-     * @return A string containing the found Javadoc roots or an error message.
+     * @return A string containing the found Javadoc roots or a message if none were found.
+     * @throws Exception if an error occurs during the search.
      */
     @AIToolMethod(value = "Gets the Javadoc URL for a given fully qualified class name by searching all open projects and their dependencies.", requiresApproval = false)
-    public static String getJavadocForClass(@AIToolParam("The fully qualified class name (e.g., 'java.lang.String')") String fqn) {
-        try {
-            String classAsPath = fqn.replace('.', '/') + ".class";
-            NetBeansJavaQueryUtils.ClassSearchResult searchResult = NetBeansJavaQueryUtils.findClassFile(classAsPath);
+    public static String getJavadocUrlForClass(@AIToolParam("The fully qualified class name (e.g., 'java.lang.String')") String fqn) throws Exception {
+        String classAsPath = fqn.replace('.', '/') + ".class";
+        NetBeansJavaQueryUtils.ClassSearchResult searchResult = NetBeansJavaQueryUtils.findClassFile(classAsPath);
 
-            if (searchResult == null) {
-                return "Error: Could not find " + classAsPath + " in any registered project or JDK classpath.";
+        if (searchResult == null) {
+            throw new Exception("Could not find " + classAsPath + " in any registered project or JDK classpath.");
+        }
+
+        FileObject root = searchResult.ownerCp.findOwnerRoot(searchResult.classFile);
+        if (root == null) {
+            throw new Exception("Could not find the owner root for " + searchResult.classFile.getPath());
+        }
+
+        URL rootUrl = root.toURL();
+        JavadocForBinaryQuery.Result result = JavadocForBinaryQuery.findJavadoc(rootUrl);
+        URL[] javadocRoots = result.getRoots();
+
+        if (javadocRoots.length > 0) {
+            StringBuilder sb = new StringBuilder("Found Javadoc root(s) for " + fqn + ":\n");
+            for (URL javadocRoot : javadocRoots) {
+                sb.append("- ").append(javadocRoot.toExternalForm()).append("\n");
             }
-
-            FileObject root = searchResult.ownerCp.findOwnerRoot(searchResult.classFile);
-            if (root == null) {
-                return "Error: Could not find the owner root for " + searchResult.classFile.getPath();
-            }
-
-            URL rootUrl = root.toURL();
-            JavadocForBinaryQuery.Result result = JavadocForBinaryQuery.findJavadoc(rootUrl);
-            URL[] javadocRoots = result.getRoots();
-
-            if (javadocRoots.length > 0) {
-                StringBuilder sb = new StringBuilder("Found Javadoc root(s) for " + fqn + ":\n");
-                for (URL javadocRoot : javadocRoots) {
-                    sb.append("- ").append(javadocRoot.toExternalForm()).append("\n");
-                }
-                return sb.toString();
-            } else {
-                return "No Javadoc found for " + fqn + ". Searched with root: " + rootUrl.toExternalForm();
-            }
-        } catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            return "An exception occurred while searching for Javadoc for " + fqn + ":\n" + sw.toString();
+            return sb.toString();
+        } else {
+            return "No Javadoc URL found for " + fqn + ". Searched with root: " + rootUrl.toExternalForm();
         }
     }
 
     /**
-     * Gets the Javadoc for a specific method within a class using regex.
+     * Gets the Javadoc comment for a specific type (class, interface, enum, inner class) from its source file.
+     * @param fqn The fully qualified name of the type.
+     * @return The Javadoc content or a message indicating it was not found.
+     * @throws Exception if an error occurs during parsing.
+     */
+    @AIToolMethod(value = "Gets the Javadoc comment for a specific type (class, interface, enum, inner class) from its source file.", requiresApproval = false)
+    public static String getJavadocForType(@AIToolParam("The fully qualified name of the type.") String fqn) throws Exception {
+        FileObject sourceFile = NetBeansJavaQueryUtils.findSourceFile(fqn);
+        if (sourceFile == null) {
+            throw new Exception("Source file not found for " + fqn);
+        }
+
+        JavaSource javaSource = JavaSource.forFileObject(sourceFile);
+        if (javaSource == null) {
+            throw new Exception("Could not create JavaSource for " + sourceFile.getPath());
+        }
+
+        final AtomicReference<String> javadocRef = new AtomicReference<>();
+        final AtomicReference<Exception> exceptionRef = new AtomicReference<>();
+
+        javaSource.runUserActionTask(controller -> {
+            try {
+                controller.toPhase(JavaSource.Phase.PARSED);
+                DocTrees docTrees = controller.getDocTrees();
+
+                new TreePathScanner<Void, Void>() {
+                    @Override
+                    public Void visitClass(ClassTree classTree, Void p) {
+                        TreePath path = getCurrentPath();
+                        Element element = controller.getTrees().getElement(path);
+                        if (element instanceof TypeElement) {
+                            TypeElement typeElement = (TypeElement) element;
+                            if (typeElement.getQualifiedName().toString().equals(fqn)) {
+                                DocCommentTree docCommentTree = docTrees.getDocCommentTree(path);
+                                if (docCommentTree != null) {
+                                    javadocRef.set(cleanJavadoc(docCommentTree.toString()));
+                                }
+                            }
+                        }
+                        return super.visitClass(classTree, p);
+                    }
+                }.scan(controller.getCompilationUnit(), null);
+            } catch (Exception e) {
+                exceptionRef.set(e);
+            }
+        }, true);
+
+        if (exceptionRef.get() != null) {
+            throw exceptionRef.get();
+        }
+        
+        String result = javadocRef.get();
+        return result != null ? result : "No Javadoc found for type '" + fqn + "'";
+    }
+    
+    /**
+     * Gets the Javadoc comment for a specific method from its source file.
      * @param fqn The fully qualified class name.
      * @param methodName The name of the method.
      * @return The Javadoc content or a message indicating it was not found.
+     * @throws Exception if an error occurs during parsing.
      */
-    @AIToolMethod(value = "Gets the Javadoc for a specific method within a class using regex.", requiresApproval = false)
-    public static String getJavadocForMethod(
-            @AIToolParam("The fully qualified class name.") String fqn,
-            @AIToolParam("The name of the method.") String methodName) {
-        try {
-            String sourceContent = NetBeansJavaQueryUtils.getSourceContent(fqn);
-            if (sourceContent == null) {
-                return "Error: Could not find source content for " + fqn;
-            }
-
-            Pattern pattern = Pattern.compile(String.format(METHOD_PATTERN.pattern(), Pattern.quote(methodName)), METHOD_PATTERN.flags());
-            Matcher matcher = pattern.matcher(sourceContent);
-
-            if (matcher.find()) {
-                String javadoc = matcher.group(1); // Group 1 is the optional Javadoc block
-                if (javadoc != null) {
-                    return javadoc.replaceAll("^/\\*\\*|\\*/$", "").replaceAll("^[ \\t]*\\*", "").trim();
-                }
-            }
-
-            return "No Javadoc found for method '" + methodName + "' in class " + fqn;
-        } catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            return "An exception occurred: " + sw.toString();
+    @AIToolMethod(value = "Gets the Javadoc comment for a specific method from its source file.", requiresApproval = false)
+    public static String getJavadocForMethod(@AIToolParam("The fully qualified class name.") String fqn, @AIToolParam("The name of the method.") String methodName) throws Exception {
+        FileObject sourceFile = NetBeansJavaQueryUtils.findSourceFile(fqn);
+        if (sourceFile == null) {
+            throw new Exception("Source file not found for " + fqn);
         }
+
+        JavaSource javaSource = JavaSource.forFileObject(sourceFile);
+        if (javaSource == null) {
+            throw new Exception("Could not create JavaSource for " + sourceFile.getPath());
+        }
+
+        final AtomicReference<String> javadocRef = new AtomicReference<>();
+        final AtomicReference<Exception> exceptionRef = new AtomicReference<>();
+
+        javaSource.runUserActionTask(controller -> {
+            try {
+                controller.toPhase(JavaSource.Phase.PARSED);
+                DocTrees docTrees = controller.getDocTrees();
+
+                new TreePathScanner<Void, Void>() {
+                    @Override
+                    public Void visitMethod(MethodTree methodTree, Void p) {
+                        if (methodTree.getName().toString().equals(methodName)) {
+                            TreePath path = getCurrentPath();
+                            DocCommentTree docCommentTree = docTrees.getDocCommentTree(path);
+                            if (docCommentTree != null) {
+                                javadocRef.set(cleanJavadoc(docCommentTree.toString()));
+                            }
+                        }
+                        return super.visitMethod(methodTree, p);
+                    }
+                }.scan(controller.getCompilationUnit(), null);
+            } catch (Exception e) {
+                exceptionRef.set(e);
+            }
+        }, true);
+
+        if (exceptionRef.get() != null) {
+            throw exceptionRef.get();
+        }
+        
+        String result = javadocRef.get();
+        return result != null ? result : "No Javadoc found for method '" + methodName + "' in class " + fqn;
+    }
+    
+    private static String cleanJavadoc(String rawDoc) {
+        if (rawDoc == null) return "";
+        return rawDoc
+            .replaceAll("^/\\*\\*|\\*/$", "") // Remove /** and */
+            .replaceAll("\n[ \t]*\\* ?", "\n")     // Remove leading * from each line
+            .trim();
     }
 }
