@@ -66,13 +66,23 @@
                     <groupId>com.formdev</groupId>
                     <artifactId>flatlaf</artifactId>
                 </exclusion>
-                <!--
                 <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.jspecify</groupId>
+                    <artifactId>jspecify</artifactId>
                 </exclusion>
-                        -->
             </exclusions>
+        </dependency>
+        
+        <!-- ADDED TO RESOLVE RUNTIME ACCESSIBILITY ERROR -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
         </dependency>
         
         <!--12 Openide core deps-->
@@ -147,13 +157,6 @@
             <artifactId>org-openide-util</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-enumerations</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
@@ -246,22 +249,15 @@
             <version>${netbeans.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.jspecify.jspecify</groupId>
-                    <artifactId>jspecify</artifactId>
-                </exclusion>        
-                <exclusion>
                     <groupId>com.google.inject</groupId>
                     <artifactId>guice</artifactId>
-                </exclusion>        
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jspecify.jspecify</groupId>
+                    <artifactId>jspecify</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-api-mobility</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        -->
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -324,14 +320,6 @@
             <artifactId>org-netbeans-libs-javacapi</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        
-        <!--
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-libs-git</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
--->
 
         <!--Module IDE deps-->
         
@@ -419,31 +407,39 @@
             <artifactId>org-netbeans-modules-diff</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <!--
-                <dependency>
-                    <groupId>org.netbeans.modules</groupId>
-                    <artifactId>org-netbeans-modules-projectui</artifactId>
-                    <version>${netbeans.version}</version>
-                </dependency>
-        -->
         
-        <!--
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-java-platform-ui</artifactId>
-            <version>RELEASE270</version>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-maven</artifactId>
+            <version>${netbeans.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jspecify.jspecify</groupId>
+                    <artifactId>jspecify</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-java-project-ui</artifactId>
-            <version>RELEASE270</version>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-maven-embedder</artifactId>
+            <version>${netbeans.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jspecify.jspecify</groupId>
+                    <artifactId>jspecify</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-java-sourceui</artifactId>
-            <version>RELEASE270</version>
-        </dependency>
--->
+        
     </dependencies>
 
     <build>
@@ -467,6 +463,14 @@
                         <dependency>
                             <id>org.netbeans.api:org-netbeans-modules-java-source</id>
                             <type>spec</type>
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.modules:org-netbeans-modules-maven</id>
+                            <type>impl</type>
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.modules:org-netbeans-modules-maven-embedder</id>
+                            <type>impl</type>
                         </dependency>
                     </moduleDependencies>
                 </configuration>
