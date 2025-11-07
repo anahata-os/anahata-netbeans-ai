@@ -53,29 +53,27 @@ public class JavaSources {
 
         final AtomicReference<String> sourceCodeRef = new AtomicReference<>();
         
-        javaSource.runUserActionTask(new Task<>() {
-            @Override
-            public void run(CompilationController controller) throws Exception {
-                controller.toPhase(JavaSource.Phase.RESOLVED);
-                CompilationUnitTree cu = controller.getCompilationUnit();
-                Trees trees = controller.getTrees();
-                SourcePositions sourcePositions = trees.getSourcePositions();
-                String fileContent = controller.getText();
+        javaSource.runUserActionTask(controller -> {
+            controller.toPhase(JavaSource.Phase.RESOLVED);
+            CompilationUnitTree cu = controller.getCompilationUnit();
+            Trees trees = controller.getTrees();
+            SourcePositions sourcePositions = trees.getSourcePositions();
+            String fileContent = controller.getText();
 
-                new TreePathScanner<Void, Void>() {
-                    @Override
-                    public Void visitMethod(MethodTree methodTree, Void p) {
-                        if (methodTree.getName().toString().equals(methodName)) {
-                            Element methodElement = trees.getElement(getCurrentPath());
-                            if (methodElement != null) {
-                                List<? extends VariableTree> params = methodTree.getParameters();
-                                if (params.size() == parameterTypes.size()) {
-                                    boolean match = true;
-                                    for (int i = 0; i < params.size(); i++) {
-                                        VariableTree param = params.get(i);
-                                        Element paramElement = trees.getElement(new com.sun.source.util.TreePath(getCurrentPath(), param));
-                                        if (paramElement != null) {
-                                            TypeMirror paramType = paramElement.asType();
+            new TreePathScanner<Void, Void>() {
+                @Override
+                public Void visitMethod(MethodTree methodTree, Void p) {
+                    if (methodTree.getName().toString().equals(methodName)) {
+                        Element methodElement = trees.getElement(getCurrentPath());
+                        if (methodElement != null) {
+                            List<? extends VariableTree> params = methodTree.getParameters();
+                            if (params.size() == parameterTypes.size()) {
+                                boolean match = true;
+                                for (int i = 0; i < params.size(); i++) {
+                                    VariableTree param = params.get(i);
+                                    Element paramElement = trees.getElement(new com.sun.source.util.TreePath(getCurrentPath(), param));
+                                    if (paramElement != null) {
+                                        TypeMirror paramType = paramElement.asType();
                                             // Diagnostic confirmed this returns FQN, so we match against the input list
                                             if (!paramType.toString().equals(parameterTypes.get(i))) {
                                                 match = false;
@@ -97,7 +95,7 @@ public class JavaSources {
                         return super.visitMethod(methodTree, p);
                     }
                 }.scan(cu, null);
-            }
+            
         }, true);
 
         return sourceCodeRef.get();
