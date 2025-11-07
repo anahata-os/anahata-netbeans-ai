@@ -6,7 +6,7 @@ This project is the flagship host application for the `gemini-java-client`. It i
 This plugin's main responsibilities are:
 -   Providing a `TopComponent` (`AnahataTopComponent`) to host the chat panel.
 -   Implementing a NetBeans-specific configuration (`NetBeansGeminiConfig`) that injects live IDE state into the AI's context on every request.
--   Supplying a suite of AI tools (`tools` package) that allow the model to interact programmatically with the NetBeans IDE.
+-   Supplying a suite of AI tools (`tools` package) that allow the model to "see" and interact programmatically with the NetBeans IDE.
 
 ## 2. Key Components & Packages
 
@@ -37,10 +37,10 @@ Therefore, the strategy is to proceed with a **V1 Launch** with the current feat
 
 ## V1 Launch Goals (Immediate Focus)
 
--   **Node Decoration (High Priority):** The file decoration in the NetBeans project tree for files that are "in-context" is currently non-functional. This is a critical pre-launch feature. The next step is to research the NetBeans Git module's source code to find the correct implementation pattern for adding an Anahata badge and updating the node's tooltip in the Projects View.
--   **Plugin Portal:** Package the plugin and submit it to the Apache NetBeans Plugin Portal.
--   **Performance:** Investigate and improve the initial startup time of the `AnahataTopComponent`.
--   **UI Polish:**
+-   [ ] **Node Decoration (High Priority):** The file decoration in the NetBeans project tree for files that are "in-context" is currently non-functional. This is a critical pre-launch feature. *Next Step: Research NetBeans Git module source for correct implementation pattern.*
+-   [ ] **Plugin Portal:** Package the plugin and submit it to the Apache NetBeans Plugin Portal.
+-   [ ] **Performance:** Investigate and improve the initial startup time of the `AnahataTopComponent`.
+-   [ ] **UI Polish:**
     -   [ ] Implement the fix to display the `explanation` text in the `Coding.proposeChange` modal diff dialog (e.g., by wrapping it in a `TitledBorder`).
 
 ## V2 Mega-Refactor Plan (Future Focus)

@@ -1,49 +1,42 @@
 [![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
 
-# Anahata AI Assistant for NetBeans
+# 🚀 Anahata AI Assistant for NetBeans: Code from the Heart
 
-An unprecedented, deeply integrated AI assistant for the Apache NetBeans IDE, powered by Google's Gemini models.
+**Elevate your coding experience with a true AI partner that understands your workflow.**
+
+Anahata is an unprecedented, deeply integrated AI assistant for the Apache NetBeans IDE, powered by Google's Gemini models. It's more than a chatbot—it's a harmonious extension of your creative process, designed to bring flow and intelligence directly to your work.
 
 **Visit our new website: [anahata.uno](https://anahata.uno)**
 
-This plugin is not just a chatbot in a side panel. It's a true AI partner with direct, programmatic access to the IDE's core functionalities. It can read and understand your open projects, check for IDE errors, interact with the editor, and even invoke project actions like `build` and `run`.
+## ✨ Why Anahata is the Future of IDE Assistance
 
-## The Anahata Philosophy: Coding from the Heart
+Traditional AI assistants are disconnected. Anahata is built from the ground up to be a native part of your IDE, giving it unparalleled context and capability.
 
-In Sanskrit, "Anahata" refers to the heart chakrathe center of balance, compassion, and connection. This plugin is named with that spirit in mind. Our goal is to create an AI assistant that doesn't just execute commands, but works in harmony with the developer. Anahata is designed to be an intuitive partner, one that understands the context of your work and helps you stay in the creative flow, making the development process feel less like a task and more like a seamless extension of your thoughts.
+### 1. Deep, Real-Time Context Awareness (The Architectural Advantage)
+
+Anahata doesn't guess. On every request, it receives a live, structured data payload that includes:
+
+-   **Live Diagnostics:** Real-time visibility into all **IDE errors and warnings** across your open projects. Ask it to fix a compilation error, and it knows exactly where to look.
+-   **Full Project Structure:** A complete overview of all open projects, their file structures, and the status of files in the conversation context.
+-   **Editor State:** A list of all files currently open in the editor.
+
+### 2. Programmatic IDE Control (Tools)
+
+Anahata can execute high-level IDE actions with a simple natural language command:
+
+| Feature | Description | Benefit |
+| :--- | :--- | :--- |
+| **Project Actions** | Invoke `build`, `run`, `clean`, and other project actions directly. | **Accelerate your workflow** by eliminating manual clicks. |
+| **Code Modification** | Use the `proposeChange` tool to receive code patches via a **NetBeans modal diff dialog** for secure, explicit user approval. | **Safe, auditable, and collaborative** code changes. |
+| **Introspection** | Query Javadoc, source code, and class members for any type in your project or dependencies. | **Instant documentation** and deep code understanding without leaving the chat. |
 
 ---
 ### **Powered by the Gemini Java Client**
 
 The Anahata AI Assistant is the premier showcase for the [**`gemini-java-client`**](https://github.com/anahata-os/gemini-java-client), our powerful, enterprise-ready library for integrating Google Gemini into any Java application. 
 
-While this plugin provides a complete solution for NetBeans users, the underlying `gemini-java-client` is available for developers to build their own custom AI-powered tools and applications. It features a robust tool-calling framework, built-in Swing UI components, and a flexible configuration system. The client is available under a dual-license model (AGPLv3 for open-source, commercial for proprietary use).
+The client features a robust tool-calling framework, built-in Swing UI components, and a flexible configuration system. It is available under a dual-license model (AGPLv3 for open-source, commercial for proprietary use).
 ---
-
-## Features
-
-- **Deep Context Awareness:** The assistant has real-time knowledge of your workspace. On every request, it knows which projects are open, which files are in the editor, and what errors or warnings the IDE has detected.
-- **Direct IDE Interaction:** Ask the assistant to read a file, and it will. Ask it to build a project, and it will invoke the appropriate build action.
-- **Full Project Comprehension:** Because it can read all your source files, the assistant builds a comprehensive understanding of your project's architecture, allowing for more insightful and accurate assistance.
-- **Extensible Toolset:** The plugin's capabilities are defined by a set of "Tools" that map directly to NetBeans APIs, making it easy to extend the assistant with new functionalities.
-- **Rich Chat Interface:** Includes support for file attachments, conversation history, and syntax highlighting for generated code snippets.
-
-## How It Works: The Architectural Advantage
-
-The key to this plugin's power is the `NetBeansGeminiConfig` class. Unlike traditional AI assistants that receive only a text prompt, this plugin's configuration class dynamically constructs a rich, detailed set of system instructions for the AI on *every single turn* of the conversation.
-
-This payload includes:
-1.  A complete overview of all open projects, including their file structure (`Projects.getOverview`).
-2.  A list of all files currently open in the editor (`Editor.getOpenFiles`).
-3.  A summary of all current IDE errors and warnings (`IDE.getAllIDEAlerts`).
-
-By providing this live, structured data directly to the model, the assistant can reason about the state of your IDE and take meaningful, context-aware actions using its suite of tools.
-
-### Core Components
-
-- **`AnahataTopComponent`**: The main UI window for the assistant, registered to appear in the IDE's "output" area.
-- **`NetBeansGeminiConfig`**: The central configuration class that bridges the generic `gemini-java-client` with the NetBeans environment. It provides the host-specific system instructions and registers the NetBeans-specific tools.
-- **`functions.spi` package**: Contains all the tool implementations that interact directly with NetBeans APIs.
 
 ## Getting Started
 
