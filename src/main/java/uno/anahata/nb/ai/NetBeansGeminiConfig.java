@@ -11,7 +11,7 @@ import uno.anahata.nb.ai.tools.JavaDocs;
 import uno.anahata.nb.ai.tools.JavaIntrospection;
 import uno.anahata.nb.ai.tools.JavaSources;
 import uno.anahata.nb.ai.tools.Maven;
-import uno.anahata.nb.ai.tools.NetBeansJVM;
+import uno.anahata.nb.ai.tools.NetBeansProjectJVM;
 import uno.anahata.nb.ai.tools.Output;
 import uno.anahata.nb.ai.tools.Projects;
 import uno.anahata.nb.ai.tools.TopComponents;
@@ -32,7 +32,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
     @Override
     public List<Class<?>> getAutomaticFunctionClasses() {
         List<Class<?>> ret = super.getAutomaticFunctionClasses();
-        ret.add(NetBeansJVM.class);
+        ret.add(NetBeansProjectJVM.class);
         ret.add(Git.class);
         ret.add(IDE.class);
         ret.add(Maven.class);

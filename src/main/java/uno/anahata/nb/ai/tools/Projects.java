@@ -22,6 +22,7 @@ import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
@@ -33,6 +34,7 @@ import uno.anahata.gemini.context.stateful.ResourceStatus;
 import uno.anahata.gemini.context.stateful.StatefulResourceStatus;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.nb.ai.model.maven.MavenBuildResult;
 import uno.anahata.nb.ai.model.projects.ProjectFile;
 import uno.anahata.nb.ai.model.projects.ProjectOverview;
 import uno.anahata.nb.ai.model.projects.SourceFolder;
@@ -220,7 +222,7 @@ public class Projects {
 
         if (ap.isActionEnabled(action, context)) {
             ap.invokeAction(action, context);
-            return "Successfully invoked the '" + action + "' action on project '" + project + "'.";
+            return "Successfully invoked (fire and forget) the '" + action + "' action on project '" + project + "'. (Non-Maven, Asynchronous)";
         } else {
             String[] supportedActions = ap.getSupportedActions();
             boolean isSupported = Arrays.asList(supportedActions).contains(action);

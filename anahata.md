@@ -1,54 +1,50 @@
-# Project: anahata-netbeans-ai - Gemini NetBeans Plugin
+# Project: anahata-netbeans-ai - Anahata AI Assistant Plugin
 
 ## 1. Purpose
-This project is a NetBeans plugin that integrates the Gemini AI model directly into the IDE. It serves as the primary bridge between the user, the NetBeans environment, and the underlying `gemini-java-client` library, which provides the core chat UI and API communication logic.
+This project is the flagship host application for the `gemini-java-client`. It integrates the Anahata AI Assistant directly into the Apache NetBeans IDE, providing a deeply context-aware development partner.
 
 This plugin's main responsibilities are:
--   Providing a `TopComponent` to host the Gemini chat panel.
--   Implementing a NetBeans-specific configuration (`NetBeansGeminiConfig`).
--   Supplying a suite of AI tools (`functions.spi`) that allow the model to interact with the NetBeans IDE itself.
+-   Providing a `TopComponent` (`AnahataTopComponent`) to host the chat panel.
+-   Implementing a NetBeans-specific configuration (`NetBeansGeminiConfig`) that injects live IDE state into the AI's context on every request.
+-   Supplying a suite of AI tools (`tools` package) that allow the model to interact programmatically with the NetBeans IDE.
 
 ## 2. Key Components & Packages
 
 ### `uno.anahata.nb.ai`
 *   **Summary**: Contains the core NetBeans integration classes.
 *   **Key Classes**:
-    *   `GeminiTopComponent`: The main window (`TopComponent`) for the Gemini chat UI within NetBeans.
-    *   `NetBeansGeminiConfig`: A concrete `GeminiConfig` implementation that provides host-specific instructions and registers all the NetBeans-specific AI tool classes.
-    *   `NetBeansEditorKitProvider`: A crucial class that implements the `EditorKitProvider` interface from the client library. It bridges NetBeans' powerful syntax highlighting capabilities to the `CodeBlockRenderer` in the `gemini-java-client` UI.
-    *   `GeminiInstaller`: A standard NetBeans module installer class that handles setup tasks.
+    *   `AnahataTopComponent`: The main window for the AI assistant, responsible for managing the UI lifecycle.
+    *   `NetBeansGeminiConfig`: A concrete `GeminiConfig` implementation that provides host-specific system instructions and registers all the NetBeans-specific AI tool classes.
+    *   `AnahataInstaller`: A standard NetBeans module installer class that handles setup tasks.
 
-### `uno.anahata.nb.ai.functions.spi`
-*   **Summary**: The Service Provider Interface (SPI) for all NetBeans-specific AI tools. These classes grant the AI model the ability to "see" and interact with the IDE.
+### `uno.anahata.nb.ai.tools`
+*   **Summary**: The heart of the plugin's unique capabilities. These classes grant the AI model the ability to "see" and interact with the IDE.
 *   **Key Classes**:
-    *   `Projects`: Provides tools for listing and querying open NetBeans projects (`getOpenProjects`, `getOverview`).
-    *   `Editor`: Provides tools for interacting with the code editor (`openFile`, `getOpenFiles`).
-    *   `IDE`: Provides general IDE interaction tools (`getAllIDEAlerts`, `getLogs`).
-    *   `Workspace`: Provides tools for getting an overview of the entire workspace.
-    *   `Git`: Provides tools for basic Git integration (`openCommitDialog`).
-    *   And others like `Maven`, `Output`, `TopComponents`.
+    *   `Projects`: Provides tools for listing and querying open NetBeans projects.
+    *   `Editor`: Provides tools for interacting with the code editor.
+    *   `IDE`: Provides general IDE interaction tools, most importantly `getAllIDEAlerts` which allows the AI to see compilation errors and warnings.
+    *   `Maven`: Provides tools for invoking Maven actions.
+    *   `Coding`: Provides the `proposeChange` tool, which shows a diff view for user approval.
 
-### `uno.anahata.nb.ai.deprecated`
-*   **Summary**: Contains deprecated utility classes that are no longer in active use but are kept for historical context.
+## 3. Competitive Advantage & V1 Launch Strategy
 
-## 3. Relationship with `gemini-java-client`
-This project is a **host application**. It includes `gemini-java-client` as a Maven dependency.
+A competitive analysis has shown that the Anahata AI Assistant's current feature set is superior to existing alternatives for NetBeans. Our key differentiator is the **deep, programmatic IDE integration**.
 
--   `gemini-java-client` provides the entire user interface (`GeminiPanel`), the rendering pipeline, the `FunctionManager2`, and the core logic for communicating with the Gemini API.
--   `anahata-netbeans-ai` **launches** this UI and **injects** the NetBeans-specific tools and configurations into it, enabling the AI to perform IDE-aware tasks.
+-   **Anahata can see compilation errors and warnings in real-time.**
+-   **Anahata can invoke high-level IDE actions like 'build' and 'run'.**
 
-## 4. Current Goals & Todo List
--   **Improve Startup Performance**: Investigate ways to make the initial loading of the plugin and chat faster.
--   **Enhance Interactivity**: Continue to evolve the available tools to allow for more complex and seamless interactions between the AI and the IDE.
--   **Implement Diff/Patch Editing**: Act on the `diff-plan.md` to create a `proposeCodeChange` tool that uses a diff/patch mechanism for efficient and reviewable code modifications.
--   **Add UI Conveniences**:
-    -   [ ] Add a "copy to clipboard" button for code blocks.
-    -   [ ] Explore non-blocking function calls for long-running tasks.
--   **Bug Fixes**:
-    -   [ ] Investigate and fix screenshot functionality on Linux environments.
+Therefore, the strategy is to proceed with a **V1 Launch** with the current feature set and postpone the larger "mega-refactor" (decoupling UI, multi-model support) for a V2 release.
 
-## TODO - 2025-10-31
+## V1 Launch Goals (Immediate Focus)
 
--   **`proposeChange` Dialog Context:** The modal diff dialog for `Coding.proposeChange` blocks the main UI, preventing the user from seeing the conversational context (my rationale) for the change. The `explanation` parameter should be displayed prominently within the dialog itself.
--   **EDT Responsiveness:** Investigate and fix performance issues where the Swing Event Dispatch Thread (EDT) becomes unresponsive for long periods during model responses. This likely involves moving more processing off the EDT.
--   **In-Context File Decoration:** The file decoration in the NetBeans project tree for files that are "in-context" is not working. This needs to be diagnosed and fixed to provide better visual feedback.
+-   **Node Decoration (High Priority):** The file decoration in the NetBeans project tree for files that are "in-context" is currently non-functional. This is a critical pre-launch feature. The next step is to research the NetBeans Git module's source code to find the correct implementation pattern for adding an Anahata badge and updating the node's tooltip in the Projects View.
+-   **Plugin Portal:** Package the plugin and submit it to the Apache NetBeans Plugin Portal.
+-   **Performance:** Investigate and improve the initial startup time of the `AnahataTopComponent`.
+-   **UI Polish:**
+    -   [ ] Implement the fix to display the `explanation` text in the `Coding.proposeChange` modal diff dialog (e.g., by wrapping it in a `TitledBorder`).
+
+## V2 Mega-Refactor Plan (Future Focus)
+
+The V2 plan remains to split the `gemini-java-client` into a modular architecture to support multiple AI models and UI frameworks. A key architectural goal is:
+-   **Active Workspace Model:** Transition `LocalFiles.readFile` to an "Active Workspace" model where the file content is added to a central list and injected into the user prompt. This will eliminate the current context bloat where `writeFile` keeps the file content twice in the context (FunctionCall and FunctionResponse).
+-   **Code Cleanup:** Remove obsolete singleton-based classes like `ContextFiles` which are incompatible with the multi-instance architecture.

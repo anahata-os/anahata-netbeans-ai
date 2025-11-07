@@ -27,20 +27,20 @@ import uno.anahata.gemini.functions.spi.RunningJVM;
  *
  * @author Anahata
  */
-public class NetBeansJVM {
+public class NetBeansProjectJVM {
 
     @AIToolMethod(
             value = "Compiles and executes Java source code within the context of a specific NetBeans project. " +
-                    "This tool automatically constructs a classpath that prioritizes the project's build output " +
-                    "(e.g., 'target/classes'), allowing for the immediate testing of newly written or modified code " +
+                    "This tool automatically constructs a classpath that includes and prioritizes the project's build output " +
+                    "(e.g., 'target/classes'), allowing for the immediate testing of newly written or modified code and supporting the Compile On Save feature " +
                     "without needing to reload the entire plugin. It's the key to a 'hot-reload' workflow.",
             requiresApproval = true
     )
     public static Object compileAndExecuteInProject(
             @AIToolParam("The ID (directory name) of the NetBeans project to run in.") String projectId,
             @AIToolParam("Source code of a public class named 'Anahata' that implements java.util.concurrent.Callable.") String sourceCode,
-            @AIToolParam("Whether to include the project's external dependency JARs in the classpath.") boolean includeDependencies,
-            @AIToolParam("Whether to include the project's test source folders and test dependencies in the classpath.") boolean includeTest,
+            @AIToolParam("Whether to include the project's COMPILE and EXECUTE **dependencies** (the target/classess dir is always included regardless of this flag).") boolean includeCompileAndExecuteDependencies,
+            @AIToolParam("Whether to include the project's test source folders and test dependencies in the classpath (only for running code that uses test sources).") boolean includeTestDependencies,
             @AIToolParam("Optional additional compiler options.") String[] compilerOptions) throws Exception {
 
         Project project = Projects.findProject(projectId);
@@ -68,7 +68,7 @@ public class NetBeansJVM {
         for (SourceGroup sg : allSourceGroups) {
             // Filter out test sources if not requested, based on the display name heuristic
             boolean isTest = sg.getDisplayName().toLowerCase().contains("test");
-            if (isTest && !includeTest) {
+            if (isTest && !includeTestDependencies) {
                 continue;
             }
 
@@ -93,7 +93,7 @@ public class NetBeansJVM {
                         if (!internalPaths.contains(absolutePath)) {
                            internalPaths.add(absolutePath);
                         }
-                    } else if (includeDependencies) {
+                    } else if (includeCompileAndExecuteDependencies) {
                         if (!dependencyPaths.contains(absolutePath)) {
                             dependencyPaths.add(absolutePath);
                         }

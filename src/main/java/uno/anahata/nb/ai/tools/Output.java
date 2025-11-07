@@ -3,9 +3,11 @@ package uno.anahata.nb.ai.tools;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.SwingUtilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.gemini.functions.AIToolParam;
 
 /**
  *
@@ -25,5 +27,5 @@ public class Output {
         }
         return tabNames;
     }
-
+    
 }

@@ -92,7 +92,7 @@ public class IDE {
         throw new IOException("Could not find a readable 'messages.log' file in the primary or fallback locations.");
     }
 
-    @AIToolMethod("Gets a cached JSON summary of all errors and warnings from the IDE's live parser. A background thread updates this cache continuously.")
+    //@AIToolMethod("Gets a cached JSON summary of all errors and warnings from the IDE's live parser. A background thread updates this cache continuously.")
     public static String getCachedIDEAlerts() {
         return cachedIdeAlerts;
     }
