@@ -102,7 +102,7 @@ public class Projects {
             OpenProjects.getDefault().removePropertyChangeListener(listener);
         }
     }
-    
+
     @AIToolMethod("Gets a list of the supported NetBeans Actions (as in the ActionProvider api) for a given Project.")
     public static String[] getSupportedActions(@AIToolParam("The project id (not the 'display name')") String projectId) throws Exception {
         Project p = Projects.findProject(projectId);
@@ -114,11 +114,11 @@ public class Projects {
     public static ProjectOverview getOverview(@AIToolParam("The project id (not the 'display name')") String projectId) {
         return getOverview(projectId, GeminiChat.getCallingInstance());
     }
-    
+
     @SneakyThrows
     public static ProjectOverview getOverview(String projectId, GeminiChat chat) {
         Project target = findProject(projectId);
-        
+
         Map<String, ResourceStatus> statusMap = getContextStatusMap(chat);
         ProjectInformation info = ProjectUtils.getInformation(target);
         FileObject root = target.getProjectDirectory();
@@ -149,21 +149,21 @@ public class Projects {
         List<SourceGroup> allSourceGroups = new ArrayList<>();
         allSourceGroups.addAll(Arrays.asList(sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA)));
         allSourceGroups.addAll(Arrays.asList(sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_RESOURCES)));
-        
+
         for (SourceGroup group : allSourceGroups) {
             FileObject srcRoot = group.getRootFolder();
             sourceFolders.add(buildSourceFolderTree(srcRoot, group.getDisplayName(), statusMap));
         }
 
         return new ProjectOverview(
-            root.getNameExt(),
-            info.getDisplayName(),
-            root.getPath(),
-            rootFiles,
-            rootFolderNames,
-            sourceFolders,
-            actions,
-            anahataMdContent
+                root.getNameExt(),
+                info.getDisplayName(),
+                anahataMdContent,
+                root.getPath(),
+                rootFiles,
+                rootFolderNames,
+                sourceFolders,
+                actions
         );
     }
 
@@ -172,12 +172,12 @@ public class Projects {
             if (chat != null) {
                 ContextManager cm = chat.getContextManager();
                 return cm.getResourceTracker().getStatefulResourcesOverview()
-                         .stream()
-                         .collect(Collectors.toMap(
-                             StatefulResourceStatus::getResourceId,
-                             StatefulResourceStatus::getStatus,
-                             (s1, s2) -> s2
-                         ));
+                        .stream()
+                        .collect(Collectors.toMap(
+                                StatefulResourceStatus::getResourceId,
+                                StatefulResourceStatus::getStatus,
+                                (s1, s2) -> s2
+                        ));
             }
         } catch (Exception e) {
             log.warn("Could not get context status map, possibly not in a tool call context.", e);
@@ -192,7 +192,7 @@ public class Projects {
 
         List<ProjectFile> files = new ArrayList<>();
         List<SourceFolder> subfolders = new ArrayList<>();
-        
+
         for (FileObject child : folder.getChildren()) {
             if (child.isFolder()) {
                 subfolders.add(buildSourceFolderTree(child, child.getNameExt(), statusMap));
@@ -202,7 +202,7 @@ public class Projects {
         }
 
         long recursiveSize = files.stream().mapToLong(ProjectFile::getSize).sum()
-                           + subfolders.stream().mapToLong(SourceFolder::getRecursiveSize).sum();
+                + subfolders.stream().mapToLong(SourceFolder::getRecursiveSize).sum();
 
         return new SourceFolder(folder.getNameExt(), displayName, folder.getPath(), recursiveSize, files, subfolders);
     }
@@ -211,11 +211,11 @@ public class Projects {
         String path = fo.getPath();
         ResourceStatus status = statusMap.getOrDefault(path, ResourceStatus.NOT_IN_CONTEXT);
         return new ProjectFile(
-            fo.getNameExt(),
-            path,
-            fo.getSize(),
-            fo.lastModified().getTime(),
-            status
+                fo.getNameExt(),
+                path,
+                fo.getSize(),
+                fo.lastModified().getTime(),
+                status
         );
     }
 
@@ -266,8 +266,7 @@ public class Projects {
         }
         StringBuilder sb = new StringBuilder();
         Class<?>[] contextClasses = new Class<?>[]{
-            org.netbeans.api.project.ProjectUtils.class,
-        };
+            org.netbeans.api.project.ProjectUtils.class,};
 
         for (Class<?> ctx : contextClasses) {
             sb.append("Preferences for context: ").append(ctx.getName()).append("\n");
