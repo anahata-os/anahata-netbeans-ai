@@ -16,6 +16,7 @@ import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.java.queries.JavadocForBinaryQuery;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.openide.filesystems.FileObject;
+import uno.anahata.nb.ai.model.java.ClassSearchResult;
 
 public class NetBeansJavaQueryUtils {
 
@@ -217,16 +218,5 @@ public class NetBeansJavaQueryUtils {
         }
 
         return null;
-    }
-
-    public static class ClassSearchResult {
-
-        public final FileObject classFile;
-        public final ClassPath ownerCp;
-
-        ClassSearchResult(FileObject classFile, ClassPath ownerCp) {
-            this.classFile = classFile;
-            this.ownerCp = ownerCp;
-        }
     }
 }

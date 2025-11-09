@@ -7,9 +7,11 @@ import lombok.SneakyThrows;
 import uno.anahata.gemini.GeminiChat;
 import uno.anahata.gemini.internal.GsonUtils;
 import uno.anahata.gemini.systeminstructions.SystemInstructionProvider;
+import uno.anahata.nb.ai.model.ide.OutputTabInfo;
+import uno.anahata.nb.ai.tools.Output;
 import uno.anahata.nb.ai.tools.TopComponents;
 
-public class OpenTopComponentsInstructionsProvider extends SystemInstructionProvider {
+public class OutputTabsInstructionsProvider extends SystemInstructionProvider {
 
     @Override
     public String getId() {
@@ -18,13 +20,13 @@ public class OpenTopComponentsInstructionsProvider extends SystemInstructionProv
 
     @Override
     public String getDisplayName() {
-        return "TopComponents.getOpenTopComponentsMarkdown()";
+        return "Output.listOutputTabs()";
     }
 
     @Override
     @SneakyThrows
     public List<Part> getInstructionParts(GeminiChat chat) {
-        String openFiles = TopComponents.getOpenTopComponentsMarkdown();
-        return Collections.singletonList(Part.fromText(openFiles));
+        List<OutputTabInfo> outputTabs = Output.listOutputTabs();
+        return Collections.singletonList(Part.fromText(GsonUtils.prettyPrint(outputTabs)));
     }
 }

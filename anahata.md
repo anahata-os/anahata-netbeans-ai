@@ -1,4 +1,4 @@
-# Project: anahata-netbeans-ai - Anahata AI Assistant Plugin
+# Project: anahata-netbeans-ai - Anahata NetBeans AI Assistant Plugin
 
 ## 1. Purpose
 This project is the flagship host application for the `gemini-java-client`. It integrates the Anahata AI Assistant directly into the Apache NetBeans IDE, providing a deeply context-aware development partner.
@@ -38,8 +38,11 @@ Therefore, the strategy is to proceed with a **V1 Launch** with the current feat
 ## V1 Launch Goals (Immediate Focus)
 
 -   [ ] **Node Decoration (High Priority):** The file decoration in the NetBeans project tree for files that are "in-context" is currently non-functional. This is a critical pre-launch feature. *Next Step: Research NetBeans Git module source for correct implementation pattern.*
+-   [ ] **Tab NickName and Color Coding based on status / session id:** check how to change the colors on the tab
+-   [ ] **Maven dependency search using the netbeans maben tools  / maven index:** 
 -   [ ] **Plugin Portal:** Package the plugin and submit it to the Apache NetBeans Plugin Portal.
 -   [ ] **Performance:** Investigate and improve the initial startup time of the `AnahataTopComponent`.
+-   [ ] **Java:** see if we can add "find usages" "call hierarchy" and "refactor/rename"
 -   [ ] **UI Polish:**
     -   [ ] Implement the fix to display the `explanation` text in the `Coding.proposeChange` modal diff dialog (e.g., by wrapping it in a `TitledBorder`).
 
@@ -48,3 +51,10 @@ Therefore, the strategy is to proceed with a **V1 Launch** with the current feat
 The V2 plan remains to split the `gemini-java-client` into a modular architecture to support multiple AI models and UI frameworks. A key architectural goal is:
 -   **Active Workspace Model:** Transition `LocalFiles.readFile` to an "Active Workspace" model where the file content is added to a central list and injected into the user prompt. This will eliminate the current context bloat where `writeFile` keeps the file content twice in the context (FunctionCall and FunctionResponse).
 -   **Code Cleanup:** Remove obsolete singleton-based classes like `ContextFiles` which are incompatible with the multi-instance architecture.
+
+## Very Important Notes
+When testing code in this project via NetBeansProject.compileAndExecuteJava, alwayws use release-21 and **do not include compileAndExecuteDependencies**
+Also, remember that tools only get registered when netbeans starts up, also the classloader and the compiler classpath only gets populated with the plugins
+jars at startup, if you add a depdency you would need to reload the plugin.
+
+To reload the plugin: runGoal "install" (no cleaning) and then invoke the Project Action "nbmreload" on separate calls. You need to check that installed succeed first. If the reload action succeeds, the current chat will be close and we will be chatting on a new instance of AnahataTopComponent that will restore the chat from the backup.

@@ -29,25 +29,37 @@ import uno.anahata.gemini.functions.spi.RunningJVM;
  */
 public class NetBeansProjectJVM {
 
+    /**
+     * Compiles and executes Java source code within the context of a specific NetBeans project.
+     * This is a test for local history.
+     * @param projectId The ID of the project.
+     * @param sourceCode The source code to execute.
+     * @param includeCompileAndExecuteDependencies Whether to include dependencies.
+     * @param includeTestDependencies Whether to include test dependencies.
+     * @param compilerOptions Compiler options.
+     * @return The result of the execution.
+     * @throws Exception on error.
+     */
     @AIToolMethod(
             value = "Compiles and executes Java source code within the context of a specific NetBeans project. " +
                     "This tool automatically constructs a classpath that includes and prioritizes the project's build output " +
                     "(e.g., 'target/classes'), allowing for the immediate testing of newly written or modified code and supporting the Compile On Save feature " +
-                    "without needing to reload the entire plugin. It's the key to a 'hot-reload' workflow.",
+                    "without needing to rebuild the project. It's the key to a 'hot-reload' workflow." +
+                    "\n\nThis tool is just a proxy that uses RunningJVM to do the the actual compileAndExecuteJava. The only particularity is that "
+                    + "it builds the extraClassPath parameter of RunningJVM"
+                    + "\n\n<b>Note</b>: The defaultCompilerClasspath of RunningJVM gets prepopulated on startup with all the plugins dependencies (all the jars that are visible to the plugin's module classloader)."
+                    + "\nIf you use this tool in the context of a NetBeansModule project (or an NetBeans RCP application) and set includeCompileAndExecuteDependencies to true, it will most likely cause linkage errors in the classloader as the plugin loads **lots** of netbeans apis and modules",
             requiresApproval = true
     )
     public static Object compileAndExecuteInProject(
             @AIToolParam("The ID (directory name) of the NetBeans project to run in.") String projectId,
-            @AIToolParam("Source code of a public class named 'Anahata' that implements java.util.concurrent.Callable.") String sourceCode,
+            @AIToolParam("Source code of a public class named 'Anahata' that has no package declaration and implements java.util.concurrent.Callable.") String sourceCode,
             @AIToolParam("Whether to include the project's COMPILE and EXECUTE **dependencies** (the target/classess dir is always included regardless of this flag).") boolean includeCompileAndExecuteDependencies,
             @AIToolParam("Whether to include the project's test source folders and test dependencies in the classpath (only for running code that uses test sources).") boolean includeTestDependencies,
             @AIToolParam("Optional additional compiler options.") String[] compilerOptions) throws Exception {
 
         Project project = Projects.findProject(projectId);
-        if (project == null) {
-            throw new IllegalArgumentException("Project not found: " + projectId);
-        }
-
+        
         ClassPathProvider cpp = project.getLookup().lookup(ClassPathProvider.class);
         if (cpp == null) {
             throw new IllegalStateException("Could not find ClassPathProvider for project: " + projectId);

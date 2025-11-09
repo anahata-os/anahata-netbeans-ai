@@ -440,6 +440,66 @@
             </exclusions>
         </dependency>
         
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-maven-indexer</artifactId>
+            <version>${netbeans.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.inject</groupId>
+                    <artifactId>guice</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jspecify.jspecify</groupId>
+                    <artifactId>jspecify</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- needed by mavne indexer -->
+        <!--
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-libs-lucene</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>3.6.2</version>
+        </dependency>
+        -->
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-versioning</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-versioning-core</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
+        <!--
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-versioning-ui</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        -->
+        <!--
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-maven-model</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-maven-apisupport</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+                -->
     </dependencies>
 
     <build>
@@ -455,7 +515,19 @@
                     <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
                     <brandingToken>anahata</brandingToken>
                     <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
+                    <publicPackages>
+                        <publicPackage>uno.anahata.nb.ai.vcs</publicPackage>
+                        <publicPackage>uno.anahata.nb.ai.model.ide</publicPackage>
+                    </publicPackages>
                     <moduleDependencies>
+                        <dependency>
+                            <id>org.netbeans.api:org-netbeans-modules-versioning</id>
+                            <type>spec</type>
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.modules:org-netbeans-modules-versioning-core</id>
+                            <type>impl</type>
+                        </dependency>
                         <dependency>
                             <id>org.netbeans.api:org-netbeans-modules-java-platform</id>
                             <type>spec</type>
@@ -470,6 +542,10 @@
                         </dependency>
                         <dependency>
                             <id>org.netbeans.modules:org-netbeans-modules-maven-embedder</id>
+                            <type>impl</type>
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.modules:org-netbeans-modules-maven-indexer</id>
                             <type>impl</type>
                         </dependency>
                     </moduleDependencies>

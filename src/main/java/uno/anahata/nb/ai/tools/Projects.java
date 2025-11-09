@@ -3,6 +3,7 @@ package uno.anahata.nb.ai.tools;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
@@ -22,7 +24,6 @@ import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
-import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
@@ -34,7 +35,6 @@ import uno.anahata.gemini.context.stateful.ResourceStatus;
 import uno.anahata.gemini.context.stateful.StatefulResourceStatus;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.nb.ai.model.maven.MavenBuildResult;
 import uno.anahata.nb.ai.model.projects.ProjectFile;
 import uno.anahata.nb.ai.model.projects.ProjectOverview;
 import uno.anahata.nb.ai.model.projects.SourceFolder;
@@ -102,18 +102,23 @@ public class Projects {
             OpenProjects.getDefault().removePropertyChangeListener(listener);
         }
     }
+    
+    @AIToolMethod("Gets a list of the supported NetBeans Actions (as in the ActionProvider api) for a given Project.")
+    public static String[] getSupportedActions(@AIToolParam("The project id (not the 'display name')") String projectId) throws Exception {
+        Project p = Projects.findProject(projectId);
+        return p.getLookup().lookup(ActionProvider.class).getSupportedActions();
+    }
 
-    @AIToolMethod("Gets a structured, context-aware overview of a project, including root files, source tree, and the in-context status of each file.")
-    public static ProjectOverview getOverview(@AIToolParam("The project id (not the 'display name')") String projectId) throws FileStateInvalidException {
+    @AIToolMethod("Gets a structured, context-aware overview of a project, including root files, source tree, the in-context status of each file and a list of supported NetBeans Actions.")
+    @SneakyThrows
+    public static ProjectOverview getOverview(@AIToolParam("The project id (not the 'display name')") String projectId) {
         return getOverview(projectId, GeminiChat.getCallingInstance());
     }
     
-    public static ProjectOverview getOverview(String projectId, GeminiChat chat) throws FileStateInvalidException {
+    @SneakyThrows
+    public static ProjectOverview getOverview(String projectId, GeminiChat chat) {
         Project target = findProject(projectId);
-        if (target == null) {
-            return null;
-        }
-
+        
         Map<String, ResourceStatus> statusMap = getContextStatusMap(chat);
         ProjectInformation info = ProjectUtils.getInformation(target);
         FileObject root = target.getProjectDirectory();
@@ -126,12 +131,17 @@ public class Projects {
         List<ProjectFile> rootFiles = new ArrayList<>();
         List<String> rootFolderNames = new ArrayList<>();
         List<SourceFolder> sourceFolders = new ArrayList<>();
+        String anahataMdContent = null;
 
         for (FileObject child : root.getChildren()) {
             if (child.isFolder()) {
                 rootFolderNames.add(child.getNameExt());
             } else {
-                rootFiles.add(createProjectFile(child, statusMap));
+                ProjectFile pf = createProjectFile(child, statusMap);
+                rootFiles.add(pf);
+                if (pf.getName().equals("anahata.md")) {
+                    anahataMdContent = Files.readString(FileUtil.toFile(child).toPath());
+                }
             }
         }
 
@@ -152,7 +162,8 @@ public class Projects {
             rootFiles,
             rootFolderNames,
             sourceFolders,
-            actions
+            actions,
+            anahataMdContent
         );
     }
 
@@ -208,8 +219,12 @@ public class Projects {
         );
     }
 
-    @AIToolMethod("Runs a standard high-level action (like 'run' or 'build') on a given open project.")
-    public static String invokeAction(
+    @AIToolMethod("Invokes ('Fires and forgets') a NetBeans Project supported Action (like 'run' or 'build')  on a given open Project (via ActionProvider).\n"
+            + "\n\nThis method is always asynchronous by design. (regardless of whether you specify the asynchronous parameter or not)"
+            + "If the action opened an output tab and displayed something on it, you wont see the results of the action (e.g. the output build)"
+            + "as this tool does not return any values nor you can ensure that the action finished when this tool returns."
+            + "\nUse Maven.runGoals or JVM tools or any other synchronous tools if you need to ensure the action succeeded or the action you require produces an output you need")
+    public static void invokeAction(
             @AIToolParam("The netbeans project name (not the display name)") String projectId,
             @AIToolParam("The action to invoke") String action) throws Exception {
         Project project = findProject(projectId);
@@ -222,7 +237,7 @@ public class Projects {
 
         if (ap.isActionEnabled(action, context)) {
             ap.invokeAction(action, context);
-            return "Successfully invoked (fire and forget) the '" + action + "' action on project '" + project + "'. (Non-Maven, Asynchronous)";
+            return;
         } else {
             String[] supportedActions = ap.getSupportedActions();
             boolean isSupported = Arrays.asList(supportedActions).contains(action);
@@ -241,7 +256,7 @@ public class Projects {
                 return project;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Project not found or not open: " + id);
     }
 
     public static String listAllKnownPreferences(String projectId) {

@@ -12,11 +12,11 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,8 +33,11 @@ import javax.swing.border.TitledBorder;
 import org.netbeans.api.diff.Diff;
 import org.netbeans.api.diff.DiffView;
 import org.netbeans.api.diff.StreamSource;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
@@ -55,18 +58,40 @@ public class Coding {
             + "\nDo not assume the user approved your change or that any changes have actually been written to disk on the basis that you see a FunctionResponse for this tool or an autopilot message indicating the tool call got approved that."
             + "\n\nNever call this tool for a stale resource (a resource showing as stale or a file that has modifications on the netbeans editor."
             + "\nDo not use this tool for creating new files, just for updating existing ones. "
-            //+ "\nAlso dont try to do: LocalFiles.readFile and proposeCodeChange for the same file on the same batch (on the same message, on the same response)."
-
             + "\n\nNote: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Calling LocalFiles.readFile for the returned resource on your next trip will auto prune the FunctionCall/FunctionResponse paris of proposeChange and will reduce the overall token usage of the file modification to half.",
              behavior = ContextBehavior.STATEFUL_REPLACE)
     public static ProposeChangeResult proposeChange(
             @AIToolParam("The absolute path of the existing file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
-            @AIToolParam("A clear and concise explanation of the proposed change.") String explanation) throws Exception {
+            @AIToolParam("A clear and concise explanation of the proposed change.") String explanation,
+            @AIToolParam("The 'last modified' timestamp of the file you want to modify on disk. The write will fail if the actual timestamp is different.") long lastModified,
+            @AIToolParam("The current size of the file you want to modify (from your last read / write, the stateful resources summary or the project overview). The write will fail if the current size of the file on disk is different.") long size) throws Exception {
 
         final File originalFile = new File(filePath);
         if (!originalFile.exists()) {
             throw new IOException("The source file does not exist: " + filePath);
+        }
+
+        // Stale file checks
+        if (originalFile.lastModified() != lastModified) {
+            throw new IOException("File has been modified on disk. Expected lastModified: " + lastModified + ", but was: " + originalFile.lastModified());
+        }
+        if (originalFile.length() != size) {
+            throw new IOException("File size has changed on disk. Expected size: " + size + ", but was: " + originalFile.length());
+        }
+        
+        // Unsaved changes check
+        FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(originalFile));
+        if (fo == null) {
+            throw new IOException("Could not get FileObject for: " + filePath);
+        }
+        try {
+            DataObject dob = DataObject.find(fo);
+            if (dob.isModified()) {
+                throw new IOException("File has unsaved changes in the editor. Please save the file before proposing a change.");
+            }
+        } catch (DataObjectNotFoundException e) {
+            // Ignore if no DataObject, it's not open or not a project file.
         }
 
         final AtomicReference<ProposeChangeResult> resultHolder = new AtomicReference<>();
@@ -122,9 +147,24 @@ public class Coding {
                     acceptButton.addActionListener(e -> {
                         try {
                             String finalText = new String(proposedFileObject.asBytes());
-                            Files.writeString(Paths.get(filePath), finalText);
-                            File updatedFile = new File(filePath);
+                            
+                            // Use NetBeans API to write the file
+                            FileObject targetFileObject = FileUtil.toFileObject(FileUtil.normalizeFile(originalFile));
+                            if (targetFileObject == null) {
+                                throw new IOException("Could not get FileObject for: " + filePath);
+                            }
+                            
+                            // Set attributes for Local History
+                            targetFileObject.setAttribute("LocalHistory.commitMessage", explanation);
+                            targetFileObject.setAttribute("user", System.getProperty("user.name", "unknown"));
+                            
+                            try (FileLock lock = targetFileObject.lock();
+                                 OutputStream os = targetFileObject.getOutputStream(lock);
+                                 Writer writer = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
+                                writer.write(finalText);
+                            }
 
+                            File updatedFile = new File(filePath);
                             FileInfo fileInfo = new FileInfo(
                                     filePath,
                                     finalText,

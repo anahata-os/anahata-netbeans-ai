@@ -21,7 +21,7 @@ public class OpenProjectsOverviewInstructionsProvider extends SystemInstructionP
 
     @Override
     public String getDisplayName() {
-        return "Open Projects Overview";
+        return "Projects.getOverview(all open projects)";
     }
 
     @Override

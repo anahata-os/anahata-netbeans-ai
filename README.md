@@ -20,15 +20,41 @@ Anahata doesn't guess. On every request, it receives a live, structured data pay
 -   **Full Project Structure:** A complete overview of all open projects, their file structures, and the status of files in the conversation context.
 -   **Editor State:** A list of all files currently open in the editor.
 
-### 2. Programmatic IDE Control (Tools)
+### 2. Programmatic IDE Control (NetBeans-Specific Tools)
 
-Anahata can execute high-level IDE actions with a simple natural language command:
+Anahata can execute high-level IDE actions and perform deep code analysis with a simple natural language command:
 
-| Feature | Description | Benefit |
+| Feature | Tooling | Capability |
 | :--- | :--- | :--- |
-| **Project Actions** | Invoke `build`, `run`, `clean`, and other project actions directly. | **Accelerate your workflow** by eliminating manual clicks. |
-| **Code Modification** | Use the `proposeChange` tool to receive code patches via a **NetBeans modal diff dialog** for secure, explicit user approval. | **Safe, auditable, and collaborative** code changes. |
-| **Introspection** | Query Javadoc, source code, and class members for any type in your project or dependencies. | **Instant documentation** and deep code understanding without leaving the chat. |
+| **Code Introspection** | `JavaIntrospection`, `JavaSources`, `JavaDocs` | Inspect Java types, list members, and retrieve **paginated, filterable, and truncated** source code and Javadoc for any class or method. |
+| **IDE Interaction** | `IDE`, `Output` | Read the main IDE log and interact with the Output Window, with powerful support for **pagination, regex filtering, and line truncation** to manage large outputs. |
+| **Dependency Management** | `Maven` | Trigger Maven goals (`clean`, `install`), download missing dependency sources, and resolve Javadoc URLs. |
+| **Project Lifecycle** | `Projects` | Open/close projects, invoke high-level actions (`build`, `run`), and query project structure. |
+| **Code Modification** | `Coding` | Use the `proposeChange` tool to receive code patches via a **NetBeans modal diff dialog** for secure, explicit user approval. |
+| **Live Workspace** | `ScreenCapture`, `TopComponents` | The AI can "see" the IDE by taking screenshots of all open JFrames and listing all open IDE components (windows, tabs). |
+| **Runtime Execution** | `NetBeansProjectJVM` | Compile and execute arbitrary Java code directly within the IDE's running JVM, enabling hot-reload testing and complex runtime tasks. |
+| **System Interaction** | `LocalShell`, `LocalFiles` | Run native shell commands and perform context-aware file operations (read, write, delete). |
+| **Editor Control** | `Editor` | Open files in the NetBeans editor and scroll to specific line numbers. |
+
+### 3. Advanced Text Processing & Safety
+
+To ensure a smooth and efficient workflow, Anahata's core tools have been refactored with a powerful, centralized text processing engine. This provides:
+
+-   **Pagination & Filtering:** Retrieve precise slices of data from large files (logs, source code, Javadocs) using line numbers and regex (`grep`) patterns.
+-   **Line Truncation:** Automatically truncate excessively long lines to prevent context window overflow and keep the conversation focused.
+-   **Rich Metadata:** Tool responses now include valuable context, such as the total number of lines and the number of matching lines, allowing the AI to make smarter follow-up decisions.
+
+This makes interacting with large codebases and log files safer, faster, and more intelligent.
+
+### 4. Core Gemini Client Features (Efficiency & Transparency)
+
+Anahata is built on the `gemini-java-client`, inheriting powerful features for managing the conversation and token budget:
+
+-   **Intelligent Context Management:** Automatic, dependency-aware pruning of old, ephemeral, or stale tool calls to maximize the context window and reduce API costs.
+-   **Context Heatmap:** A visual UI component that breaks down the entire conversation context by message, part type, and token size, giving the user full transparency.
+-   **Dynamic System Instructions:** Real-time injection of environment data (System Properties, Environment Variables, Project Status) into the system prompt for superior relevance.
+-   **Inline Syntax Highlighting:** Uses NetBeans' native editor kits to provide accurate syntax highlighting for code blocks within the chat window.
+-   **Session Persistence:** Saves and loads the entire chat history, including all tool results and dependencies, for instant session resume.
 
 ---
 ### **Powered by the Gemini Java Client**

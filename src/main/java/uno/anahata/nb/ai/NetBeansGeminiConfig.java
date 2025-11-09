@@ -20,6 +20,7 @@ import uno.anahata.nb.ai.systeminstructions.CoreNetBeansInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.IdeAlertsInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.OpenProjectsOverviewInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.OpenTopComponentsInstructionsProvider;
+import uno.anahata.nb.ai.systeminstructions.OutputTabsInstructionsProvider;
 
 public class NetBeansGeminiConfig extends SwingGeminiConfig {
 
@@ -60,6 +61,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
         providers.add(new IdeAlertsInstructionsProvider());
         providers.add(new OpenProjectsOverviewInstructionsProvider());
         providers.add(new OpenTopComponentsInstructionsProvider());
+        providers.add(new OutputTabsInstructionsProvider());
         return providers;
     }
 }

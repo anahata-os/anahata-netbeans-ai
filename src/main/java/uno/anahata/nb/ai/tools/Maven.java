@@ -2,9 +2,9 @@ package uno.anahata.nb.ai.tools;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -13,13 +13,21 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.index.ArtifactInfo;
+import org.apache.maven.index.NexusIndexer;
+import org.apache.maven.index.QueryCreator;
+import org.apache.maven.index.SearchEngine;
+import org.apache.maven.index.context.IndexingContext;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectUtils;
-import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.modules.maven.api.execute.RunUtils;
@@ -28,13 +36,14 @@ import org.netbeans.modules.maven.embedder.MavenEmbedder;
 import org.netbeans.modules.maven.execute.MavenCommandLineExecutor;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
-import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.nb.ai.model.maven.MavenArtifactSearchResult;
 import uno.anahata.nb.ai.model.maven.MavenBuildResult;
 import uno.anahata.nb.ai.model.maven.MavenBuildResult.ProcessStatus;
 
@@ -56,7 +65,7 @@ public class Maven {
         }
     }
 
-    @AIToolMethod(value = "Executes a list of Maven goals on a project synchronously, capturing the output.", behavior = uno.anahata.gemini.functions.ContextBehavior.EPHEMERAL)
+    @AIToolMethod(value = "Executes a list of Maven goals on a Project synchronously (waits for the build to finish), capturing the last " + MAX_OUTPUT_LENGTH + " bytes of the output.", behavior = uno.anahata.gemini.functions.ContextBehavior.EPHEMERAL)
     public static MavenBuildResult runGoals(
             @AIToolParam("The ID of the project to run the goals on.") String projectId,
             @AIToolParam("A list of Maven goals to execute (e.g., ['clean', 'install']).") List<String> goals,
@@ -65,11 +74,8 @@ public class Maven {
             @AIToolParam("A list of additional Maven options.") List<String> options,
             @AIToolParam("The maximum time to wait for the build to complete, in milliseconds.") long timeout) throws Exception {
 
-        Project project = findProject(projectId);
-        if (project == null) {
-            throw new IllegalArgumentException("Project not found or not open: " + projectId);
-        }
-
+        Project project = Projects.findProject(projectId);
+        
         ProjectInformation info = ProjectUtils.getInformation(project);
         String displayName = info.getDisplayName();
         String goalsString = String.join(" ", goals);
@@ -175,7 +181,62 @@ public class Maven {
 
     @AIToolMethod("Downloads all missing sources for a given Maven project's dependencies.")
     public static String downloadProjectSources(String projectId) throws Exception {
-        Project project = findProject(projectId);
+        return downloadArtifactsForProject(projectId, "sources", "Sources");
+    }
+    
+    @AIToolMethod("Downloads all missing Javadoc for a given Maven project's dependencies.")
+    public static String downloadProjectJavadocs(String projectId) throws Exception {
+        return downloadArtifactsForProject(projectId, "javadoc", "Javadoc");
+    }
+
+    @AIToolMethod("Downloads a specific classified artifact (e.g., 'sources', 'javadoc') for a single dependency of a given Maven project.")
+    public static String downloadDependencyArtifact(
+            @AIToolParam("The ID of the project containing the dependency.") String projectId,
+            @AIToolParam("The groupId of the dependency.") String groupId,
+            @AIToolParam("The artifactId of the dependency.") String artifactId,
+            @AIToolParam("The classifier of the artifact to download (e.g., 'sources', 'javadoc').") String classifier) throws Exception {
+        // The artifactTypeName can be derived from the classifier for the user message.
+        String artifactTypeName = classifier.substring(0, 1).toUpperCase() + classifier.substring(1);
+        return downloadArtifactForDependency(projectId, groupId, artifactId, classifier, artifactTypeName);
+    }
+    
+    @AIToolMethod("Searches the local Maven index for artifacts matching a given query.")
+    public static List<MavenArtifactSearchResult> searchMavenIndex(@AIToolParam("The search query (e.g., 'junit', 'g:org.apache.commons')") String query) throws Exception {
+        NexusIndexer indexer = Lookup.getDefault().lookup(NexusIndexer.class);
+        SearchEngine searcher = Lookup.getDefault().lookup(SearchEngine.class);
+        QueryCreator queryCreator = Lookup.getDefault().lookup(QueryCreator.class);
+
+        if (indexer == null || searcher == null || queryCreator == null) {
+            throw new IllegalStateException("Could not find required Maven Indexer services in Lookup.");
+        }
+
+        BooleanQuery.Builder bqBuilder = new BooleanQuery.Builder();
+        bqBuilder.add(queryCreator.constructQuery(ArtifactInfo.GROUP_ID, query), BooleanClause.Occur.SHOULD);
+        bqBuilder.add(queryCreator.constructQuery(ArtifactInfo.ARTIFACT_ID, query), BooleanClause.Occur.SHOULD);
+        bqBuilder.add(queryCreator.constructQuery(ArtifactInfo.NAMES, query), BooleanClause.Occur.SHOULD);
+        BooleanQuery bq = bqBuilder.build();
+
+
+        // TODO: getIndexingContexts() is deprecated. Find a replacement.
+        Collection<IndexingContext> contexts = indexer.getIndexingContexts().values();
+        
+        java.util.Set<ArtifactInfo> results = searcher.searchFlat(ArtifactInfo.VERSION_COMPARATOR, contexts, bq);
+
+
+        return results.stream()
+                .map(info -> new MavenArtifactSearchResult(
+                        info.getGroupId(),
+                        info.getArtifactId(),
+                        info.getVersion(),
+                        info.getRepository(),
+                        info.getPackaging(),
+                        info.getDescription()
+                ))
+                .collect(Collectors.toList());
+    }
+    
+    private static String downloadArtifactsForProject(String projectId, String classifier, String artifactTypeName) throws Exception {
+        Project project = Projects.findProject(projectId);
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
         if (nbMavenProject == null) {
             throw new IllegalStateException("Could not find NbMavenProject for project: " + projectId);
@@ -188,7 +249,7 @@ public class Maven {
         StringBuilder errors = new StringBuilder();
 
         for (Artifact art : artifacts) {
-            if (downloadArtifactSource(onlineEmbedder, nbMavenProject, art, errors)) {
+            if (downloadArtifact(onlineEmbedder, nbMavenProject, art, classifier, errors)) {
                 successCount++;
             } else {
                 failCount++;
@@ -196,12 +257,11 @@ public class Maven {
         }
 
         NbMavenProject.fireMavenProjectReload(project);
-        return buildResultString("Project", projectId, successCount, failCount, errors);
+        return buildResultString(artifactTypeName, "Project", projectId, successCount, failCount, errors);
     }
-
-    @AIToolMethod("Downloads sources for a single, specific dependency of a given Maven project.")
-    public static String downloadDependencySource(String projectId, String groupId, String artifactId) throws Exception {
-        Project project = findProject(projectId);
+    
+    private static String downloadArtifactForDependency(String projectId, String groupId, String artifactId, String classifier, String artifactTypeName) throws Exception {
+        Project project = Projects.findProject(projectId);
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
         if (nbMavenProject == null) {
             throw new IllegalStateException("Could not find NbMavenProject for project: " + projectId);
@@ -217,7 +277,7 @@ public class Maven {
         for (Artifact art : artifacts) {
             if (art.getGroupId().equals(groupId) && art.getArtifactId().equals(artifactId)) {
                 found = true;
-                if (downloadArtifactSource(onlineEmbedder, nbMavenProject, art, errors)) {
+                if (downloadArtifact(onlineEmbedder, nbMavenProject, art, classifier, errors)) {
                     successCount++;
                 } else {
                     failCount++;
@@ -231,49 +291,39 @@ public class Maven {
         }
 
         NbMavenProject.fireMavenProjectReload(project);
-        return buildResultString("Dependency", groupId + ":" + artifactId, successCount, failCount, errors);
+        return buildResultString(artifactTypeName, "Dependency", groupId + ":" + artifactId, successCount, failCount, errors);
     }
 
-    private static boolean downloadArtifactSource(MavenEmbedder embedder, NbMavenProject project, Artifact art, StringBuilder errors) {
+    private static boolean downloadArtifact(MavenEmbedder embedder, NbMavenProject project, Artifact art, String classifier, StringBuilder errors) {
         if (Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
             return false; // Skip system-scoped artifacts
         }
         try {
-            Artifact sourcesArtifact = embedder.createArtifactWithClassifier(
+            Artifact classifiedArtifact = embedder.createArtifactWithClassifier(
                     art.getGroupId(),
                     art.getArtifactId(),
                     art.getVersion(),
                     art.getType(),
-                    "sources"
+                    classifier
             );
             embedder.resolveArtifact(
-                    sourcesArtifact,
+                    classifiedArtifact,
                     project.getMavenProject().getRemoteArtifactRepositories(),
                     embedder.getLocalRepository()
             );
             return true;
         } catch (ArtifactNotFoundException e) {
-            errors.append("Sources not found for ").append(art.getId()).append("\n");
+            errors.append(classifier).append(" not found for ").append(art.getId()).append("\n");
         } catch (ArtifactResolutionException e) {
-            errors.append("Could not resolve sources for ").append(art.getId()).append(": ").append(e.getMessage()).append("\n");
+            errors.append("Could not resolve ").append(classifier).append(" for ").append(art.getId()).append(": ").append(e.getMessage()).append("\n");
         } catch (Exception e) {
-            errors.append("An unexpected error occurred for ").append(art.getId()).append(": ").append(e.getMessage()).append("\n");
+            errors.append("An unexpected error occurred for ").append(art.getId()).append(" while downloading ").append(classifier).append(": ").append(e.getMessage()).append("\n");
         }
         return false;
     }
-
-    private static Project findProject(String id) {
-        for (Project project : OpenProjects.getDefault().getOpenProjects()) {
-            FileObject root = project.getProjectDirectory();
-            if (root.getNameExt().equals(id)) {
-                return project;
-            }
-        }
-        throw new IllegalArgumentException("Project not found or not open: " + id);
-    }
-
-    private static String buildResultString(String targetType, String targetId, int success, int failed, StringBuilder errors) {
-        String result = String.format("Source download for %s '%s' complete. Success: %d, Failed: %d.", targetType, targetId, success, failed);
+    
+    private static String buildResultString(String artifactType, String targetType, String targetId, int success, int failed, StringBuilder errors) {
+        String result = String.format("%s download for %s '%s' complete. Success: %d, Failed: %d.", artifactType, targetType, targetId, success, failed);
         if (failed > 0) {
             result += "\nErrors:\n" + errors.toString();
         }

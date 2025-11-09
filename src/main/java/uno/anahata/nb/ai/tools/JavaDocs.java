@@ -15,7 +15,10 @@ import org.netbeans.api.java.source.JavaSource;
 import org.openide.filesystems.FileObject;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.nb.ai.model.java.ClassSearchResult;
+import uno.anahata.nb.ai.model.util.TextProcessResult;
 import uno.anahata.nb.ai.util.NetBeansJavaQueryUtils;
+import uno.anahata.nb.ai.util.TextUtils;
 
 /**
  * Provides tools for retrieving Javadoc and source information for classes and methods.
@@ -32,7 +35,7 @@ public class JavaDocs {
     @AIToolMethod(value = "Gets the Javadoc URL for a given fully qualified class name by searching all open projects and their dependencies.", requiresApproval = false)
     public static String getJavadocUrlForClass(@AIToolParam("The fully qualified class name (e.g., 'java.lang.String')") String fqn) throws Exception {
         String classAsPath = fqn.replace('.', '/') + ".class";
-        NetBeansJavaQueryUtils.ClassSearchResult searchResult = NetBeansJavaQueryUtils.findClassFile(classAsPath);
+        ClassSearchResult searchResult = NetBeansJavaQueryUtils.findClassFile(classAsPath);
 
         if (searchResult == null) {
             throw new Exception("Could not find " + classAsPath + " in any registered project or JDK classpath.");
@@ -58,14 +61,40 @@ public class JavaDocs {
         }
     }
 
-    /**
-     * Gets the Javadoc comment for a specific type (class, interface, enum, inner class) from its source file.
-     * @param fqn The fully qualified name of the type.
-     * @return The Javadoc content or a message indicating it was not found.
-     * @throws Exception if an error occurs during parsing.
-     */
     @AIToolMethod(value = "Gets the Javadoc comment for a specific type (class, interface, enum, inner class) from its source file.", requiresApproval = false)
-    public static String getJavadocForType(@AIToolParam("The fully qualified name of the type.") String fqn) throws Exception {
+    public static TextProcessResult getJavadocForType(
+            @AIToolParam("The fully qualified name of the type.") String fqn,
+            @AIToolParam("The starting line number (0-based) for pagination.") Integer startIndex,
+            @AIToolParam("The number of lines to return.") Integer pageSize,
+            @AIToolParam("A regex pattern to filter lines. Can be null or empty to return all lines.") String grepPattern,
+            @AIToolParam("The maximum length of each line. Lines longer than this will be truncated. Set to 0 for no limit.") Integer maxLineLength) throws Exception {
+
+        String rawJavadoc = getRawJavadocForType(fqn);
+        if (rawJavadoc == null) {
+            throw new IllegalStateException("No Javadoc found for type '" + fqn + "'");
+        }
+        
+        return TextUtils.processText(rawJavadoc, startIndex, pageSize, grepPattern, maxLineLength);
+    }
+
+    @AIToolMethod(value = "Gets the Javadoc comment for a specific method from its source file.", requiresApproval = false)
+    public static TextProcessResult getJavadocForMethod(
+            @AIToolParam("The fully qualified class name.") String fqn,
+            @AIToolParam("The name of the method.") String methodName,
+            @AIToolParam("The starting line number (0-based) for pagination.") Integer startIndex,
+            @AIToolParam("The number of lines to return.") Integer pageSize,
+            @AIToolParam("A regex pattern to filter lines. Can be null or empty to return all lines.") String grepPattern,
+            @AIToolParam("The maximum length of each line. Lines longer than this will be truncated. Set to 0 for no limit.") Integer maxLineLength) throws Exception {
+
+        String rawJavadoc = getRawJavadocForMethod(fqn, methodName);
+        if (rawJavadoc == null) {
+            throw new IllegalStateException("No Javadoc found for method '" + methodName + "' in class " + fqn);
+        }
+        
+        return TextUtils.processText(rawJavadoc, startIndex, pageSize, grepPattern, maxLineLength);
+    }
+
+    private static String getRawJavadocForType(String fqn) throws Exception {
         FileObject sourceFile = NetBeansJavaQueryUtils.findSourceFile(fqn);
         if (sourceFile == null) {
             throw new Exception("Source file not found for " + fqn);
@@ -109,20 +138,10 @@ public class JavaDocs {
         if (exceptionRef.get() != null) {
             throw exceptionRef.get();
         }
-        
-        String result = javadocRef.get();
-        return result != null ? result : "No Javadoc found for type '" + fqn + "'";
+        return javadocRef.get();
     }
-    
-    /**
-     * Gets the Javadoc comment for a specific method from its source file.
-     * @param fqn The fully qualified class name.
-     * @param methodName The name of the method.
-     * @return The Javadoc content or a message indicating it was not found.
-     * @throws Exception if an error occurs during parsing.
-     */
-    @AIToolMethod(value = "Gets the Javadoc comment for a specific method from its source file.", requiresApproval = false)
-    public static String getJavadocForMethod(@AIToolParam("The fully qualified class name.") String fqn, @AIToolParam("The name of the method.") String methodName) throws Exception {
+
+    private static String getRawJavadocForMethod(String fqn, String methodName) throws Exception {
         FileObject sourceFile = NetBeansJavaQueryUtils.findSourceFile(fqn);
         if (sourceFile == null) {
             throw new Exception("Source file not found for " + fqn);
@@ -162,16 +181,16 @@ public class JavaDocs {
         if (exceptionRef.get() != null) {
             throw exceptionRef.get();
         }
-        
-        String result = javadocRef.get();
-        return result != null ? result : "No Javadoc found for method '" + methodName + "' in class " + fqn;
+        return javadocRef.get();
     }
-    
+
     private static String cleanJavadoc(String rawDoc) {
-        if (rawDoc == null) return "";
+        if (rawDoc == null) {
+            return "";
+        }
         return rawDoc
-            .replaceAll("^/\\*\\*|\\*/$", "") // Remove /** and */
-            .replaceAll("\n[ \t]*\\* ?", "\n")     // Remove leading * from each line
-            .trim();
+                .replaceAll("^/\\*\\*|\\*/$", "") // Remove /** and */
+                .replaceAll("\n[ \t]*\\* ?", "\n") // Remove leading * from each line
+                .trim();
     }
 }

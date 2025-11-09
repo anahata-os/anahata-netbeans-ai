@@ -37,4 +37,7 @@ public final class ProjectOverview {
 
     @Schema(description = "A list of supported high-level actions that can be invoked on the project (e.g., 'build', 'run').")
     private final List<String> actions;
+    
+    @Schema(description = "The content of the anahata.md file for the project, if it exists. This file contains critical, high-level information about the project's purpose, status, and goals, and should always be in context.")
+    private final String anahataMdContent;
 }
