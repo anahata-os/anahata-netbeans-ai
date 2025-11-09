@@ -26,7 +26,14 @@ This plugin's main responsibilities are:
     *   `Maven`: Provides tools for invoking Maven actions.
     *   `Coding`: Provides the `proposeChange` tool, which shows a diff view for user approval.
 
-## 3. Competitive Advantage & V1 Launch Strategy
+## 3. Coding Principles
+
+1.  **Javadoc Integrity:** As an open-source Java library, comprehensive documentation is paramount.
+    *   Existing Javadoc, comments, and blank lines **must never be removed**.
+    *   New public classes and methods **must have Javadoc**.
+    *   Changes should be made by patching, not regenerating, to preserve the original structure and comments.
+
+## 4. Competitive Advantage & V1 Launch Strategy
 
 A competitive analysis has shown that the Anahata AI Assistant's current feature set is superior to existing alternatives for NetBeans. Our key differentiator is the **deep, programmatic IDE integration**.
 
@@ -37,9 +44,9 @@ Therefore, the strategy is to proceed with a **V1 Launch** with the current feat
 
 ## V1 Launch Goals (Immediate Focus)
 
+-   [ ] **AnahataNodeFactory doesnt refresh the folder and causes a memory leak on nb:** 
 -   [ ] **Node Decoration (High Priority):** The file decoration in the NetBeans project tree for files that are "in-context" is currently non-functional. This is a critical pre-launch feature. *Next Step: Research NetBeans Git module source for correct implementation pattern.*
 -   [ ] **Tab NickName and Color Coding based on status / session id:** check how to change the colors on the tab
--   [ ] **Maven dependency search using the netbeans maben tools  / maven index:** 
 -   [ ] **Plugin Portal:** Package the plugin and submit it to the Apache NetBeans Plugin Portal.
 -   [ ] **Performance:** Investigate and improve the initial startup time of the `AnahataTopComponent`.
 -   [ ] **Java:** see if we can add "find usages" "call hierarchy" and "refactor/rename"
@@ -57,8 +64,8 @@ The V2 plan remains to split the `gemini-java-client` into a modular architectur
 -   **Code Cleanup:** Remove obsolete singleton-based classes like `ContextFiles` which are incompatible with the multi-instance architecture.
 
 ## Very Important Notes
-When testing code in this project via NetBeansProject.compileAndExecuteJava, alwayws use release-21 and **do not include compileAndExecuteDependencies**
-Also, remember that tools only get registered when netbeans starts up, also the classloader and the compiler classpath only gets populated with the plugins
+When testing code in this project via NetBeansProject.compileAndExecuteJava, **do not include compileAndExecuteDependencies**
+Also, remember that tools only get registered when the chat starts up, also the classloader and the compiler classpath only gets populated with the plugins
 jars at startup, if you add a depdency you would need to reload the plugin.
 
 To reload the plugin: runGoal "install" (no cleaning) and then invoke the Project Action "nbmreload" on separate calls. You need to check that installed succeed first. If the reload action succeeds, the current chat will be close and we will be chatting on a new instance of AnahataTopComponent that will restore the chat from the backup.
