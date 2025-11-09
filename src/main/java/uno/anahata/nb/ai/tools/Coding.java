@@ -64,8 +64,8 @@ public class Coding {
             @AIToolParam("The absolute path of the existing file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
             @AIToolParam("A clear and concise explanation of the proposed change.") String explanation,
-            @AIToolParam("The 'last modified' timestamp of the file you want to modify on disk. The write will fail if the actual timestamp is different.") long lastModified,
-            @AIToolParam("The current size of the file you want to modify (from your last read / write, the stateful resources summary or the project overview). The write will fail if the current size of the file on disk is different.") long size) throws Exception {
+            @AIToolParam("Optimistic locking parameter. Provide the 'lastModified' timestamp of the file from your stateful resources overview or your last read or write. The operation will be aborted if the file has been modified on disk since that timestamp.") long lastModified,
+            @AIToolParam("Optimistic locking parameter. Provide the 'size' of the file from your last read or write. The operation will be aborted if the file size on disk is different, preventing overwrites of concurrent changes.") long size) throws Exception {
 
         final File originalFile = new File(filePath);
         if (!originalFile.exists()) {
@@ -74,10 +74,10 @@ public class Coding {
 
         // Stale file checks
         if (originalFile.lastModified() != lastModified) {
-            throw new IOException("File has been modified on disk. Expected lastModified: " + lastModified + ", but was: " + originalFile.lastModified());
+            throw new IOException("File has been modified on disk. Received lastModified: " + lastModified + ", current: " + originalFile.lastModified());
         }
         if (originalFile.length() != size) {
-            throw new IOException("File size has changed on disk. Expected size: " + size + ", but was: " + originalFile.length());
+            throw new IOException("File size has changed on disk. Received size: " + size + ", current: " + originalFile.length());
         }
         
         // Unsaved changes check

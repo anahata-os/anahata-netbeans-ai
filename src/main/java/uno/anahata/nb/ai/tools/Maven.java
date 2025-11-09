@@ -3,8 +3,9 @@ package uno.anahata.nb.ai.tools;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -14,17 +15,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.index.ArtifactInfo;
-import org.apache.maven.index.NexusIndexer;
-import org.apache.maven.index.QueryCreator;
-import org.apache.maven.index.SearchEngine;
-import org.apache.maven.index.context.IndexingContext;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectUtils;
@@ -34,10 +27,15 @@ import org.netbeans.modules.maven.api.execute.RunUtils;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.embedder.MavenEmbedder;
 import org.netbeans.modules.maven.execute.MavenCommandLineExecutor;
+import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
+import org.netbeans.modules.maven.indexer.api.QueryField;
+import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
+import org.netbeans.modules.maven.indexer.api.RepositoryIndexer;
+import org.netbeans.modules.maven.indexer.spi.GenericFindQuery;
+import org.netbeans.modules.maven.indexer.spi.ResultImplementation;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
@@ -179,14 +177,21 @@ public class Maven {
         return content;
     }
 
-    @AIToolMethod("Downloads all missing sources for a given Maven project's dependencies.")
+    @Deprecated
     public static String downloadProjectSources(String projectId) throws Exception {
-        return downloadArtifactsForProject(projectId, "sources", "Sources");
+        return downloadArtifactsForProjectInternal(projectId, Collections.singletonList("sources"));
     }
     
-    @AIToolMethod("Downloads all missing Javadoc for a given Maven project's dependencies.")
+    @Deprecated
     public static String downloadProjectJavadocs(String projectId) throws Exception {
-        return downloadArtifactsForProject(projectId, "javadoc", "Javadoc");
+        return downloadArtifactsForProjectInternal(projectId, Collections.singletonList("javadoc"));
+    }
+
+    @AIToolMethod("Downloads all missing dependencies artifacts (e.g., 'sources', 'javadoc') for a given Maven project's dependencies.")
+    public static String downloadProjectDependencies(
+            @AIToolParam("The ID of the project to download dependencies for.") String projectId,
+            @AIToolParam("A list of classifiers to download (e.g., ['sources', 'javadoc']).") List<String> classifiers) throws Exception {
+        return downloadArtifactsForProjectInternal(projectId, classifiers);
     }
 
     @AIToolMethod("Downloads a specific classified artifact (e.g., 'sources', 'javadoc') for a single dependency of a given Maven project.")
@@ -202,40 +207,64 @@ public class Maven {
     
     @AIToolMethod("Searches the local Maven index for artifacts matching a given query.")
     public static List<MavenArtifactSearchResult> searchMavenIndex(@AIToolParam("The search query (e.g., 'junit', 'g:org.apache.commons')") String query) throws Exception {
-        NexusIndexer indexer = Lookup.getDefault().lookup(NexusIndexer.class);
-        SearchEngine searcher = Lookup.getDefault().lookup(SearchEngine.class);
-        QueryCreator queryCreator = Lookup.getDefault().lookup(QueryCreator.class);
+        // 1. Create RepositoryInfo for the local repository
+        String localRepoPath = System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository";
+        RepositoryInfo localRepoInfo = new RepositoryInfo("local", "Local Maven Repository", localRepoPath, null);
 
-        if (indexer == null || searcher == null || queryCreator == null) {
-            throw new IllegalStateException("Could not find required Maven Indexer services in Lookup.");
+        // 2. Get the NexusRepositoryIndexManager via reflection
+        Method findImpl = RepositoryIndexer.class.getDeclaredMethod("findImplementation", RepositoryInfo.class);
+        findImpl.setAccessible(true);
+        Object manager = findImpl.invoke(null, localRepoInfo);
+
+        // 3. Get the GenericFindQuery tool from the manager
+        Method getQuery = manager.getClass().getMethod("getGenericFindQuery");
+        GenericFindQuery genericQuery = (GenericFindQuery) getQuery.invoke(manager);
+
+        // 4. Build the query from QueryFields using the correct API (setters)
+        List<QueryField> fields = new ArrayList<>();
+        
+        QueryField qfGroup = new QueryField();
+        qfGroup.setField(QueryField.FIELD_GROUPID);
+        qfGroup.setValue(query);
+        qfGroup.setMatch(QueryField.MATCH_ANY);
+        qfGroup.setOccur(QueryField.OCCUR_SHOULD);
+        fields.add(qfGroup);
+
+        QueryField qfArtifact = new QueryField();
+        qfArtifact.setField(QueryField.FIELD_ARTIFACTID);
+        qfArtifact.setValue(query);
+        qfArtifact.setMatch(QueryField.MATCH_ANY);
+        qfArtifact.setOccur(QueryField.OCCUR_SHOULD);
+        fields.add(qfArtifact);
+
+        QueryField qfClass = new QueryField();
+        qfClass.setField(QueryField.FIELD_CLASSES);
+        qfClass.setValue(query);
+        qfClass.setMatch(QueryField.MATCH_ANY);
+        qfClass.setOccur(QueryField.OCCUR_SHOULD);
+        fields.add(qfClass);
+
+        // 5. Execute the search
+        ResultImplementation<NBVersionInfo> results = genericQuery.find(fields, Collections.singletonList(localRepoInfo));
+
+        // 6. Process and return the results
+        if (results == null || results.getResults() == null) {
+            return Collections.emptyList();
         }
 
-        BooleanQuery.Builder bqBuilder = new BooleanQuery.Builder();
-        bqBuilder.add(queryCreator.constructQuery(ArtifactInfo.GROUP_ID, query), BooleanClause.Occur.SHOULD);
-        bqBuilder.add(queryCreator.constructQuery(ArtifactInfo.ARTIFACT_ID, query), BooleanClause.Occur.SHOULD);
-        bqBuilder.add(queryCreator.constructQuery(ArtifactInfo.NAMES, query), BooleanClause.Occur.SHOULD);
-        BooleanQuery bq = bqBuilder.build();
-
-
-        // TODO: getIndexingContexts() is deprecated. Find a replacement.
-        Collection<IndexingContext> contexts = indexer.getIndexingContexts().values();
-        
-        java.util.Set<ArtifactInfo> results = searcher.searchFlat(ArtifactInfo.VERSION_COMPARATOR, contexts, bq);
-
-
-        return results.stream()
+        return results.getResults().stream()
                 .map(info -> new MavenArtifactSearchResult(
                         info.getGroupId(),
                         info.getArtifactId(),
                         info.getVersion(),
-                        info.getRepository(),
+                        info.getRepoId(),
                         info.getPackaging(),
-                        info.getDescription()
+                        info.getProjectDescription() // Use the correct method
                 ))
                 .collect(Collectors.toList());
     }
     
-    private static String downloadArtifactsForProject(String projectId, String classifier, String artifactTypeName) throws Exception {
+    private static String downloadArtifactsForProjectInternal(String projectId, List<String> classifiers) throws Exception {
         Project project = Projects.findProject(projectId);
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
         if (nbMavenProject == null) {
@@ -244,20 +273,32 @@ public class Maven {
 
         MavenEmbedder onlineEmbedder = EmbedderFactory.getOnlineEmbedder();
         java.util.Set<Artifact> artifacts = nbMavenProject.getMavenProject().getArtifacts();
-        int successCount = 0;
-        int failCount = 0;
+        int totalSuccessCount = 0;
+        int totalFailCount = 0;
         StringBuilder errors = new StringBuilder();
-
-        for (Artifact art : artifacts) {
-            if (downloadArtifact(onlineEmbedder, nbMavenProject, art, classifier, errors)) {
-                successCount++;
-            } else {
-                failCount++;
+        
+        for (String classifier : classifiers) {
+            int successCount = 0;
+            int failCount = 0;
+            
+            for (Artifact art : artifacts) {
+                if (downloadArtifact(onlineEmbedder, nbMavenProject, art, classifier, errors)) {
+                    successCount++;
+                } else {
+                    failCount++;
+                }
             }
+            totalSuccessCount += successCount;
+            totalFailCount += failCount;
         }
 
         NbMavenProject.fireMavenProjectReload(project);
-        return buildResultString(artifactTypeName, "Project", projectId, successCount, failCount, errors);
+        
+        String artifactTypeNames = classifiers.stream()
+                .map(c -> c.substring(0, 1).toUpperCase() + c.substring(1))
+                .collect(Collectors.joining(" and "));
+        
+        return buildResultString(artifactTypeNames, "Project", projectId, totalSuccessCount, totalFailCount, errors);
     }
     
     private static String downloadArtifactForDependency(String projectId, String groupId, String artifactId, String classifier, String artifactTypeName) throws Exception {
