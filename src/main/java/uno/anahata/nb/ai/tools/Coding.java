@@ -43,7 +43,7 @@ import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.gemini.functions.ContextBehavior;
 import uno.anahata.gemini.functions.spi.pojos.FileInfo;
-import uno.anahata.nb.ai.model.coding.ProposeChangeResult;
+import uno.anahata.nb.ai.model.coding.SuggestChangeResult;
 
 /**
  * Tools related to coding tasks and modifying source files.
@@ -60,12 +60,12 @@ public class Coding {
             + "\nDo not use this tool for creating new files, just for updating existing ones. "
             + "\n\nNote: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Calling LocalFiles.readFile for the returned resource on your next trip will auto prune the FunctionCall/FunctionResponse paris of proposeChange and will reduce the overall token usage of the file modification to half.",
              behavior = ContextBehavior.STATEFUL_REPLACE)
-    public static ProposeChangeResult proposeChange(
+    public static SuggestChangeResult suggestChange(
             @AIToolParam("The absolute path of the existing file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
             @AIToolParam("A clear and concise explanation of the proposed change.") String explanation,
-            @AIToolParam("Optimistic locking parameter. Provide the 'lastModified' timestamp of the file from your stateful resources overview or your last read or write. The operation will be aborted if the file has been modified on disk since that timestamp.") long lastModified,
-            @AIToolParam("Optimistic locking parameter. Provide the 'size' of the file from your last read or write. The operation will be aborted if the file size on disk is different, preventing overwrites of concurrent changes.") long size) throws Exception {
+            @AIToolParam("Optimistic locking parameter. Must match the current 'lastModified' timestamp of the resource on disk of the resource indicated by filePath. ") long lastModified,
+            @AIToolParam("Optimistic locking parameter. Must match the current 'size' of the resource on disk of the resource indicated by filePath.") long size) throws Exception {
 
         final File originalFile = new File(filePath);
         if (!originalFile.exists()) {
@@ -74,10 +74,10 @@ public class Coding {
 
         // Stale file checks
         if (originalFile.lastModified() != lastModified) {
-            throw new IOException("File has been modified on disk. Received lastModified: " + lastModified + ", current: " + originalFile.lastModified());
+            throw new IOException("Optimistic Locking Exception. File has been modified on disk. You provided: " + lastModified + ", current: " + originalFile.lastModified());
         }
         if (originalFile.length() != size) {
-            throw new IOException("File size has changed on disk. Received size: " + size + ", current: " + originalFile.length());
+            throw new IOException("Optimistic Locking Exception. File size has changed on disk. You provided : " + size + ", current: " + originalFile.length());
         }
         
         // Unsaved changes check
@@ -94,7 +94,7 @@ public class Coding {
             // Ignore if no DataObject, it's not open or not a project file.
         }
 
-        final AtomicReference<ProposeChangeResult> resultHolder = new AtomicReference<>();
+        final AtomicReference<SuggestChangeResult> resultHolder = new AtomicReference<>();
         final AtomicReference<Exception> exceptionHolder = new AtomicReference<>();
         final CountDownLatch dialogLatch = new CountDownLatch(1);
 
@@ -172,7 +172,7 @@ public class Coding {
                                     updatedFile.length()
                             );
                             String userComment = commentTextArea.getText();
-                            resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.ACCEPTED, userComment, fileInfo));
+                            resultHolder.set(new SuggestChangeResult(SuggestChangeResult.Status.ACCEPTED, userComment, fileInfo));
 
                         } catch (IOException ex) {
                             exceptionHolder.set(ex);
@@ -183,7 +183,7 @@ public class Coding {
 
                     cancelButton.addActionListener(e -> {
                         String userComment = commentTextArea.getText();
-                        resultHolder.set(new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment, null));
+                        resultHolder.set(new SuggestChangeResult(SuggestChangeResult.Status.CANCELLED, userComment, null));
                         dialog.dispose();
                     });
 
@@ -191,7 +191,7 @@ public class Coding {
                         @Override
                         public void windowClosed(WindowEvent e) {
                             String userComment = commentTextArea.getText();
-                            resultHolder.compareAndSet(null, new ProposeChangeResult(ProposeChangeResult.Status.CANCELLED, userComment, null));
+                            resultHolder.compareAndSet(null, new SuggestChangeResult(SuggestChangeResult.Status.CANCELLED, userComment, null));
                             dialogLatch.countDown();
                         }
                     });

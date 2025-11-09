@@ -46,6 +46,10 @@ Therefore, the strategy is to proceed with a **V1 Launch** with the current feat
 -   [ ] **UI Polish:**
     -   [ ] Implement the fix to display the `explanation` text in the `Coding.proposeChange` modal diff dialog (e.g., by wrapping it in a `TitledBorder`).
 
+### Future Tool Enhancements
+-   [ ] **Parallelize Maven Artifact Downloads:** Review the `downloadProjectDependencies` tool to execute downloads in parallel to improve performance.
+-   [ ] **Create `addDependency` Super-Tool:** Discuss and potentially create a high-level tool that orchestrates the entire process of adding a new dependency: verifying its existence, updating the `pom.xml`, and downloading the binary, sources, and Javadoc artifacts.
+
 ## V2 Mega-Refactor Plan (Future Focus)
 
 The V2 plan remains to split the `gemini-java-client` into a modular architecture to support multiple AI models and UI frameworks. A key architectural goal is:

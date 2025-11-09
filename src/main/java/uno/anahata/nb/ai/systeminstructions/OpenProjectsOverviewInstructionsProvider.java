@@ -31,7 +31,7 @@ public class OpenProjectsOverviewInstructionsProvider extends SystemInstructionP
         List<Part> parts = new ArrayList<>();
         for (String projectId : projectIds) {
             ProjectOverview overview = Projects.getOverview(projectId);
-            String header = "#Output of Projects.getOverview(**" + projectId + "**)\n";
+            String header = "#Output of Projects.getOverview(**" + projectId + "**)\n\n";
             String json = "```json\n" + GsonUtils.prettyPrint(overview) + "\n```";
             parts.add(Part.fromText(header + "\n" + json));
         }

@@ -3,7 +3,6 @@ package uno.anahata.nb.ai.tools;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,12 +26,6 @@ import org.netbeans.modules.maven.api.execute.RunUtils;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.embedder.MavenEmbedder;
 import org.netbeans.modules.maven.execute.MavenCommandLineExecutor;
-import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
-import org.netbeans.modules.maven.indexer.api.QueryField;
-import org.netbeans.modules.maven.indexer.api.RepositoryInfo;
-import org.netbeans.modules.maven.indexer.api.RepositoryIndexer;
-import org.netbeans.modules.maven.indexer.spi.GenericFindQuery;
-import org.netbeans.modules.maven.indexer.spi.ResultImplementation;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileUtil;
@@ -41,7 +34,6 @@ import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.nb.ai.model.maven.MavenArtifactSearchResult;
 import uno.anahata.nb.ai.model.maven.MavenBuildResult;
 import uno.anahata.nb.ai.model.maven.MavenBuildResult.ProcessStatus;
 
@@ -203,65 +195,6 @@ public class Maven {
         // The artifactTypeName can be derived from the classifier for the user message.
         String artifactTypeName = classifier.substring(0, 1).toUpperCase() + classifier.substring(1);
         return downloadArtifactForDependency(projectId, groupId, artifactId, classifier, artifactTypeName);
-    }
-    
-    @AIToolMethod("Searches the local Maven index for artifacts matching a given query.")
-    public static List<MavenArtifactSearchResult> searchMavenIndex(@AIToolParam("The search query (e.g., 'junit', 'g:org.apache.commons')") String query) throws Exception {
-        // 1. Create RepositoryInfo for the local repository
-        String localRepoPath = System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository";
-        RepositoryInfo localRepoInfo = new RepositoryInfo("local", "Local Maven Repository", localRepoPath, null);
-
-        // 2. Get the NexusRepositoryIndexManager via reflection
-        Method findImpl = RepositoryIndexer.class.getDeclaredMethod("findImplementation", RepositoryInfo.class);
-        findImpl.setAccessible(true);
-        Object manager = findImpl.invoke(null, localRepoInfo);
-
-        // 3. Get the GenericFindQuery tool from the manager
-        Method getQuery = manager.getClass().getMethod("getGenericFindQuery");
-        GenericFindQuery genericQuery = (GenericFindQuery) getQuery.invoke(manager);
-
-        // 4. Build the query from QueryFields using the correct API (setters)
-        List<QueryField> fields = new ArrayList<>();
-        
-        QueryField qfGroup = new QueryField();
-        qfGroup.setField(QueryField.FIELD_GROUPID);
-        qfGroup.setValue(query);
-        qfGroup.setMatch(QueryField.MATCH_ANY);
-        qfGroup.setOccur(QueryField.OCCUR_SHOULD);
-        fields.add(qfGroup);
-
-        QueryField qfArtifact = new QueryField();
-        qfArtifact.setField(QueryField.FIELD_ARTIFACTID);
-        qfArtifact.setValue(query);
-        qfArtifact.setMatch(QueryField.MATCH_ANY);
-        qfArtifact.setOccur(QueryField.OCCUR_SHOULD);
-        fields.add(qfArtifact);
-
-        QueryField qfClass = new QueryField();
-        qfClass.setField(QueryField.FIELD_CLASSES);
-        qfClass.setValue(query);
-        qfClass.setMatch(QueryField.MATCH_ANY);
-        qfClass.setOccur(QueryField.OCCUR_SHOULD);
-        fields.add(qfClass);
-
-        // 5. Execute the search
-        ResultImplementation<NBVersionInfo> results = genericQuery.find(fields, Collections.singletonList(localRepoInfo));
-
-        // 6. Process and return the results
-        if (results == null || results.getResults() == null) {
-            return Collections.emptyList();
-        }
-
-        return results.getResults().stream()
-                .map(info -> new MavenArtifactSearchResult(
-                        info.getGroupId(),
-                        info.getArtifactId(),
-                        info.getVersion(),
-                        info.getRepoId(),
-                        info.getPackaging(),
-                        info.getProjectDescription() // Use the correct method
-                ))
-                .collect(Collectors.toList());
     }
     
     private static String downloadArtifactsForProjectInternal(String projectId, List<String> classifiers) throws Exception {

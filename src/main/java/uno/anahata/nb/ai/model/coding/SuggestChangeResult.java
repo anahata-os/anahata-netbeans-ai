@@ -21,7 +21,7 @@ import uno.anahata.gemini.functions.spi.pojos.FileInfo;
         + "- The user's approval (Accepted / Cancelled), "
         + "- Any message from the user regarding the proposed change (regardless of whether the user approved it or not)  "
         + "- The updated file details if accepted.")
-public class ProposeChangeResult implements StatefulResource {
+public class SuggestChangeResult implements StatefulResource {
 
     public enum Status {
         /** The user accepted the proposed file change. */
