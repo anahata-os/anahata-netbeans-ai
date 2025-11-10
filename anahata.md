@@ -46,6 +46,7 @@ Therefore, the strategy is to proceed with a **V1 Launch** with the current feat
 
 -   [ ] **AnahataNodeFactory doesnt refresh the folder and causes a memory leak on nb:** 
 -   [ ] **Node Decoration (High Priority):** The file decoration in the NetBeans project tree for files that are "in-context" is currently non-functional. This is a critical pre-launch feature. *Next Step: Research NetBeans Git module source for correct implementation pattern.*
+-   [ ] **Local History:** figure out how to write a local history user and message so it is seen in the nb local history.
 -   [ ] **Tab NickName and Color Coding based on status / session id:** check how to change the colors on the tab
 -   [ ] **Plugin Portal:** Package the plugin and submit it to the Apache NetBeans Plugin Portal.
 -   [ ] **Performance:** Investigate and improve the initial startup time of the `AnahataTopComponent`.

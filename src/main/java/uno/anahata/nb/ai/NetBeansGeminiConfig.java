@@ -50,7 +50,7 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
     }
 
     @Override
-    public String getApplicationInstanceId() {
+    public String getSessionId() {
         return "netbeans-" + sessionUuid;
     }
 

@@ -64,8 +64,9 @@ public class Coding {
             @AIToolParam("The absolute path of the existing file to modify.") String filePath,
             @AIToolParam("The full, new proposed content for the file.") String proposedContent,
             @AIToolParam("A clear and concise explanation of the proposed change.") String explanation,
-            @AIToolParam("Optimistic locking parameter. Must match the current 'lastModified' timestamp of the resource on disk of the resource indicated by filePath. ") long lastModified,
-            @AIToolParam("Optimistic locking parameter. Must match the current 'size' of the resource on disk of the resource indicated by filePath.") long size) throws Exception {
+            @AIToolParam("Optimistic locking parameter. Must match the current 'lastModified' timestamp of the resource on disk of the resource indicated by filePath. ") long lastModified
+    )            /*@AIToolParam("Optimistic locking parameter. Must match the current 'size' of the resource on disk of the resource indicated by filePath.") long size)*/ 
+            throws Exception {
 
         final File originalFile = new File(filePath);
         if (!originalFile.exists()) {
@@ -76,14 +77,15 @@ public class Coding {
         if (originalFile.lastModified() != lastModified) {
             throw new IOException("Optimistic Locking Exception. File has been modified on disk. You provided: " + lastModified + ", current: " + originalFile.lastModified());
         }
+        /*
         if (originalFile.length() != size) {
             throw new IOException("Optimistic Locking Exception. File size has changed on disk. You provided : " + size + ", current: " + originalFile.length());
-        }
+        }*/
         
         // Unsaved changes check
         FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(originalFile));
         if (fo == null) {
-            throw new IOException("Could not get FileObject for: " + filePath);
+            throw new IOException("Could not get FileObject for: " + filePath + ". Does the user have unsaved changes on the editor?");
         }
         try {
             DataObject dob = DataObject.find(fo);

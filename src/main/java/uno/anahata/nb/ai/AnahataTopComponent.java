@@ -65,6 +65,9 @@ public final class AnahataTopComponent extends TopComponent implements Externali
     @Override
     public void componentClosed() {
         logId("componentClosed()");
+        if (geminiPanel != null && geminiPanel.getChat() != null) {
+            geminiPanel.getChat().shutdown();
+        }
     }
 
     @Override
