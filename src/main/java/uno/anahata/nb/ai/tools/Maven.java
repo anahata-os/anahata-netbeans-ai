@@ -172,15 +172,6 @@ public class Maven {
         return content;
     }
     
-    @Deprecated
-    public static String downloadProjectSources(String projectId) throws Exception {
-        return downloadArtifactsForProjectInternal(projectId, Collections.singletonList("sources"));
-    }
-    
-    @Deprecated
-    public static String downloadProjectJavadocs(String projectId) throws Exception {
-        return downloadArtifactsForProjectInternal(projectId, Collections.singletonList("javadoc"));
-    }
 
     @AIToolMethod("Downloads all missing dependencies artifacts (e.g., 'sources', 'javadoc') for a given Maven project's dependencies.")
     public static String downloadProjectDependencies(
