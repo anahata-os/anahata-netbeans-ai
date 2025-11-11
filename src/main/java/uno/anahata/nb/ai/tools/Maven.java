@@ -44,6 +44,7 @@ import uno.anahata.nb.ai.model.maven.MavenBuildResult.ProcessStatus;
 public class Maven {
     private static final Logger LOG = Logger.getLogger(Maven.class.getName());
     private static final int MAX_OUTPUT_LENGTH = 3000;
+    private static final long DEFAULT_TIMEOUT_MS = 300_000; // 5 minutes
 
     @AIToolMethod("Gets the path to the Maven installation configured in NetBeans.")
     public static String getMavenPath() {
@@ -62,9 +63,11 @@ public class Maven {
             @AIToolParam("A list of profiles to activate.") List<String> profiles,
             @AIToolParam("A map of properties to set.") Map<String, String> properties,
             @AIToolParam("A list of additional Maven options.") List<String> options,
-            @AIToolParam("The maximum time to wait for the build to complete, in milliseconds.") long timeout) throws Exception {
+            @AIToolParam("The maximum time to wait for the build to complete, in milliseconds.") Long timeout) throws Exception {
 
         Project project = Projects.findProject(projectId);
+        
+        long effectiveTimeout = timeout != null ? timeout : DEFAULT_TIMEOUT_MS;
         
         ProjectInformation info = ProjectUtils.getInformation(project);
         String displayName = info.getDisplayName();
@@ -123,7 +126,7 @@ public class Maven {
         Integer exitCode = null;
 
         try {
-            exitCode = future.get(timeout, TimeUnit.MILLISECONDS);
+            exitCode = future.get(effectiveTimeout, TimeUnit.MILLISECONDS);
             status = ProcessStatus.COMPLETED;
         } catch (TimeoutException e) {
             task.stop();
@@ -168,7 +171,7 @@ public class Maven {
         }
         return content;
     }
-
+    
     @Deprecated
     public static String downloadProjectSources(String projectId) throws Exception {
         return downloadArtifactsForProjectInternal(projectId, Collections.singletonList("sources"));

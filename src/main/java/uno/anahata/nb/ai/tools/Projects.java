@@ -157,9 +157,9 @@ public class Projects {
 
         return new ProjectOverview(
                 root.getNameExt(),
-                info.getDisplayName(),
-                anahataMdContent,
+                info.getDisplayName(),                
                 root.getPath(),
+                anahataMdContent,
                 rootFiles,
                 rootFolderNames,
                 sourceFolders,
@@ -203,16 +203,18 @@ public class Projects {
 
         long recursiveSize = files.stream().mapToLong(ProjectFile::getSize).sum()
                 + subfolders.stream().mapToLong(SourceFolder::getRecursiveSize).sum();
+        
+        String folderName = folder.getNameExt();
+        String finalDisplayName = folderName.equals(displayName) ? null : displayName;
 
-        return new SourceFolder(folder.getNameExt(), displayName, folder.getPath(), recursiveSize, files, subfolders);
+        return new SourceFolder(finalDisplayName, folder.getPath(), recursiveSize, files, subfolders);
     }
 
     private static ProjectFile createProjectFile(FileObject fo, Map<String, ResourceStatus> statusMap) throws FileStateInvalidException {
         String path = fo.getPath();
-        ResourceStatus status = statusMap.getOrDefault(path, ResourceStatus.NOT_IN_CONTEXT);
+        ResourceStatus status = statusMap.getOrDefault(path, null);
         return new ProjectFile(
                 fo.getNameExt(),
-                path,
                 fo.getSize(),
                 fo.lastModified().getTime(),
                 status

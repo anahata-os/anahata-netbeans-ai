@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import org.openide.modules.ModuleInstall;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import uno.anahata.gemini.GeminiConfig;
+import uno.anahata.gemini.AnahataConfig;
 import uno.anahata.nb.ai.util.NetBeansModuleUtils;
 
 public class AnahataInstaller extends ModuleInstall {
@@ -104,7 +104,7 @@ public class AnahataInstaller extends ModuleInstall {
     }
 
     private File getHandoffFile() {
-        return new File(GeminiConfig.getWorkingFolder(), HANDOFF_FILE_NAME);
+        return new File(AnahataConfig.getWorkingFolder(), HANDOFF_FILE_NAME);
     }
 
     private void logId(String mssg) {

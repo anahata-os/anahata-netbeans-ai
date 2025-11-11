@@ -1,5 +1,6 @@
 package uno.anahata.nb.ai.model.projects;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,15 +20,13 @@ public final class ProjectFile {
     @Schema(description = "The name of the file.")
     private final String name;
 
-    @Schema(description = "The absolute path to the file.")
-    private final String path;
-
     @Schema(description = "The size of the file in bytes.")
     private final long size;
 
     @Schema(description = "The last modified timestamp of the file on disk.")
     private final long lastModified;
 
-    @Schema(description = "The status of the file relative to the conversation context (e.g., VALID, STALE, NOT_IN_CONTEXT).")
+    @Schema(description = "The status of the file relative to the conversation context (e.g., VALID, STALE). This is only included if the file is in the context.")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final ResourceStatus resourceStatus;
 }

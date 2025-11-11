@@ -40,6 +40,7 @@ import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.gemini.functions.spi.LocalFiles;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.gemini.functions.ContextBehavior;
 import uno.anahata.gemini.functions.spi.pojos.FileInfo;
@@ -166,13 +167,8 @@ public class Coding {
                                 writer.write(finalText);
                             }
 
-                            File updatedFile = new File(filePath);
-                            FileInfo fileInfo = new FileInfo(
-                                    filePath,
-                                    finalText,
-                                    updatedFile.lastModified(),
-                                    updatedFile.length()
-                            );
+                            //File updatedFile = new File(filePath);
+                            FileInfo fileInfo = LocalFiles.readFile(filePath);
                             String userComment = commentTextArea.getText();
                             resultHolder.set(new SuggestChangeResult(SuggestChangeResult.Status.ACCEPTED, userComment, fileInfo));
 

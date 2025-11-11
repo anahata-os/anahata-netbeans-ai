@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import uno.anahata.gemini.GeminiChat;
 import uno.anahata.gemini.internal.GsonUtils;
-import uno.anahata.gemini.systeminstructions.SystemInstructionProvider;
+import uno.anahata.gemini.config.systeminstructions.SystemInstructionProvider;
 import uno.anahata.nb.ai.tools.Projects;
 import uno.anahata.nb.ai.model.projects.ProjectOverview;
 

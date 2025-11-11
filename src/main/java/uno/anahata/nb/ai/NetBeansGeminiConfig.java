@@ -1,7 +1,7 @@
 package uno.anahata.nb.ai;
 
 import java.util.List;
-import uno.anahata.gemini.systeminstructions.SystemInstructionProvider;
+import uno.anahata.gemini.config.systeminstructions.SystemInstructionProvider;
 import uno.anahata.gemini.ui.SwingGeminiConfig;
 import uno.anahata.nb.ai.tools.Coding;
 import uno.anahata.nb.ai.tools.Editor;
@@ -15,12 +15,13 @@ import uno.anahata.nb.ai.tools.NetBeansProjectJVM;
 import uno.anahata.nb.ai.tools.Output;
 import uno.anahata.nb.ai.tools.Projects;
 import uno.anahata.nb.ai.tools.TopComponents;
-import uno.anahata.nb.ai.tools.Workspace;
 import uno.anahata.nb.ai.systeminstructions.CoreNetBeansInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.IdeAlertsInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.OpenProjectsOverviewInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.OpenTopComponentsInstructionsProvider;
 import uno.anahata.nb.ai.systeminstructions.OutputTabsInstructionsProvider;
+import uno.anahata.nb.ai.tools.MavenPom;
+import uno.anahata.nb.ai.tools.MavenSearch;
 
 public class NetBeansGeminiConfig extends SwingGeminiConfig {
 
@@ -37,7 +38,8 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
         ret.add(Git.class);
         ret.add(IDE.class);
         ret.add(Maven.class);
-        ret.add(Workspace.class);
+        ret.add(MavenSearch.class);
+        ret.add(MavenPom.class);
         ret.add(Output.class);
         ret.add(Projects.class);
         ret.add(Editor.class);

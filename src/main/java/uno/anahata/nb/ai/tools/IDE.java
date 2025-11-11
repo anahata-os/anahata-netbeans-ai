@@ -20,7 +20,7 @@ import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.filesystems.FileObject;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.nb.ai.model.util.TextProcessResult;
+import uno.anahata.nb.ai.model.util.TextChunk;
 import uno.anahata.nb.ai.util.TextUtils;
 
 public class IDE {
@@ -55,7 +55,7 @@ public class IDE {
 
         Path logFilePath = findLogFile();
         String content = new String(Files.readAllBytes(logFilePath));
-        TextProcessResult processResult = TextUtils.processText(content, startIndex, pageSize, grepPattern, maxLineLength);
+        TextChunk processResult = TextUtils.processText(content, startIndex, pageSize, grepPattern, maxLineLength);
         long linesShown = processResult.getText().lines().filter(l -> !l.isEmpty()).count();
         String header = String.format("Showing %d of %d matching lines (from %d total lines) in %s",
                 linesShown,

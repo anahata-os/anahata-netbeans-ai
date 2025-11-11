@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.SneakyThrows;
 import uno.anahata.gemini.GeminiChat;
-import uno.anahata.gemini.systeminstructions.SystemInstructionProvider;
+import uno.anahata.gemini.config.systeminstructions.SystemInstructionProvider;
 import uno.anahata.nb.ai.AnahataTopComponent;
 import uno.anahata.nb.ai.tools.Maven;
 import uno.anahata.nb.ai.tools.Projects;

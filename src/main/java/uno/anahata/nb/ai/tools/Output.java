@@ -14,7 +14,7 @@ import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.nb.ai.model.ide.OutputTabInfo;
-import uno.anahata.nb.ai.model.util.TextProcessResult;
+import uno.anahata.nb.ai.model.util.TextChunk;
 import uno.anahata.nb.ai.util.TextUtils;
 
 public class Output {
@@ -55,7 +55,7 @@ public class Output {
             Optional<JTextComponent> targetComp = findTextComponentById(id);
             if (targetComp.isPresent()) {
                 String text = targetComp.get().getText();
-                TextProcessResult processResult = TextUtils.processText(text, startIndex, pageSize, grepPattern, maxLineLength);
+                TextChunk processResult = TextUtils.processText(text, startIndex, pageSize, grepPattern, maxLineLength);
                 long linesShown = processResult.getText().lines().filter(l -> !l.isEmpty()).count();
                 String header = String.format("Showing %d of %d matching lines (from %d total lines)",
                     linesShown,

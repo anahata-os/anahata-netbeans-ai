@@ -16,7 +16,7 @@ import org.openide.filesystems.FileObject;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.nb.ai.model.java.ClassSearchResult;
-import uno.anahata.nb.ai.model.util.TextProcessResult;
+import uno.anahata.nb.ai.model.util.TextChunk;
 import uno.anahata.nb.ai.util.NetBeansJavaQueryUtils;
 import uno.anahata.nb.ai.util.TextUtils;
 
@@ -62,7 +62,7 @@ public class JavaDocs {
     }
 
     @AIToolMethod(value = "Gets the Javadoc comment for a specific type (class, interface, enum, inner class) from its source file.", requiresApproval = false)
-    public static TextProcessResult getJavadocForType(
+    public static TextChunk getJavadocForType(
             @AIToolParam("The fully qualified name of the type.") String fqn,
             @AIToolParam("The starting line number (0-based) for pagination.") Integer startIndex,
             @AIToolParam("The number of lines to return.") Integer pageSize,
@@ -78,7 +78,7 @@ public class JavaDocs {
     }
 
     @AIToolMethod(value = "Gets the Javadoc comment for a specific method from its source file.", requiresApproval = false)
-    public static TextProcessResult getJavadocForMethod(
+    public static TextChunk getJavadocForMethod(
             @AIToolParam("The fully qualified class name.") String fqn,
             @AIToolParam("The name of the method.") String methodName,
             @AIToolParam("The starting line number (0-based) for pagination.") Integer startIndex,

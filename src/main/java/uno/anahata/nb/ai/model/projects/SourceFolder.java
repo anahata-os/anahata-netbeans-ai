@@ -1,5 +1,6 @@
 package uno.anahata.nb.ai.model.projects;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -15,11 +16,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public final class SourceFolder {
-
-    @Schema(description = "The name of the folder.")
-    private final String name;
     
-    @Schema(description = "The display name of the source folder (e.g., 'Source Packages').")
+    @Schema(description = "The display name of the source folder (e.g., 'Source Packages'). This is only included if it differs from the actual folder name.")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String displayName;
 
     @Schema(description = "The absolute path to the folder.")

@@ -5,8 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TextProcessResult {
+public class TextChunk {
     private final int totalLineCount;
     private final int matchingLineCount;
+    private final int fromLine;
+    private final int toLine;
+    private final int truncatedLinesCount;
     private final String text;
 }

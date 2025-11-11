@@ -3,7 +3,8 @@ package uno.anahata.nb.ai.util;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import uno.anahata.nb.ai.model.util.TextProcessResult;
+import org.jsoup.helper.Validate;
+import uno.anahata.nb.ai.model.util.TextChunk;
 
 public class TextUtils {
 
@@ -15,11 +16,12 @@ public class TextUtils {
      * @param pageSize The number of lines to return. Can be null for no limit.
      * @param grepPattern A regex pattern to filter lines. Can be null or empty.
      * @param maxLineLength The maximum length of each line. Lines longer than this will be truncated. Can be null or 0 for no limit.
-     * @return A TextProcessResult object containing metadata and the processed text.
+     * @return A TextChunk object containing metadata and the processed text.
      */
-    public static TextProcessResult processText(String text, Integer startIndex, Integer pageSize, String grepPattern, Integer maxLineLength) {
-        if (text == null || text.isEmpty()) {
-            return new TextProcessResult(0, 0, "");
+    public static TextChunk processText(String text, Integer startIndex, Integer pageSize, String grepPattern, Integer maxLineLength) {
+        Validate.ensureNotNull(text, "text cannot be null");
+        if (text.isEmpty()) {
+            return new TextChunk(0, 0, 0, 0, 0, "");
         }
 
         // Handle nulls and provide sensible defaults
@@ -31,23 +33,49 @@ public class TextUtils {
         int totalLineCount = allLines.size();
 
         List<String> filteredLines;
+        Integer matchingLineCountResult = null; // Null by default
+
         if (grepPattern != null && !grepPattern.trim().isEmpty()) {
             Pattern pattern = Pattern.compile(grepPattern);
             filteredLines = allLines.stream()
                     .filter(line -> pattern.matcher(line).matches())
                     .collect(Collectors.toList());
+            matchingLineCountResult = filteredLines.size();
         } else {
             filteredLines = allLines;
         }
-        int matchingLineCount = filteredLines.size();
 
-        String processedText = filteredLines.stream()
+        // Get the lines for the current page
+        List<String> pageLines = filteredLines.stream()
                 .skip(start)
                 .limit(size)
+                .collect(Collectors.toList());
+
+        // Calculate truncation count for this page
+        int truncatedLinesCount = 0;
+        if (maxLen > 0) {
+            truncatedLinesCount = (int) pageLines.stream()
+                    .filter(line -> line.length() > maxLen)
+                    .count();
+        }
+        
+        // Truncate the lines for the final output
+        String processedText = pageLines.stream()
                 .map(line -> truncateLine(line, maxLen))
                 .collect(Collectors.joining("\n"));
 
-        return new TextProcessResult(totalLineCount, matchingLineCount, processedText);
+        // Calculate 1-based line numbers for the final page
+        int fromLine = pageLines.isEmpty() ? 0 : start + 1;
+        int toLine = pageLines.isEmpty() ? 0 : start + pageLines.size();
+
+        return new TextChunk(
+                totalLineCount,
+                matchingLineCountResult,
+                fromLine,
+                toLine,
+                truncatedLinesCount,
+                processedText
+        );
     }
 
     private static String truncateLine(String line, int maxLineLength) {

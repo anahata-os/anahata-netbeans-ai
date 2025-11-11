@@ -4,7 +4,7 @@ import com.google.genai.types.Part;
 import java.util.Collections;
 import java.util.List;
 import uno.anahata.gemini.GeminiChat;
-import uno.anahata.gemini.systeminstructions.SystemInstructionProvider;
+import uno.anahata.gemini.config.systeminstructions.SystemInstructionProvider;
 import uno.anahata.nb.ai.tools.IDE;
 
 public class IdeAlertsInstructionsProvider extends SystemInstructionProvider {
