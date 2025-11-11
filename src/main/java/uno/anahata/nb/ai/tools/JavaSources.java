@@ -3,6 +3,7 @@ package uno.anahata.nb.ai.tools;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
@@ -15,7 +16,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.nb.ai.model.java.ClassSearchResult;
 import uno.anahata.nb.ai.model.java.SourceFileInfo;
 import uno.anahata.nb.ai.model.java.SourceOrigin;
 import uno.anahata.nb.ai.model.util.TextChunk;
@@ -27,6 +27,19 @@ import uno.anahata.nb.ai.util.TextUtils;
  */
 public class JavaSources {
 
+    // Helper class to pass results internally
+    private static class ClassSearchResult {
+        public final FileObject classFile;
+        public final ClassPath ownerCp;
+        public final JavaPlatform platform; // Can be null if not a JDK class
+
+        public ClassSearchResult(FileObject classFile, ClassPath ownerCp, JavaPlatform platform) {
+            this.classFile = classFile;
+            this.ownerCp = ownerCp;
+            this.platform = platform;
+        }
+    }
+
     @AIToolMethod(
         value = "Gets rich, contextual information about a Java source file, including its origin (project, JAR, or JDK) and its content, with support for safe pagination. " +
                 "This is the primary tool for reading source code.",
@@ -37,40 +50,38 @@ public class JavaSources {
             @AIToolParam("The starting line number (1-based) for pagination. If null, the entire file is returned.") Integer startLine,
             @AIToolParam("The number of lines to return. If null, all lines from the start line are returned.") Integer lineCount,
             @AIToolParam("The maximum length of each line. Lines longer than this will be truncated. Set to 0 or null for no limit.") Integer maxLineLength) throws Exception {
-        
+
+        // Step 1: Find .class file
         String classAsPath = fqn.replace('.', '/') + ".class";
         ClassSearchResult searchResult = findClassFile(classAsPath);
         if (searchResult == null) {
             throw new IllegalStateException("Error: .class file not found for " + fqn);
         }
 
+        // Step 2: Query for source roots
         FileObject classFileRoot = searchResult.ownerCp.findOwnerRoot(searchResult.classFile);
         SourceForBinaryQuery.Result sfbqResult = SourceForBinaryQuery.findSourceRoots(classFileRoot.toURL());
         FileObject[] sourceRoots = sfbqResult.getRoots();
         if (sourceRoots.length == 0) {
             throw new IllegalStateException("Error: Source root not found for " + fqn);
         }
+        FileObject sourceRoot = sourceRoots[0]; // Use the first one
 
+        // Step 3: Find the .java file
         String sourcePath = fqn.replace('.', '/') + ".java";
-        FileObject sourceFile = null;
-        for (FileObject sourceRoot : sourceRoots) {
-            sourceFile = sourceRoot.getFileObject(sourcePath);
-            if (sourceFile != null) {
-                break;
-            }
-        }
-
+        FileObject sourceFile = sourceRoot.getFileObject(sourcePath);
         if (sourceFile == null) {
-            throw new IllegalStateException("Error: .java file not found for " + fqn);
+            throw new IllegalStateException("Error: .java file not found in source root for " + fqn);
         }
 
+        // Step 4: Read content
         String content;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(sourceFile.getInputStream(), StandardCharsets.UTF_8))) {
             content = reader.lines().collect(Collectors.joining("\n"));
         }
-        
-        Project owner = FileOwnerQuery.getOwner(sourceFile);
 
+        // Step 5: Classify and determine origin
+        Project owner = FileOwnerQuery.getOwner(sourceFile);
         SourceOrigin originType;
         String originLocation;
 
@@ -78,28 +89,34 @@ public class JavaSources {
             originType = SourceOrigin.PROJECT;
             originLocation = owner.getProjectDirectory().getName();
         } else {
-            String cpType = getClassPathType(searchResult.ownerCp);
-            if ("BOOT".equals(cpType)) {
+            if (searchResult.platform != null) {
                 originType = SourceOrigin.JDK;
-                originLocation = JavaPlatformManager.getDefault().getDefaultPlatform().getDisplayName();
+                Collection<FileObject> installFolders = searchResult.platform.getInstallFolders();
+                String installPath = "Unknown Location";
+                if (installFolders != null && !installFolders.isEmpty()) {
+                    installPath = installFolders.iterator().next().getPath();
+                }
+                originLocation = searchResult.platform.getDisplayName() + " (" + installPath + ")";
             } else {
                 originType = SourceOrigin.JAR;
-                originLocation = FileUtil.toFile(classFileRoot).getAbsolutePath();
+                FileObject archive = FileUtil.getArchiveFile(sourceRoot);
+                originLocation = (archive != null) ? archive.getPath() : sourceRoot.getPath();
             }
         }
 
+        // Step 6: Handle pagination
         TextChunk chunk = null;
         String fullContent = null;
-        boolean isPaginated = startLine != null || lineCount != null || maxLineLength != null;
+        boolean isPaginated = (startLine != null && startLine > 1) || lineCount != null || (maxLineLength != null && maxLineLength > 0);
 
         if (isPaginated) {
-            chunk = TextUtils.processText(content, startLine, lineCount, null, maxLineLength);
+            chunk = TextUtils.processText(content, startLine != null ? startLine - 1 : 0, lineCount, null, maxLineLength);
         } else {
             fullContent = content;
         }
 
         return new SourceFileInfo(
-                FileUtil.toFile(sourceFile).getAbsolutePath(),
+                sourceFile.getPath(),
                 fullContent,
                 content.lines().count(),
                 sourceFile.lastModified().getTime(),
@@ -109,48 +126,26 @@ public class JavaSources {
                 chunk
         );
     }
-    
-    private static String getClassPathType(ClassPath cp) {
-        JavaPlatform defaultPlatform = JavaPlatformManager.getDefault().getDefaultPlatform();
-        if (defaultPlatform != null && cp.equals(defaultPlatform.getBootstrapLibraries())) {
-            return "BOOT";
-        }
-        for (ClassPath sourceCp : GlobalPathRegistry.getDefault().getPaths(ClassPath.SOURCE)) {
-            if (cp.equals(sourceCp)) {
-                return "SOURCE";
-            }
-        }
-        for (ClassPath executeCp : GlobalPathRegistry.getDefault().getPaths(ClassPath.EXECUTE)) {
-            if (cp.equals(executeCp)) {
-                return "COMPILE";
-            }
-        }
-        return "UNKNOWN";
-    }
-    
+
     private static ClassSearchResult findClassFile(String classAsPath) {
+        // Check project sources first
         for (ClassPath cp : GlobalPathRegistry.getDefault().getPaths(ClassPath.SOURCE)) {
-            FileObject classFile = cp.findResource(classAsPath);
-            if (classFile != null) {
-                return new ClassSearchResult(classFile, cp);
-            }
+            FileObject fo = cp.findResource(classAsPath);
+            if (fo != null) return new ClassSearchResult(fo, cp, null);
         }
+        // Then check dependencies
         for (ClassPath cp : GlobalPathRegistry.getDefault().getPaths(ClassPath.EXECUTE)) {
-            FileObject classFile = cp.findResource(classAsPath);
-            if (classFile != null) {
-                return new ClassSearchResult(classFile, cp);
+            FileObject fo = cp.findResource(classAsPath);
+            if (fo != null) return new ClassSearchResult(fo, cp, null);
+        }
+        // Finally, check all installed JDKs
+        for (JavaPlatform platform : JavaPlatformManager.getDefault().getInstalledPlatforms()) {
+            ClassPath bootstrapLibraries = platform.getBootstrapLibraries();
+            FileObject fo = bootstrapLibraries.findResource(classAsPath);
+            if (fo != null) {
+                return new ClassSearchResult(fo, bootstrapLibraries, platform);
             }
         }
-
-        JavaPlatform defaultPlatform = JavaPlatformManager.getDefault().getDefaultPlatform();
-        if (defaultPlatform != null) {
-            ClassPath bootstrapLibraries = defaultPlatform.getBootstrapLibraries();
-            FileObject classFile = bootstrapLibraries.findResource(classAsPath);
-            if (classFile != null) {
-                return new ClassSearchResult(classFile, bootstrapLibraries);
-            }
-        }
-
         return null;
     }
 }
