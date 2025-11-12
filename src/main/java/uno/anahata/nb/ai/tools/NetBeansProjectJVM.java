@@ -46,14 +46,14 @@ public class NetBeansProjectJVM {
                     "(e.g., 'target/classes'), allowing for the immediate testing of newly written or modified code and supporting the Compile On Save feature " +
                     "without needing to rebuild the project. It's the key to a 'hot-reload' workflow." +
                     "\n\nThis tool is just a proxy that uses RunningJVM to do the the actual compileAndExecuteJava. The only particularity is that "
-                    + "it builds the extraClassPath parameter of RunningJVM"
-                    + "\n\n<b>Note</b>: The defaultCompilerClasspath of RunningJVM gets prepopulated on startup with all the plugins dependencies (all the jars that are visible to the plugin's module classloader)."
+                    + "it builds the 'extraClassPath' parameter of RunningJVM.compileAndExecuteJava"
+                    + "\n\n<b>Note</b>: The defaultCompilerClasspath of RunningJVM gets prepopulated on startup with all the plugins resolved dependencies (all the jars that are visible to the netbeans module classloader that loads the plugin)."
                     + "\nIf you use this tool in the context of a NetBeansModule project (or an NetBeans RCP application) and set includeCompileAndExecuteDependencies to true, it will most likely cause linkage errors in the classloader as the plugin loads **lots** of netbeans apis and modules",
             requiresApproval = true
     )
     public static Object compileAndExecuteInProject(
             @AIToolParam("The ID (directory name) of the NetBeans project to run in.") String projectId,
-            @AIToolParam("Source code of a public class named 'Anahata' that has no package declaration and implements java.util.concurrent.Callable.") String sourceCode,
+            @AIToolParam("Source code of a public class named **Anahata** that has **no package declaration** and **implements java.util.concurrent.Callable**.") String sourceCode,
             @AIToolParam("Whether to include the project's COMPILE and EXECUTE **dependencies** (the target/classess dir is always included regardless of this flag).") boolean includeCompileAndExecuteDependencies,
             @AIToolParam("Whether to include the project's test source folders and test dependencies in the classpath (only for running code that uses test sources).") boolean includeTestDependencies,
             @AIToolParam("Optional additional compiler options.") String[] compilerOptions) throws Exception {
