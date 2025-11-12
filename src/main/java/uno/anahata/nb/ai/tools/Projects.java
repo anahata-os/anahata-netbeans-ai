@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.java.queries.SourceLevelQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectManager;
@@ -24,6 +25,7 @@ import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
@@ -35,6 +37,7 @@ import uno.anahata.gemini.context.stateful.ResourceStatus;
 import uno.anahata.gemini.context.stateful.StatefulResourceStatus;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.nb.ai.model.maven.DependencyScope;
 import uno.anahata.nb.ai.model.projects.ProjectFile;
 import uno.anahata.nb.ai.model.projects.ProjectOverview;
 import uno.anahata.nb.ai.model.projects.SourceFolder;
@@ -154,6 +157,32 @@ public class Projects {
             FileObject srcRoot = group.getRootFolder();
             sourceFolders.add(buildSourceFolderTree(srcRoot, group.getDisplayName(), statusMap));
         }
+        
+        // Project-agnostic properties
+        String javaSourceLevel = SourceLevelQuery.getSourceLevel(target.getProjectDirectory());
+
+        // Maven-specific properties
+        List<DependencyScope> mavenDeclaredDependencies = null;
+        String javaTargetLevel = null;
+        String sourceEncoding = null;
+        
+        NbMavenProject nbMavenProject = target.getLookup().lookup(NbMavenProject.class);
+        if (nbMavenProject != null) {
+            // Get declared dependencies
+            List<DependencyScope> temp = MavenPom.getDeclaredDependencies(projectId);
+            if (temp != null && !temp.isEmpty()) {
+                mavenDeclaredDependencies = temp;
+            }
+
+            // Get compiler properties from the Maven model
+            org.apache.maven.project.MavenProject rawMvnProject = nbMavenProject.getMavenProject();
+            String mavenSource = rawMvnProject.getProperties().getProperty("maven.compiler.source");
+            if (javaSourceLevel == null && mavenSource != null) {
+                javaSourceLevel = mavenSource;
+            }
+            javaTargetLevel = rawMvnProject.getProperties().getProperty("maven.compiler.target");
+            sourceEncoding = rawMvnProject.getProperties().getProperty("project.build.sourceEncoding");
+        }
 
         return new ProjectOverview(
                 root.getNameExt(),
@@ -163,7 +192,11 @@ public class Projects {
                 rootFiles,
                 rootFolderNames,
                 sourceFolders,
-                actions
+                actions,
+                mavenDeclaredDependencies,
+                javaSourceLevel,
+                javaTargetLevel,
+                sourceEncoding
         );
     }
 
@@ -223,7 +256,6 @@ public class Projects {
 
     @AIToolMethod("Invokes ('Fires and forgets') a NetBeans Project supported Action (like 'run' or 'build')  on a given open Project (via ActionProvider).\n"
             + "\n\nThis method is always asynchronous by design. (regardless of whether you specify the asynchronous parameter or not)"
-            + "If the action opened an output tab and displayed something on it, you wont see the results of the action (e.g. the output build)"
             + "as this tool does not return any values nor you can ensure that the action finished when this tool returns."
             + "\nUse Maven.runGoals or JVM tools or any other synchronous tools if you need to ensure the action succeeded or the action you require produces an output you need")
     public static void invokeAction(

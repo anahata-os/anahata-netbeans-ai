@@ -21,20 +21,23 @@ public class OpenProjectsOverviewInstructionsProvider extends SystemInstructionP
 
     @Override
     public String getDisplayName() {
-        return "Projects.getOverview(all open projects)";
+        return "Contains the Output of **Projects.getOverview(String projectId)** for each open project. Check the **description** and **response schema** on the tools **FunctionDeclaration**";
     }
 
     @Override
     @SneakyThrows
     public List<Part> getInstructionParts(GeminiChat chat) {
         List<String> projectIds = Projects.getOpenProjects();
-        List<Part> parts = new ArrayList<>();
+        List<Part> parts = new ArrayList<>();        
         for (String projectId : projectIds) {
-            ProjectOverview overview = Projects.getOverview(projectId);
-            String header = "#Output of Projects.getOverview(**" + projectId + "**)\n\n";
-            String json = "```json\n" + GsonUtils.prettyPrint(overview) + "\n```";
-            parts.add(Part.fromText(header + "\n" + json));
+            ProjectOverview overview = Projects.getOverview(projectId, chat);
+            //String header = "#Output of Projects.getOverview(**" + projectId + "**)\n\n";
+            //String json = "```json\n" + GsonUtils.prettyPrint(overview) + "\n```";
+            //parts.add(Part.fromText(header + "\n" + json));
+            parts.add(Part.fromText("**Projects.getOverview('" + projectId + "')** check tool description and response schema on the FunctionDeclaration"));
+            parts.add(Part.fromText(GsonUtils.getGson().toJson(overview)));
         }
         return parts;
     }
+    
 }
