@@ -20,7 +20,7 @@ public class OutputTabsInstructionsProvider extends SystemInstructionProvider {
 
     @Override
     public String getDisplayName() {
-        return "Output.listOutputTabs()";
+        return "Output.listOutputTabs() (The output tabs open in the ide)";
     }
 
     @Override

@@ -57,8 +57,8 @@ public class NetBeansGeminiConfig extends SwingGeminiConfig {
     }
 
     @Override
-    public List<SystemInstructionProvider> getApplicationSpecificInstructionProviders() {
-        List<SystemInstructionProvider> providers = super.getApplicationSpecificInstructionProviders();
+    public List<SystemInstructionProvider> getSystemInstructionProviders() {
+        List<SystemInstructionProvider> providers = super.getSystemInstructionProviders();
         providers.add(new CoreNetBeansInstructionsProvider());
         providers.add(new IdeAlertsInstructionsProvider());
         providers.add(new OpenProjectsOverviewInstructionsProvider());

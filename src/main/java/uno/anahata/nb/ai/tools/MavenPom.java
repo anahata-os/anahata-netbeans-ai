@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.api.ModelUtils;
 import org.netbeans.modules.maven.api.NbMavenProject;
+import org.openide.filesystems.FileObject;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.nb.ai.model.maven.DeclaredArtifact;
@@ -18,10 +20,41 @@ import uno.anahata.nb.ai.model.maven.ResolvedDependencyGroup;
 import uno.anahata.nb.ai.model.maven.ResolvedDependencyScope;
 
 /**
- * Provides AI tool methods for querying a project's pom.xml file for declared and resolved dependencies.
+ * Provides AI tool methods for querying and modifying a project's pom.xml file.
  * @author pablo
  */
 public class MavenPom {
+
+    @AIToolMethod("Adds a new dependency to the project's pom.xml file. This is a high-level 'super-tool' that safely modifies the POM using the official NetBeans APIs.")
+    public static String addDependency(
+            @AIToolParam("The ID of the project to modify.") String projectId,
+            @AIToolParam("The groupId of the dependency (e.g., 'org.apache.commons').") String groupId,
+            @AIToolParam("The artifactId of the dependency (e.g., 'commons-lang3').") String artifactId,
+            @AIToolParam("The version of the dependency (e.g., '3.12.0').") String version,
+            @AIToolParam("The scope of the dependency (e.g., 'compile', 'test'). If null, defaults to 'compile'.") String scope) {
+        
+        try {
+            Project project = Projects.findProject(projectId);
+            FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");
+            if (pom == null) {
+                return "Error: Could not find pom.xml for project '" + projectId + "'.";
+            }
+
+            // The scope parameter is optional, defaulting to "compile" if null.
+            String effectiveScope = (scope == null || scope.isBlank()) ? "compile" : scope;
+
+            // Call the robust NetBeans API to modify the POM.
+            // Passing null for type and classifier, and false for canbeUpdate, which are common defaults.
+            ModelUtils.addDependency(pom, groupId, artifactId, version, null, effectiveScope, null, false);
+            
+            // Trigger a project reload to make the IDE aware of the change.
+            NbMavenProject.fireMavenProjectReload(project);
+
+            return "Success: Dependency '" + groupId + ":" + artifactId + ":" + version + "' was added to the pom.xml.";
+        } catch (Exception e) {
+            return "Error: Failed to add dependency. " + e.getMessage();
+        }
+    }
 
     @AIToolMethod("Gets the list of dependencies directly declared in the pom.xml, grouped by scope and groupId for maximum token efficiency.")
     public static List<DependencyScope> getDeclaredDependencies(
