@@ -65,8 +65,19 @@ The V2 plan remains to split the `gemini-java-client` into a modular architectur
 -   **Code Cleanup:** Remove obsolete singleton-based classes like `ContextFiles` which are incompatible with the multi-instance architecture.
 
 ## Very Important Notes
-When testing code in this project via NetBeansProject.compileAndExecuteJava, **do not include compileAndExecuteDependencies**
-Also, remember that tools only get registered when the chat starts up, also the classloader and the compiler classpath only gets populated with the plugins
-jars at startup, if you add a depdency you would need to reload the plugin.
 
-To reload the plugin: runGoal "install" (no cleaning) and then invoke the Project Action "nbmreload" on separate calls. You need to check that installed succeed first. If the reload action succeeds, the current chat will be close and we will be chatting on a new instance of AnahataTopComponent that will restore the chat from the backup.
+**Dont "clean" the project**, because it would delete all the runtime jars and the classloader would start trhwoing exceptions.
+
+**NetBeansProjectJVM and RunningJVM**
+
+- When testing code in this project via NetBeansProject.compileAndExecuteJava, **do not include compileAndExecuteDependencies**
+- If you are working on a tool and testing the returned value, serialize it to json using the methods in GsonUtils so i can see the output.
+- If compileOnSave is on, new classes will not show becaues compileOnSave doesnt get triggered for new classess, or maybe it doesnt get triggered because we are writing them directly to disk and nb is not watching them so that would need an "install" (never a clean)
+- Tools only get registered when the chat starts up, so even if compileOnSave is on, you have to test them via static method from the jvm.
+- The classloader and the compiler classpath only get populated with all the plugins classess and resolved dependencies resolved dependencies at startup, if you add a depdency you would need to reload the plugin.
+
+**How to reload the plugin**
+
+1 runGoal "install" (no cleaning) 
+2 If install succeeds (and you have to check), on the next turn (once you have seen the install build SUCEEDED), invoke the Project Action "nbmreload". 
+You need to check that installed succeed first. If the reload action succeeds, the current chat window will be close and we will be chatting on a new instance of AnahataTopComponent with a different topComponentId but will restore the chat from the autobackup associated to this chat.
