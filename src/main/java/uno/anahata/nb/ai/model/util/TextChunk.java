@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TextChunk {
     private final int totalLineCount;
-    private final int matchingLineCount;
+    private final Integer matchingLineCount;
     private final int fromLine;
     private final int toLine;
     private final int truncatedLinesCount;

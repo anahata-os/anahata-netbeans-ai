@@ -30,7 +30,7 @@ public class AnahataInstaller extends ModuleInstall {
     public void restored() {
         logId("restored() begins");
         NetBeansModuleUtils.initRunningJVM();
-        
+
         File handoffFile = getHandoffFile();
         if (handoffFile.exists()) {
             log.info("Handoff file found. Proceeding with session restoration.");
@@ -55,18 +55,24 @@ public class AnahataInstaller extends ModuleInstall {
             }
         } else {
             log.info("No handoff file found. Normal startup.");
+            // Optional: Open AI panel on IDE startup
+            java.awt.EventQueue.invokeLater(() -> {
+                AnahataTopComponent tc = new AnahataTopComponent();
+                tc.open();
+                tc.requestActive();
+            });
         }
-        
+
         logId("restored() finished");
     }
 
     @Override
     public void uninstalled() {
         logId("uninstalled() begins");
-        
+
         List<String> sessionUuids = new ArrayList<>();
         Set<TopComponent> openTcs = WindowManager.getDefault().getRegistry().getOpened();
-        
+
         for (TopComponent tc : openTcs) {
             if (tc instanceof AnahataTopComponent) {
                 AnahataTopComponent atc = (AnahataTopComponent) tc;
@@ -80,7 +86,7 @@ public class AnahataInstaller extends ModuleInstall {
                 }
             }
         }
-        
+
         if (!sessionUuids.isEmpty()) {
             File handoffFile = getHandoffFile();
             try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(handoffFile))) {
@@ -90,7 +96,7 @@ public class AnahataInstaller extends ModuleInstall {
                 log.log(Level.SEVERE, "Failed to write handoff file", e);
             }
         }
-        
+
         // Now close the old components
         for (TopComponent tc : openTcs) {
             if (tc instanceof AnahataTopComponent) {
@@ -98,7 +104,7 @@ public class AnahataInstaller extends ModuleInstall {
                 log.info("Closed old AnahataTopComponent: " + ((AnahataTopComponent) tc).getSessionUuid());
             }
         }
-        
+
         super.uninstalled();
         logId("uninstalled() finished");
     }

@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uno.anahata.gemini.ChatMessage;
-import uno.anahata.gemini.GeminiChat;
+import uno.anahata.gemini.Chat;
 import uno.anahata.gemini.context.ContextListener;
 import uno.anahata.gemini.context.stateful.ResourceTracker;
 import uno.anahata.gemini.functions.FunctionManager;
@@ -74,7 +74,7 @@ public class ContextFiles implements ContextListener {
         }
     }
 
-    private void rescanContext(GeminiChat source) {
+    private void rescanContext(Chat source) {
         log.info("ENTRY rescanContext()");
         Set<String> oldFiles = new HashSet<>(contextFiles);
         Set<String> newFiles = new HashSet<>();
@@ -120,14 +120,14 @@ public class ContextFiles implements ContextListener {
     }
 
     @Override
-    public void contextChanged(GeminiChat source) {
+    public void contextChanged(Chat source) {
         log.info("ENTRY contextChanged()");
         rescanContext(source);
         log.info("EXIT contextChanged()");
     }
 
     @Override
-    public void contextCleared(GeminiChat source) {
+    public void contextCleared(Chat source) {
         log.info("ENTRY contextCleared()");
         Set<String> oldFiles = new HashSet<>(contextFiles);
         synchronized (this) {

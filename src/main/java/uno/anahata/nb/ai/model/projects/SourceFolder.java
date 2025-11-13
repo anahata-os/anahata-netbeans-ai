@@ -12,7 +12,7 @@ import lombok.Data;
  *
  * @author Anahata
  */
-@Schema(description = "Represents a folder within a source directory tree, containing a list of its own files and subfolders.")
+@Schema(description = "Represents a folder node within a source directory tree, containing a list of its own files and subfolders.")
 @Data
 @AllArgsConstructor
 public final class SourceFolder {

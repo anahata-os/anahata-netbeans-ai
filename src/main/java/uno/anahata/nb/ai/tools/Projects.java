@@ -31,7 +31,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
-import uno.anahata.gemini.GeminiChat;
+import uno.anahata.gemini.Chat;
 import uno.anahata.gemini.context.ContextManager;
 import uno.anahata.gemini.context.stateful.ResourceStatus;
 import uno.anahata.gemini.context.stateful.StatefulResourceStatus;
@@ -115,11 +115,11 @@ public class Projects {
     @AIToolMethod("Gets a structured, context-aware overview of a project, including root files, source tree, the in-context status of each file and a list of supported NetBeans Actions.")
     @SneakyThrows
     public static ProjectOverview getOverview(@AIToolParam("The project id (not the 'display name')") String projectId) {
-        return getOverview(projectId, GeminiChat.getCallingInstance());
+        return getOverview(projectId, Chat.getCallingInstance());
     }
 
     @SneakyThrows
-    public static ProjectOverview getOverview(String projectId, GeminiChat chat) {
+    public static ProjectOverview getOverview(String projectId, Chat chat) {
         Project target = findProject(projectId);
 
         Map<String, ResourceStatus> statusMap = getContextStatusMap(chat);
@@ -200,7 +200,7 @@ public class Projects {
         );
     }
 
-    private static Map<String, ResourceStatus> getContextStatusMap(GeminiChat chat) {
+    private static Map<String, ResourceStatus> getContextStatusMap(Chat chat) {
         try {
             if (chat != null) {
                 ContextManager cm = chat.getContextManager();
@@ -240,7 +240,7 @@ public class Projects {
         String folderName = folder.getNameExt();
         String finalDisplayName = folderName.equals(displayName) ? null : displayName;
 
-        return new SourceFolder(finalDisplayName, folder.getPath(), recursiveSize, files, subfolders);
+        return new SourceFolder(finalDisplayName, folder.getPath(), recursiveSize, files.isEmpty() ? null : files, subfolders.isEmpty() ? null: subfolders);
     }
 
     private static ProjectFile createProjectFile(FileObject fo, Map<String, ResourceStatus> statusMap) throws FileStateInvalidException {
@@ -250,7 +250,8 @@ public class Projects {
                 fo.getNameExt(),
                 fo.getSize(),
                 fo.lastModified().getTime(),
-                status
+                status,
+                path
         );
     }
 

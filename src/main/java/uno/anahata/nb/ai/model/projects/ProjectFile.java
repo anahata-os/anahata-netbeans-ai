@@ -29,4 +29,7 @@ public final class ProjectFile {
     @Schema(description = "The status of the file relative to the conversation context (e.g., VALID, STALE). This is only included if the file is in the context.")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final ResourceStatus resourceStatus;
+    
+    @Schema(description = "The absolute path to the file.")
+    private final String path;
 }

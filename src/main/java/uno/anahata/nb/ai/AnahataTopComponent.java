@@ -21,7 +21,7 @@ import uno.anahata.nb.ai.mime.NetBeansEditorKitProvider;
         preferredID = "anahata",
         iconBase = "icons/anahata_16.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
-@TopComponent.Registration(mode = "output", openAtStartup = false, position = 0)
+@TopComponent.Registration(mode = "output", openAtStartup = true, position = 0)
 @TopComponent.OpenActionRegistration(displayName = "Anahata")
 @Slf4j
 public final class AnahataTopComponent extends TopComponent implements Externalizable {
@@ -53,7 +53,7 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         
         if (geminiPanel == null) {
             setLayout(new BorderLayout());
-            NetBeansGeminiConfig config = new NetBeansGeminiConfig(sessionUuid);
+            NetBeansChatConfig config = new NetBeansChatConfig(sessionUuid);
             geminiPanel = new GeminiPanel(new NetBeansEditorKitProvider());
             geminiPanel.init(config);
             add(geminiPanel, BorderLayout.CENTER);

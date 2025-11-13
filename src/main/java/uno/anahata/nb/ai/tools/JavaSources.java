@@ -16,6 +16,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.gemini.functions.ContextBehavior;
 import uno.anahata.nb.ai.model.java.SourceFileInfo;
 import uno.anahata.nb.ai.model.java.SourceOrigin;
 import uno.anahata.nb.ai.model.util.TextChunk;
@@ -43,7 +44,8 @@ public class JavaSources {
     @AIToolMethod(
         value = "Gets rich, contextual information about a Java source file, including its origin (project, JAR, or JDK) and its content, with support for safe pagination. " +
                 "This is the primary tool for reading source code.",
-        requiresApproval = false
+        requiresApproval = false,
+        behavior = ContextBehavior.STATEFUL_REPLACE
     )
     public static SourceFileInfo getSource(
             @AIToolParam("The fully qualified name of the class.") String fqn,

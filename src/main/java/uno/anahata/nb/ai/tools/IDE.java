@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
@@ -23,6 +24,7 @@ import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.nb.ai.model.util.TextChunk;
 import uno.anahata.nb.ai.util.TextUtils;
 
+@Slf4j
 public class IDE {
 
     private static volatile String cachedIdeAlerts = "IDE Alert scanner is initializing...";
@@ -32,16 +34,18 @@ public class IDE {
             while (true) {
                 try {
                     cachedIdeAlerts = performScan();
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
+                    log.error("IDE alert scanner interrupted", e);
                     Thread.currentThread().interrupt();
                     cachedIdeAlerts = "IDE Alert scanner was interrupted.";
                     break;
                 } catch (Exception e) {
+                    log.error("Exception fetching IDE alerts", e);
                     cachedIdeAlerts = "An error occurred during IDE alert scanning: " + e.getMessage();
                 }
             }
-        }, "IDE-Alert-Scanner");
+        }, "anahata-IDE-Alert-Scanner");
         alertScannerThread.setDaemon(true);
         alertScannerThread.start();
     }

@@ -1,13 +1,19 @@
-package uno.anahata.nb.ai.systeminstructions;
+package uno.anahata.nb.ai.workspace;
 
 import com.google.genai.types.Part;
 import java.util.Collections;
 import java.util.List;
-import uno.anahata.gemini.GeminiChat;
-import uno.anahata.gemini.config.systeminstructions.SystemInstructionProvider;
+import uno.anahata.gemini.Chat;
+import uno.anahata.gemini.content.ContextPosition;
+import uno.anahata.gemini.content.ContextProvider;
 import uno.anahata.nb.ai.tools.IDE;
 
-public class IdeAlertsInstructionsProvider extends SystemInstructionProvider {
+public class IdeAlertsContextProvider extends ContextProvider {
+
+    public IdeAlertsContextProvider() {
+        super(ContextPosition.AUGMENTED_WORKSPACE);
+    }
+    
 
     @Override
     public String getId() {
@@ -20,7 +26,7 @@ public class IdeAlertsInstructionsProvider extends SystemInstructionProvider {
     }
 
     @Override
-    public List<Part> getInstructionParts(GeminiChat chat) {
+    public List<Part> getParts(Chat chat) {
         try {
             String alerts = IDE.getCachedIDEAlerts();
             return Collections.singletonList(Part.fromText(alerts));

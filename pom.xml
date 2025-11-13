@@ -20,7 +20,7 @@
     </developers>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netbeans.version>RELEASE270</netbeans.version>
+        <netbeans.version>RELEASE280</netbeans.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
-            <version>${netbeans.version}</version>
+            <version>RELEASE270</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -144,18 +144,13 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-options</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-text</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>${netbeans.version}</version>
+            <version>RELEASE270</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -165,13 +160,13 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-ui</artifactId>
-            <version>${netbeans.version}</version>
+            <version>RELEASE270</version>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>${netbeans.version}</version>
+            <version>RELEASE270</version>
         </dependency>
         
         <dependency>
@@ -344,7 +339,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>${netbeans.version}</version>
+            <version>RELEASE270</version>
         </dependency>
         
         <dependency>
@@ -413,6 +408,7 @@
             <artifactId>org-netbeans-modules-maven</artifactId>
             <version>${netbeans.version}</version>
             <exclusions>
+                <!--
                 <exclusion>
                     <groupId>com.google.inject</groupId>
                     <artifactId>guice</artifactId>
@@ -420,7 +416,7 @@
                 <exclusion>
                     <groupId>org.jspecify.jspecify</groupId>
                     <artifactId>jspecify</artifactId>
-                </exclusion>
+                </exclusion>-->
             </exclusions>
         </dependency>
         
@@ -429,6 +425,8 @@
             <artifactId>org-netbeans-modules-maven-embedder</artifactId>
             <version>${netbeans.version}</version>
             <exclusions>
+                
+                <!--
                 <exclusion>
                     <groupId>com.google.inject</groupId>
                     <artifactId>guice</artifactId>
@@ -436,6 +434,11 @@
                 <exclusion>
                     <groupId>org.jspecify.jspecify</groupId>
                     <artifactId>jspecify</artifactId>
+                </exclusion>
+                        -->
+                <exclusion>
+                    <groupId>aopalliance</groupId>
+                    <artifactId>asm</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -445,6 +448,7 @@
             <artifactId>org-netbeans-modules-maven-indexer</artifactId>
             <version>${netbeans.version}</version>
             <exclusions>
+                <!--
                 <exclusion>
                     <groupId>com.google.inject</groupId>
                     <artifactId>guice</artifactId>
@@ -453,6 +457,7 @@
                     <groupId>org.jspecify.jspecify</groupId>
                     <artifactId>jspecify</artifactId>
                 </exclusion>
+                        -->
             </exclusions>
         </dependency>
         
@@ -500,6 +505,11 @@
             <version>${netbeans.version}</version>
         </dependency>
                 -->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-settings</artifactId>
+            <version>RELEASE270</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -507,7 +517,7 @@
             <plugin>
                 <groupId>org.apache.netbeans.utilities</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>14.3</version>
+                <version>14.4</version>
                 <extensions>true</extensions>
                 <configuration>
                     <author>Anahata</author>
@@ -561,6 +571,13 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.42</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>

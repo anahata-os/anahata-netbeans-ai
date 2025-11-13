@@ -5,13 +5,13 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import lombok.SneakyThrows;
-import uno.anahata.gemini.GeminiChat;
-import uno.anahata.gemini.config.systeminstructions.SystemInstructionProvider;
+import uno.anahata.gemini.Chat;
+import uno.anahata.gemini.content.ContextProvider;
 import uno.anahata.nb.ai.AnahataTopComponent;
 import uno.anahata.nb.ai.tools.Maven;
 import uno.anahata.nb.ai.tools.Projects;
 
-public class CoreNetBeansInstructionsProvider extends SystemInstructionProvider {
+public class CoreNetBeansInstructionsProvider extends ContextProvider {
 
     @Override
     public String getId() {
@@ -25,7 +25,7 @@ public class CoreNetBeansInstructionsProvider extends SystemInstructionProvider 
 
     @Override
     @SneakyThrows
-    public List<Part> getInstructionParts(GeminiChat chat) {
+    public List<Part> getParts(Chat chat) {
         String text = "Your host environment is the Anahata AI Assistant NetBeans plugin. A NetBeans plugin (nbm module) all code you run in RunningJVM runs inside "
                 + "netbeans very own jvm using netbeans classloader modules system, all netbeans apis and active modules are available to you at runtime and the default compilers classpath and ClassLoader in RunningJVM has access to this jars and classess at runtime.\n"
                 + "The main TopComponent class of the plugin is:" + AnahataTopComponent.class.getName() + "\n"
