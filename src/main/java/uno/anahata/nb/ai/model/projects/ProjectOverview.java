@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import uno.anahata.gemini.functions.schema.JacksonSchemaGenerator;
 import uno.anahata.nb.ai.model.maven.DependencyScope;
 
 /**
