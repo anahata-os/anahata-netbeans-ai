@@ -14,8 +14,8 @@ import org.openide.windows.WindowManager;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.nb.ai.model.ide.OutputTabInfo;
-import uno.anahata.nb.ai.model.util.TextChunk;
-import uno.anahata.nb.ai.util.TextUtils;
+import uno.anahata.gemini.functions.spi.pojos.TextChunk;
+import uno.anahata.gemini.internal.TextUtils;
 
 public class Output {
     private static final String TABBED_PANE_CLASS = "org.netbeans.core.windows.view.ui.CloseButtonTabbedPane";

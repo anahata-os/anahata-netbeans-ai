@@ -57,10 +57,22 @@ public class AnahataInstaller extends ModuleInstall {
             log.info("No handoff file found. Normal startup.");
             // Optional: Open AI panel on IDE startup
             java.awt.EventQueue.invokeLater(() -> {
+                log.info("Launching lone Anahata.");
                 AnahataTopComponent tc = new AnahataTopComponent();
                 tc.open();
                 tc.requestActive();
+                log.info("Lone Anahata launched.");
             });
+            
+            java.awt.EventQueue.invokeLater(() -> {
+                log.info("Launching Anahata Navigator.");
+                AnahataNavigatorTopComponent nav = new AnahataNavigatorTopComponent();
+                nav.open();
+                nav.requestActive();
+                log.info("Anahata Navigator launched.");
+            });
+            
+            
         }
 
         logId("restored() finished");

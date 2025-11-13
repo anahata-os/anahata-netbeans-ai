@@ -31,7 +31,7 @@ public class OpenProjectsOverviewContextProvider extends ContextProvider {
     public String getDisplayName() {
         return "Project Overview";
     }
-
+    
     @Override
     @SneakyThrows
     public List<Part> getParts(Chat chat) {

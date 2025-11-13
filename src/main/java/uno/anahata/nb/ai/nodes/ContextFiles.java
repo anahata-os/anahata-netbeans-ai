@@ -16,7 +16,7 @@ import uno.anahata.gemini.ChatMessage;
 import uno.anahata.gemini.Chat;
 import uno.anahata.gemini.context.ContextListener;
 import uno.anahata.gemini.context.stateful.ResourceTracker;
-import uno.anahata.gemini.functions.FunctionManager;
+import uno.anahata.gemini.functions.ToolManager;
 
 
 public class ContextFiles implements ContextListener {
@@ -28,7 +28,7 @@ public class ContextFiles implements ContextListener {
     public static final String ATTR_IN_AI_CONTEXT = "inAiContext"; // NOI18N
 
     private final Set<String> contextFiles = new HashSet<>();
-    private FunctionManager functionManager;
+    private ToolManager functionManager;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     private ContextFiles() {
@@ -53,7 +53,7 @@ public class ContextFiles implements ContextListener {
         log.log(Level.INFO, "EXIT removePropertyChangeListener()");
     }
 
-    public void setFunctionManager(FunctionManager functionManager) {
+    public void setFunctionManager(ToolManager functionManager) {
         log.log(Level.INFO, "ENTRY setFunctionManager(functionManager={0})", functionManager);
         this.functionManager = functionManager;
         log.log(Level.INFO, "EXIT setFunctionManager()");

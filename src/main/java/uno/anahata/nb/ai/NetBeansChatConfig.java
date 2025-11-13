@@ -6,7 +6,7 @@ import uno.anahata.gemini.content.ContextProvider;
 import uno.anahata.gemini.ui.SwingChatConfig;
 import uno.anahata.nb.ai.systeminstructions.CoreNetBeansInstructionsProvider;
 import uno.anahata.nb.ai.workspace.IdeAlertsContextProvider;
-import uno.anahata.nb.ai.workspace.OpenProjectsOverviewContextProvider;
+import uno.anahata.nb.ai.workspace.ProjectOverviewContextProvider;
 import uno.anahata.nb.ai.workspace.OpenTopComponentsContextProvider;
 import uno.anahata.nb.ai.workspace.OutputTabsContextProvider;
 import uno.anahata.nb.ai.tools.Coding;
@@ -33,8 +33,8 @@ public class NetBeansChatConfig extends SwingChatConfig {
     }
 
     @Override
-    public List<Class<?>> getAutomaticFunctionClasses() {
-        List<Class<?>> ret = super.getAutomaticFunctionClasses();
+    public List<Class<?>> getToolClasses() {
+        List<Class<?>> ret = super.getToolClasses();
         ret.add(NetBeansProjectJVM.class);
         ret.add(Git.class);
         ret.add(IDE.class);
@@ -62,16 +62,13 @@ public class NetBeansChatConfig extends SwingChatConfig {
         List<ContextProvider> providers = super.getContextProviders();
         providers.add(new CoreNetBeansInstructionsProvider());
         providers.add(new IdeAlertsContextProvider());
-        providers.add(new OpenProjectsOverviewContextProvider());
+        providers.add(new ProjectOverviewContextProvider());
         providers.add(new OpenTopComponentsContextProvider());
         providers.add(new OutputTabsContextProvider());
         return providers;
     }
 
-    @Override
-    public List<Part> getLiveWorkspaceParts() {
-        return super.getLiveWorkspaceParts(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
-    }
+    
     
     
     

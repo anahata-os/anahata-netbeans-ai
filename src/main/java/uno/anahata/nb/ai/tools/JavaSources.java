@@ -19,8 +19,8 @@ import uno.anahata.gemini.functions.AIToolParam;
 import uno.anahata.gemini.functions.ContextBehavior;
 import uno.anahata.nb.ai.model.java.SourceFileInfo;
 import uno.anahata.nb.ai.model.java.SourceOrigin;
-import uno.anahata.nb.ai.model.util.TextChunk;
-import uno.anahata.nb.ai.util.TextUtils;
+import uno.anahata.gemini.functions.spi.pojos.TextChunk;
+import uno.anahata.gemini.internal.TextUtils;
 
 /**
  * Provides tools for retrieving Java source code.

@@ -38,7 +38,7 @@ import uno.anahata.gemini.functions.spi.RunningJVM;
         id = "uno.anahata.nb.ai.ShowDefaultCompilerClassPathAction"
 )
 @ActionRegistration(
-        displayName = "Show Anahata Classpath"
+        displayName = "Show Anahata AI Classpath"
 )
 @ActionReference(path = "Menu/Tools", position = 10)
 public final class ShowDefaultCompilerClassPathAction implements ActionListener {

@@ -571,6 +571,7 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
+                    <!--
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -578,6 +579,7 @@
                             <version>1.18.42</version>
                         </path>
                     </annotationProcessorPaths>
+                    -->
                 </configuration>
             </plugin>
             <plugin>

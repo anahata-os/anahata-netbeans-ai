@@ -3,7 +3,7 @@ package uno.anahata.nb.ai.model.java;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import uno.anahata.gemini.functions.spi.pojos.FileInfo;
-import uno.anahata.nb.ai.model.util.TextChunk;
+import uno.anahata.gemini.functions.spi.pojos.TextChunk;
 
 @Getter
 @Schema(

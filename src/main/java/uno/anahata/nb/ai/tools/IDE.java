@@ -21,8 +21,8 @@ import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.filesystems.FileObject;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.nb.ai.model.util.TextChunk;
-import uno.anahata.nb.ai.util.TextUtils;
+import uno.anahata.gemini.functions.spi.pojos.TextChunk;
+import uno.anahata.gemini.internal.TextUtils;
 
 @Slf4j
 public class IDE {

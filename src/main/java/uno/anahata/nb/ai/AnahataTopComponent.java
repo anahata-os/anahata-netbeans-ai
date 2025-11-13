@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
-import uno.anahata.gemini.ui.GeminiPanel;
+import uno.anahata.gemini.ui.AnahataPanel;
 import uno.anahata.nb.ai.mime.NetBeansEditorKitProvider;
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenAnahataAction")
@@ -26,7 +26,7 @@ import uno.anahata.nb.ai.mime.NetBeansEditorKitProvider;
 @Slf4j
 public final class AnahataTopComponent extends TopComponent implements Externalizable {
 
-    private transient GeminiPanel geminiPanel;
+    private transient AnahataPanel geminiPanel;
     
     @Getter
     @Setter
@@ -54,7 +54,7 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         if (geminiPanel == null) {
             setLayout(new BorderLayout());
             NetBeansChatConfig config = new NetBeansChatConfig(sessionUuid);
-            geminiPanel = new GeminiPanel(new NetBeansEditorKitProvider());
+            geminiPanel = new AnahataPanel(new NetBeansEditorKitProvider());
             geminiPanel.init(config);
             add(geminiPanel, BorderLayout.CENTER);
             geminiPanel.initComponents();
