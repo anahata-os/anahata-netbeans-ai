@@ -165,6 +165,7 @@ public class Projects {
         List<DependencyScope> mavenDeclaredDependencies = null;
         String javaTargetLevel = null;
         String sourceEncoding = null;
+        String packaging = null;
         
         NbMavenProject nbMavenProject = target.getLookup().lookup(NbMavenProject.class);
         if (nbMavenProject != null) {
@@ -176,6 +177,7 @@ public class Projects {
 
             // Get compiler properties from the Maven model
             org.apache.maven.project.MavenProject rawMvnProject = nbMavenProject.getMavenProject();
+            packaging = rawMvnProject.getPackaging();
             String mavenSource = rawMvnProject.getProperties().getProperty("maven.compiler.source");
             if (javaSourceLevel == null && mavenSource != null) {
                 javaSourceLevel = mavenSource;
@@ -188,6 +190,7 @@ public class Projects {
                 root.getNameExt(),
                 info.getDisplayName(),                
                 root.getPath(),
+                packaging,
                 anahataMdContent,
                 rootFiles,
                 rootFolderNames,

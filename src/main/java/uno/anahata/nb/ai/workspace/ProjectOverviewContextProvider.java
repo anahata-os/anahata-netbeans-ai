@@ -60,6 +60,9 @@ public class ProjectOverviewContextProvider extends ContextProvider {
         StringBuilder sb = new StringBuilder();
         sb.append("\n# Project: ").append(overview.getDisplayName()).append(" (`").append(overview.getId()).append("`)\n");
         sb.append("  - Path: `").append(overview.getProjectDirectory()).append("`\n");
+        if (StringUtils.isNotBlank(overview.getPackaging())) {
+            sb.append("  - Packaging: `").append(overview.getPackaging()).append("`\n");
+        }
         sb.append("  - Java Version: ").append(overview.getJavaSourceLevel()).append(" (source), ").append(overview.getJavaTargetLevel()).append(" (target)\n");
         sb.append("  - Encoding: ").append(overview.getSourceEncoding()).append("\n");
         sb.append("  - Actions: `").append(String.join("`, `", overview.getActions())).append("`\n");
@@ -76,15 +79,16 @@ public class ProjectOverviewContextProvider extends ContextProvider {
         }
 
         if (overview.getMavenDeclaredDependencies() != null && !overview.getMavenDeclaredDependencies().isEmpty()) {
-            sb.append("\n  ## Maven Dependencies\n");
+            sb.append("\n  ## Declared Maven Dependencies\n");
             for (DependencyScope scope : overview.getMavenDeclaredDependencies()) {
                 sb.append(formatDependencyScope(scope, "    "));
             }
         }
         
         if (!Strings.isNullOrEmpty(overview.getAnahataMdContent())) {
-            //sb.append("  - anahata.md: ").append(StringUtils.abbreviate(overview.getAnahataMdContent().replace('\n', ' '), 120)).append("\n");
-            sb.append("  - anahata.md: \n").append(overview.getAnahataMdContent()).append("\n");
+            sb.append("\n  ## anahata.md (Project-Specific Instructions)\n");
+            sb.append("  This file contains critical, high-level instructions for this specific project. You must read and adhere to these instructions before modifying any code.\n\n");
+            sb.append(overview.getAnahataMdContent()).append("\n");
         }
 
         return sb.toString();

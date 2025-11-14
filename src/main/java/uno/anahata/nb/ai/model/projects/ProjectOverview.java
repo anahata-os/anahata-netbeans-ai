@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import uno.anahata.gemini.functions.schema.JacksonSchemaGenerator;
 import uno.anahata.nb.ai.model.maven.DependencyScope;
 
 /**
@@ -27,6 +26,9 @@ public final class ProjectOverview {
 
     @Schema(description = "The absolute path to the project's root directory.")
     private final String projectDirectory;
+    
+    @Schema(description = "The project's packaging type as defined in the pom.xml (e.g., 'jar', 'nbm', 'nbm-application'). This is null for non-Maven projects.")
+    private final String packaging;
     
     @Schema(description = "The content of the anahata.md file for the project (if it exists). This file contains **critical, high-level information** for you, your instructions for this project. Could also contain the project's purpose, status, and goals. It is your persistent memory for the project. Keep it up to date.")
     private final String anahataMdContent;
