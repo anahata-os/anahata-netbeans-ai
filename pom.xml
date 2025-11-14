@@ -354,6 +354,16 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-refactoring-api</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-refactoring-java</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-platform</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
@@ -486,6 +496,8 @@
             <version>${netbeans.version}</version>
         </dependency>
         
+        
+        
         <!--
         <dependency>
             <groupId>org.netbeans.modules</groupId>
@@ -571,7 +583,6 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
-                    <!--
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -579,7 +590,7 @@
                             <version>1.18.42</version>
                         </path>
                     </annotationProcessorPaths>
-                    -->
+                    
                 </configuration>
             </plugin>
             <plugin>
