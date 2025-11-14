@@ -63,16 +63,6 @@ public class AnahataInstaller extends ModuleInstall {
                 tc.requestActive();
                 log.info("Lone Anahata launched.");
             });
-            
-            java.awt.EventQueue.invokeLater(() -> {
-                log.info("Launching Anahata Navigator.");
-                AnahataNavigatorTopComponent nav = new AnahataNavigatorTopComponent();
-                nav.open();
-                nav.requestActive();
-                log.info("Anahata Navigator launched.");
-            });
-            
-            
         }
 
         logId("restored() finished");

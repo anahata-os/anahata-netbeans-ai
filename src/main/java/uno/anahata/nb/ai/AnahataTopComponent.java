@@ -55,9 +55,11 @@ public final class AnahataTopComponent extends TopComponent implements Externali
             setLayout(new BorderLayout());
             NetBeansChatConfig config = new NetBeansChatConfig(sessionUuid);
             geminiPanel = new AnahataPanel(new NetBeansEditorKitProvider());
+            // Initialize the panel and all its children BEFORE adding it to the container.
             geminiPanel.init(config);
-            add(geminiPanel, BorderLayout.CENTER);
             geminiPanel.initComponents();
+            // Now that the panel is fully constructed, add it.
+            add(geminiPanel, BorderLayout.CENTER);
             geminiPanel.checkAutobackupOrStartupContent();
         }
     }

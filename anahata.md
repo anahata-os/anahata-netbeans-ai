@@ -81,3 +81,25 @@ The V2 plan remains to split the `gemini-java-client` into a modular architectur
 1 runGoal "install" (no cleaning) 
 2 If install succeeds (and you have to check), on the next turn (once you have seen the install build SUCEEDED), invoke the Project Action "nbmreload". 
 You need to check that installed succeed first. If the reload action succeeds, the current chat window will be close and we will be chatting on a new instance of AnahataTopComponent with a different topComponentId but will restore the chat from the autobackup associated to this chat.
+
+## 6. Current Task Board (As of 2025-11-14)
+
+This section tracks our active work items to ensure continuity across sessions.
+
+-   **[High Priority] Task A: Implement Session Manager UI & Rich Status Display:**
+    -   **Status:** In Progress.
+    -   **Description:** Replace the obsolete `AnahataNavigatorTopComponent` with a new `AnahataInstancesTopComponent`. This component will act as a powerful session manager and provide rich, real-time status feedback across the UI.
+    -   **Sub-Tasks:**
+        -   [ ] **Fix Build:** Remove the dangling reference to `AnahataNavigatorTopComponent` in `AnahataInstaller.java`.
+        -   [ ] **Central Registry:** Create a static registry in `AnahataTopComponent` to track all active chat instances.
+        -   [ ] **UI Skeleton:** Create `AnahataInstancesTopComponent` with a `JTable` and a "New Chat" button.
+        -   [ ] **Rich Rendering:** Implement a custom `TableCellRenderer` for the "Status" column to show colored text and running timers.
+        -   [ ] **Table Data:** Add columns for "Total Messages" and "Context Window Size".
+        -   [ ] **Interactivity:** Implement double-click to focus and a "New Chat" button.
+        -   [ ] **Dynamic Tab:** Refactor `AnahataTopComponent` to dynamically update its tab title and color based on real-time `ChatStatus`.
+    -   **Next Step:** Fix the build by modifying `AnahataInstaller.java`.
+
+-   **[High Priority] Task B: Implement Granular Tool Status:**
+    -   **Status:** To Do.
+    -   **Description:** Enhance the status reporting to show which specific tool is executing (e.g., "Tool Execution (Maven.runGoals)...").
+    -   **Next Step:** Add `setExecutingToolName(String)` to `StatusManager` and integrate it with `ToolManager` and the UI.
