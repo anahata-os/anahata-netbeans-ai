@@ -1,9 +1,14 @@
 package uno.anahata.nb.ai.tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
@@ -11,11 +16,14 @@ import org.netbeans.api.project.Project;
 import org.netbeans.modules.maven.api.ModelUtils;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.openide.filesystems.FileObject;
+import uno.anahata.gemini.AnahataExecutors;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.nb.ai.model.maven.AddDependencyResult;
 import uno.anahata.nb.ai.model.maven.DeclaredArtifact;
 import uno.anahata.nb.ai.model.maven.DependencyGroup;
 import uno.anahata.nb.ai.model.maven.DependencyScope;
+import uno.anahata.nb.ai.model.maven.MavenBuildResult;
 import uno.anahata.nb.ai.model.maven.ResolvedDependencyGroup;
 import uno.anahata.nb.ai.model.maven.ResolvedDependencyScope;
 
@@ -24,35 +32,77 @@ import uno.anahata.nb.ai.model.maven.ResolvedDependencyScope;
  * @author pablo
  */
 public class MavenPom {
+    private static final Logger LOG = Logger.getLogger(MavenPom.class.getName());
+    private static final ExecutorService MAVEN_EXECUTORS = AnahataExecutors.newCachedThreadPoolExecutor("nb-maven");
 
-    @AIToolMethod("Adds a new dependency to the project's pom.xml file. This is a high-level 'super-tool' that safely modifies the POM using the official NetBeans APIs.")
-    public static String addDependency(
+    @AIToolMethod("The definitive 'super-tool' for adding a Maven dependency. It follows a safe, multi-phase process and returns a structured result object. The model is responsible for interpreting the result.")
+    public static AddDependencyResult addDependency(
             @AIToolParam("The ID of the project to modify.") String projectId,
-            @AIToolParam("The groupId of the dependency (e.g., 'org.apache.commons').") String groupId,
-            @AIToolParam("The artifactId of the dependency (e.g., 'commons-lang3').") String artifactId,
-            @AIToolParam("The version of the dependency (e.g., '3.12.0').") String version,
-            @AIToolParam("The scope of the dependency (e.g., 'compile', 'test'). If null, defaults to 'compile'.") String scope) {
+            @AIToolParam("The groupId of the dependency.") String groupId,
+            @AIToolParam("The artifactId of the dependency.") String artifactId,
+            @AIToolParam("The version of the dependency.") String version,
+            @AIToolParam("The scope of the dependency (e.g., 'compile', 'test'). If null, defaults to 'compile'.") String scope,
+            @AIToolParam("The classifier of the dependency (e.g., 'jdk17'). Can be null.") String classifier,
+            @AIToolParam("The type of the dependency (e.g., 'test-jar'). If null, defaults to 'jar'.") String type) {
         
+        AddDependencyResult.AddDependencyResultBuilder resultBuilder = AddDependencyResult.builder();
+        StringBuilder summary = new StringBuilder();
+
         try {
+            // Phase 1: Pre-flight Check
+            summary.append("Phase 1: Pre-flight check...\n");
+            boolean preflightSuccess = Maven.downloadDependencyArtifact(projectId, groupId, artifactId, version, classifier, type);
+            resultBuilder.preflightCheckSuccess(preflightSuccess);
+
+            if (!preflightSuccess) {
+                summary.append("Result: FAILED. Main artifact could not be resolved. pom.xml was not modified.");
+                return resultBuilder.summary(summary.toString()).build();
+            }
+            summary.append("Result: SUCCESS. Main artifact found.\n\n");
+
+            // Phase 2: POM Modification
+            summary.append("Phase 2: Modifying pom.xml...\n");
             Project project = Projects.findProject(projectId);
             FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");
             if (pom == null) {
-                return "Error: Could not find pom.xml for project '" + projectId + "'.";
+                summary.append("Result: FAILED. Could not find pom.xml.");
+                return resultBuilder.pomModificationSuccess(false).summary(summary.toString()).build();
             }
 
-            // The scope parameter is optional, defaulting to "compile" if null.
             String effectiveScope = (scope == null || scope.isBlank()) ? "compile" : scope;
+            String effectiveType = (type == null || type.isBlank()) ? "jar" : type;
+            ModelUtils.addDependency(pom, groupId, artifactId, version, classifier, effectiveScope, effectiveType, false);
+            resultBuilder.pomModificationSuccess(true);
+            summary.append("Result: SUCCESS. Dependency added to pom.xml.\n\n");
 
-            // Call the robust NetBeans API to modify the POM.
-            // Passing null for type and classifier, and false for canbeUpdate, which are common defaults.
-            ModelUtils.addDependency(pom, groupId, artifactId, version, null, effectiveScope, null, false);
-            
-            // Trigger a project reload to make the IDE aware of the change.
+            // Phase 3: Transitive Dependencies
+            summary.append("Phase 3: Resolving transitive dependencies...\n");
+            MavenBuildResult resolveResult = Maven.runGoals(projectId, Collections.singletonList("dependency:resolve"), null, null, null, null);
+            resultBuilder.dependencyResolveResult(resolveResult);
+            summary.append("Result: 'dependency:resolve' goal executed. See MavenBuildResult for details.\n\n");
+
+            // Phase 4: Asynchronous Source/Javadoc Download
+            summary.append("Phase 4: Triggering async download of sources and javadocs...\n");
+            MAVEN_EXECUTORS.submit(() -> {
+                try {
+                    Maven.downloadProjectDependencies(projectId, Arrays.asList("sources", "javadoc"));
+                } catch (Exception e) {
+                    LOG.log(Level.WARNING, "Error during async source/javadoc download", e);
+                }
+            });
+            resultBuilder.asyncDownloadsLaunched(true);
+            summary.append("Result: Background download task launched.\n");
+
+            // Final Step: Reload Project
             NbMavenProject.fireMavenProjectReload(project);
+            summary.append("Project reload triggered.");
 
-            return "Success: Dependency '" + groupId + ":" + artifactId + ":" + version + "' was added to the pom.xml.";
+            return resultBuilder.summary(summary.toString()).build();
+
         } catch (Exception e) {
-            return "Error: Failed to add dependency. " + e.getMessage();
+            summary.append("\nFATAL ERROR: An unexpected exception occurred: ").append(e.getMessage());
+            LOG.log(Level.SEVERE, "Add dependency failed", e);
+            return resultBuilder.summary(summary.toString()).build();
         }
     }
 

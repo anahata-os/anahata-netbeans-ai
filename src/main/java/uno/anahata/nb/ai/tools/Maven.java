@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -34,6 +33,8 @@ import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import uno.anahata.gemini.functions.AIToolMethod;
 import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.gemini.functions.spi.pojos.TextChunk;
+import uno.anahata.gemini.internal.TextUtils;
 import uno.anahata.nb.ai.model.maven.MavenBuildResult;
 import uno.anahata.nb.ai.model.maven.MavenBuildResult.ProcessStatus;
 
@@ -43,7 +44,8 @@ import uno.anahata.nb.ai.model.maven.MavenBuildResult.ProcessStatus;
  */
 public class Maven {
     private static final Logger LOG = Logger.getLogger(Maven.class.getName());
-    private static final int MAX_OUTPUT_LENGTH = 3000;
+    private static final int MAX_OUTPUT_LINES = 100;
+    private static final int MAX_LINE_LENGTH = 2000;
     private static final long DEFAULT_TIMEOUT_MS = 300_000; // 5 minutes
 
     @AIToolMethod("Gets the path to the Maven installation configured in NetBeans.")
@@ -56,7 +58,7 @@ public class Maven {
         }
     }
 
-    @AIToolMethod(value = "Executes a list of Maven goals on a Project synchronously (waits for the build to finish), capturing the last " + MAX_OUTPUT_LENGTH + " bytes of the output.", behavior = uno.anahata.gemini.functions.ContextBehavior.EPHEMERAL)
+    @AIToolMethod(value = "Executes a list of Maven goals on a Project synchronously (waits for the build to finish), capturing the last " + MAX_OUTPUT_LINES + " lines of the output.", behavior = uno.anahata.gemini.functions.ContextBehavior.EPHEMERAL)
     public static MavenBuildResult runGoals(
             @AIToolParam("The ID of the project to run the goals on.") String projectId,
             @AIToolParam("A list of Maven goals to execute (e.g., ['clean', 'install']).") List<String> goals,
@@ -147,57 +149,33 @@ public class Maven {
         String fullLogContent = "--- STDOUT ---\n" + capturedOutput + "\n\n--- STDERR ---\n" + capturedError;
         String logFilePath = null;
 
-        if (fullLogContent.length() > MAX_OUTPUT_LENGTH) {
-            File tempLogFile = File.createTempFile("anahata-maven-build-", ".log");
-            try (PrintWriter out = new PrintWriter(new FileWriter(tempLogFile))) {
-                out.println(fullLogContent);
-            }
-            logFilePath = tempLogFile.getAbsolutePath();
+        File tempLogFile = File.createTempFile("anahata-maven-build-", ".log");
+        try (PrintWriter out = new PrintWriter(new FileWriter(tempLogFile))) {
+            out.println(fullLogContent);
         }
+        logFilePath = tempLogFile.getAbsolutePath();
+        
+        // Use TextUtils to get the tail of the output, respecting line boundaries and character encoding.
+        int totalLines = (int) capturedOutput.lines().count();
+        int startIndex = Math.max(0, totalLines - MAX_OUTPUT_LINES);
+        
+        TextChunk stdoutChunk = TextUtils.processText(capturedOutput, startIndex, MAX_OUTPUT_LINES, null, MAX_LINE_LENGTH);
+        TextChunk stderrChunk = TextUtils.processText(capturedError, 0, null, null, MAX_LINE_LENGTH); // Show all of stderr, but truncate long lines
 
-        String finalOutput = truncate(capturedOutput, "stdout", logFilePath);
-        String finalErrorOutput = truncate(capturedError, "stderr", logFilePath);
-
-        return new MavenBuildResult(status, exitCode, finalOutput, finalErrorOutput, logFilePath);
+        return new MavenBuildResult(status, exitCode, stdoutChunk, stderrChunk, logFilePath);
     }
     
-    private static String truncate(String content, String streamName, String logFilePath) {
-        if (content.length() > MAX_OUTPUT_LENGTH) {
-            String message = logFilePath != null 
-                ? "Truncated. Full " + streamName + " (" + content.length() + " chars) in combined log: " + logFilePath
-                : "Truncated. Full " + streamName + " (" + content.length() + " chars) available in output tab.";
-            
-            return message + "\n...\n" + content.substring(content.length() - MAX_OUTPUT_LENGTH);
-        }
-        return content;
-    }
-    
-
     @AIToolMethod("Downloads all missing dependencies artifacts (e.g., 'sources', 'javadoc') for a given Maven project's dependencies.")
     public static String downloadProjectDependencies(
             @AIToolParam("The ID of the project to download dependencies for.") String projectId,
             @AIToolParam("A list of classifiers to download (e.g., ['sources', 'javadoc']).") List<String> classifiers) throws Exception {
-        return downloadArtifactsForProjectInternal(projectId, classifiers);
-    }
-
-    @AIToolMethod("Downloads a specific classified artifact (e.g., 'sources', 'javadoc') for a single dependency of a given Maven project.")
-    public static String downloadDependencyArtifact(
-            @AIToolParam("The ID of the project containing the dependency.") String projectId,
-            @AIToolParam("The groupId of the dependency.") String groupId,
-            @AIToolParam("The artifactId of the dependency.") String artifactId,
-            @AIToolParam("The classifier of the artifact to download (e.g., 'sources', 'javadoc').") String classifier) throws Exception {
-        // The artifactTypeName can be derived from the classifier for the user message.
-        String artifactTypeName = classifier.substring(0, 1).toUpperCase() + classifier.substring(1);
-        return downloadArtifactForDependency(projectId, groupId, artifactId, classifier, artifactTypeName);
-    }
-    
-    private static String downloadArtifactsForProjectInternal(String projectId, List<String> classifiers) throws Exception {
+        
         Project project = Projects.findProject(projectId);
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
         if (nbMavenProject == null) {
-            throw new IllegalStateException("Could not find NbMavenProject for project: " + projectId);
+            throw new IllegalStateException("Project '" + projectId + "' is not a Maven project or could not be found.");
         }
-
+        
         MavenEmbedder onlineEmbedder = EmbedderFactory.getOnlineEmbedder();
         java.util.Set<Artifact> artifacts = nbMavenProject.getMavenProject().getArtifacts();
         int totalSuccessCount = 0;
@@ -227,55 +205,54 @@ public class Maven {
         
         return buildResultString(artifactTypeNames, "Project", projectId, totalSuccessCount, totalFailCount, errors);
     }
-    
-    private static String downloadArtifactForDependency(String projectId, String groupId, String artifactId, String classifier, String artifactTypeName) throws Exception {
+
+    @AIToolMethod("Downloads a specific classified artifact (e.g., 'sources', 'javadoc', or the main artifact if classifier is null) for a single dependency. This can be used to verify an artifact exists before adding it to a POM. Returns true on success, false on failure.")
+    public static boolean downloadDependencyArtifact(
+            @AIToolParam("The ID of the project to use for repository context.") String projectId,
+            @AIToolParam("The groupId of the dependency.") String groupId,
+            @AIToolParam("The artifactId of the dependency.") String artifactId,
+            @AIToolParam("The version of the dependency (e.g., 'LATEST', '1.0.0').") String version,
+            @AIToolParam("The classifier of the artifact to download (e.g., 'sources', 'javadoc'). Use null for the main artifact.") String classifier,
+            @AIToolParam("The type of the dependency (e.g., 'test-jar'). If null, defaults to 'jar'.") String type) throws Exception {
+        
         Project project = Projects.findProject(projectId);
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
         if (nbMavenProject == null) {
-            throw new IllegalStateException("Could not find NbMavenProject for project: " + projectId);
+            throw new IllegalStateException("Project '" + projectId + "' is not a Maven project or could not be found.");
         }
-
-        MavenEmbedder onlineEmbedder = EmbedderFactory.getOnlineEmbedder();
-        java.util.Set<Artifact> artifacts = nbMavenProject.getMavenProject().getArtifacts();
-        int successCount = 0;
-        int failCount = 0;
-        StringBuilder errors = new StringBuilder();
-        boolean found = false;
-
-        for (Artifact art : artifacts) {
-            if (art.getGroupId().equals(groupId) && art.getArtifactId().equals(artifactId)) {
-                found = true;
-                if (downloadArtifact(onlineEmbedder, nbMavenProject, art, classifier, errors)) {
-                    successCount++;
-                } else {
-                    failCount++;
-                }
-                break;
-            }
-        }
-
-        if (!found) {
-            return "Error: Dependency " + groupId + ":" + artifactId + " not found in project " + projectId;
-        }
-
-        NbMavenProject.fireMavenProjectReload(project);
-        return buildResultString(artifactTypeName, "Dependency", groupId + ":" + artifactId, successCount, failCount, errors);
+        
+        MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
+        
+        // This method works even if the artifact is not a dependency of the project.
+        // It creates a temporary artifact object and tries to resolve it against the configured repositories.
+        Artifact temporaryArtifact = embedder.createArtifactWithClassifier(
+                groupId, 
+                artifactId, 
+                version, 
+                type != null ? type : "jar", 
+                classifier
+        );
+        
+        return downloadArtifact(embedder, nbMavenProject, temporaryArtifact, classifier, new StringBuilder());
     }
-
+    
     private static boolean downloadArtifact(MavenEmbedder embedder, NbMavenProject project, Artifact art, String classifier, StringBuilder errors) {
         if (Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
             return false; // Skip system-scoped artifacts
         }
         try {
-            Artifact classifiedArtifact = embedder.createArtifactWithClassifier(
+            // The artifact 'art' might already have a classifier. The createArtifactWithClassifier method handles this correctly.
+            // If 'classifier' is null, it resolves the main artifact. If not, it resolves the classified one.
+            Artifact artifactToResolve = embedder.createArtifactWithClassifier(
                     art.getGroupId(),
                     art.getArtifactId(),
                     art.getVersion(),
                     art.getType(),
                     classifier
             );
+            
             embedder.resolveArtifact(
-                    classifiedArtifact,
+                    artifactToResolve,
                     project.getMavenProject().getRemoteArtifactRepositories(),
                     embedder.getLocalRepository()
             );
