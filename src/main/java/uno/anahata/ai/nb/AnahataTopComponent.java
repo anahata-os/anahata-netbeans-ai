@@ -1,17 +1,23 @@
-package uno.anahata.nb.ai;
+package uno.anahata.ai.nb;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.UUID;
+import javax.swing.SwingUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
+import uno.anahata.gemini.Chat;
+import uno.anahata.gemini.status.ChatStatus;
+import uno.anahata.gemini.status.StatusListener;
 import uno.anahata.gemini.ui.AnahataPanel;
 import uno.anahata.nb.ai.mime.NetBeansEditorKitProvider;
 
@@ -20,11 +26,11 @@ import uno.anahata.nb.ai.mime.NetBeansEditorKitProvider;
 @TopComponent.Description(
         preferredID = "anahata",
         iconBase = "icons/anahata_16.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
+        persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED)
 @TopComponent.Registration(mode = "output", openAtStartup = true, position = 0)
 @TopComponent.OpenActionRegistration(displayName = "Anahata")
 @Slf4j
-public final class AnahataTopComponent extends TopComponent implements Externalizable {
+public final class AnahataTopComponent extends TopComponent implements Externalizable, StatusListener {
 
     private transient AnahataPanel geminiPanel;
     
@@ -36,7 +42,6 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         logId("AnahataTopComponent()");
         setName("Anahata");
         setDisplayName("Anahata");
-        setHtmlDisplayName("<html><font color='#00802b'>Anahata</font></html>");
     }
 
     @Override
@@ -46,8 +51,6 @@ public final class AnahataTopComponent extends TopComponent implements Externali
             log.info("New session started with UUID: {}", sessionUuid);
         }
         setName(sessionUuid);
-        setDisplayName("Anahata - " + sessionUuid.substring(0, 8));
-        setToolTipText("Anahata Session: " + sessionUuid);
         
         logId("componentOpened()");
         
@@ -55,12 +58,13 @@ public final class AnahataTopComponent extends TopComponent implements Externali
             setLayout(new BorderLayout());
             NetBeansChatConfig config = new NetBeansChatConfig(sessionUuid);
             geminiPanel = new AnahataPanel(new NetBeansEditorKitProvider());
-            // Initialize the panel and all its children BEFORE adding it to the container.
             geminiPanel.init(config);
             geminiPanel.initComponents();
-            // Now that the panel is fully constructed, add it.
             add(geminiPanel, BorderLayout.CENTER);
             geminiPanel.checkAutobackupOrStartupContent();
+            getChat().addStatusListener(this);
+            // Initial status update
+            statusChanged(getChat().getStatusManager().getCurrentStatus(), null);
         }
     }
 
@@ -68,8 +72,17 @@ public final class AnahataTopComponent extends TopComponent implements Externali
     public void componentClosed() {
         logId("componentClosed()");
         if (geminiPanel != null && geminiPanel.getChat() != null) {
+            getChat().removeStatusListener(this);
             geminiPanel.getChat().shutdown();
         }
+    }
+    
+    public Chat getChat() {
+        return geminiPanel != null ? geminiPanel.getChat() : null;
+    }
+    
+    public NetBeansChatConfig getNetBeansChatConfig() {
+        return (NetBeansChatConfig) getChat().getConfig();
     }
 
     @Override
@@ -94,5 +107,30 @@ public final class AnahataTopComponent extends TopComponent implements Externali
     public void setSessionUuidForHandoff(String sessionUuid) {
         this.sessionUuid = sessionUuid;
         log.info("Session UUID set for handoff: {}", sessionUuid);
+    }
+
+    @Override
+    public void statusChanged(ChatStatus newStatus, String lastExceptionToString) {
+        SwingUtilities.invokeLater(() -> {
+            if (getChat() == null) return; // Guard against race conditions on close
+
+            Color color = getNetBeansChatConfig().getColor(newStatus);
+            String hexColor = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+
+            String displayName = StringUtils.isNotBlank(getChat().getNickname())
+                               ? getChat().getNickname()
+                               : getChat().getShortId();
+            
+            String statusText = newStatus.getDisplayName();
+
+            setDisplayName("Anahata - " + displayName);
+            setHtmlDisplayName("<html><font color='" + hexColor + "'>Anahata - " + displayName + "</font></html>");
+
+            String tooltip = "Anahata Session: " + sessionUuid + " [" + statusText + "]";
+            if (lastExceptionToString != null) {
+                tooltip += " - Error: " + lastExceptionToString;
+            }
+            setToolTipText(tooltip);
+        });
     }
 }

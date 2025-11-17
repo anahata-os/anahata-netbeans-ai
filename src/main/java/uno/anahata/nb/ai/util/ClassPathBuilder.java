@@ -32,9 +32,9 @@ import uno.anahata.gemini.functions.spi.RunningJVM;
  * 
  * @author pablo
  */
-public class ClassPathUtils {
+public class ClassPathBuilder {
 
-    private static final Logger logger = Logger.getLogger(ClassPathUtils.class.getName());
+    private static final Logger logger = Logger.getLogger(ClassPathBuilder.class.getName());
 
     
     public static String filesToClassPathString(Set<File> classPath) {

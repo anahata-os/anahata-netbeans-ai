@@ -17,7 +17,7 @@ import uno.anahata.gemini.functions.spi.pojos.FileInfo;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Represents the result of a proposeChange operation, indicating:"
+@Schema(description = "Represents the result of a suggestChange operation, indicating:"
         + "- The user's approval (Accepted / Cancelled), "
         + "- Any message from the user regarding the proposed change (regardless of whether the user approved it or not)  "
         + "- The updated file details if accepted.")

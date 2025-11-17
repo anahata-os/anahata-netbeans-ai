@@ -7,7 +7,7 @@ import java.util.List;
 import lombok.SneakyThrows;
 import uno.anahata.gemini.Chat;
 import uno.anahata.gemini.content.ContextProvider;
-import uno.anahata.nb.ai.AnahataTopComponent;
+import uno.anahata.ai.nb.AnahataTopComponent;
 import uno.anahata.nb.ai.tools.Maven;
 import uno.anahata.nb.ai.tools.Projects;
 

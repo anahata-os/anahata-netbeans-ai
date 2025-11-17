@@ -1,4 +1,4 @@
-package uno.anahata.nb.ai;
+package uno.anahata.ai.nb;
 
 import com.google.genai.types.Part;
 import java.util.List;
@@ -16,13 +16,11 @@ import uno.anahata.nb.ai.tools.IDE;
 import uno.anahata.nb.ai.tools.JavaDocs;
 import uno.anahata.nb.ai.tools.JavaIntrospection;
 import uno.anahata.nb.ai.tools.JavaSources;
-import uno.anahata.nb.ai.tools.Maven;
+import uno.anahata.nb.ai.tools.MavenTools;
 import uno.anahata.nb.ai.tools.NetBeansProjectJVM;
 import uno.anahata.nb.ai.tools.Output;
 import uno.anahata.nb.ai.tools.Projects;
 import uno.anahata.nb.ai.tools.TopComponents;
-import uno.anahata.nb.ai.tools.MavenPom;
-import uno.anahata.nb.ai.tools.MavenSearch;
 import uno.anahata.nb.ai.tools.Refactor;
 
 public class NetBeansChatConfig extends SwingChatConfig {
@@ -39,9 +37,15 @@ public class NetBeansChatConfig extends SwingChatConfig {
         ret.add(NetBeansProjectJVM.class);
         ret.add(Git.class);
         ret.add(IDE.class);
-        ret.add(Maven.class);
-        ret.add(MavenSearch.class);
-        ret.add(MavenPom.class);
+        
+        // Register the new consolidated Maven tool
+        ret.add(MavenTools.class);
+        
+        // Deprecated Maven tools, to be removed.
+        // ret.add(Maven.class);
+        // ret.add(MavenSearch.class);
+        // ret.add(MavenPom.class);
+        
         ret.add(Output.class);
         ret.add(Projects.class);
         ret.add(Editor.class);
@@ -69,10 +73,4 @@ public class NetBeansChatConfig extends SwingChatConfig {
         providers.add(new OutputTabsContextProvider());
         return providers;
     }
-
-    
-    
-    
-    
-    
 }

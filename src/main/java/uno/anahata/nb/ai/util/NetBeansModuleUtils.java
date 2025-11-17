@@ -1,6 +1,6 @@
 package uno.anahata.nb.ai.util;
 
-import uno.anahata.nb.ai.util.ClassPathUtils;
+import uno.anahata.nb.ai.util.ClassPathBuilder;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import uno.anahata.nb.ai.AnahataInstaller;
+import uno.anahata.ai.nb.AnahataInstaller;
 
 /**
  * Utility class for introspecting modules and their classpaths. Primary used for RunningJVM.
@@ -41,14 +41,14 @@ public final class NetBeansModuleUtils {
 
             Set<File> moduleClassPath = getModuleClassPath();
             logger.info("moduleClasspath: " + moduleClassPath);
-            String moduleClassPathStr = ClassPathUtils.filesToClassPathString(moduleClassPath);
+            String moduleClassPathStr = ClassPathBuilder.filesToClassPathString(moduleClassPath);
 
             String newClassPathString =
                       javaClassPath + File.pathSeparator
                     + netbeansDynamicClassPath + File.pathSeparator
                     + moduleClassPathStr;
             RunningJVM.setDefaultCompilerClasspath(newClassPathString);
-            logger.info("Final Classpath: " + newClassPathString);
+            logger.info("Final Classpath:\n" + RunningJVM.getPrettyPrintedDefaultCompilerClasspath());
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Exception initializing RunningJVM default compilers classpath", e);
         }

@@ -17,4 +17,15 @@
                 <goal>nbm:run-ide</goal>
             </goals>
         </action>
-    </actions>
+    <action>
+        <actionName>nbmreload</actionName>
+        <displayName>Install/Reload in Development IDE</displayName>
+        <goals>
+            <goal>package</goal>
+        </goals>
+        <properties>
+            <skipTests>true</skipTests>
+            <activatedProfiles>nbm-packaging</activatedProfiles>
+        </properties>
+    </action>
+</actions>

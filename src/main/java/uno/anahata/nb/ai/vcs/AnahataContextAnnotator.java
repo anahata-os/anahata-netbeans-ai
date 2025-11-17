@@ -13,7 +13,7 @@ import org.netbeans.modules.versioning.spi.VersioningSupport;
 import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
 //import uno.anahata.gemini.context.StatefulResource;
-import uno.anahata.nb.ai.AnahataTopComponent;
+import uno.anahata.ai.nb.AnahataTopComponent;
 
 /**
  * Annotates files present in the Anahata AI context with a badge and tooltip.

@@ -20,12 +20,19 @@ import uno.anahata.nb.ai.model.maven.MavenSearchResultPage;
  * across all configured repositories (local, remote, and project-specific).
  * 
  * @author pablo
+ * @deprecated This class is deprecated as of 2025-11-16 and will be removed in a future version. 
+ *             All functionality has been consolidated into {@link MavenTools}.
  */
+@Deprecated
 public class MavenSearch {
 
+    /**
+     * @deprecated Use {@link MavenTools#searchMavenIndex(String, Integer, Integer)} instead.
+     */
     @AIToolMethod("Searches the Maven index for artifacts matching a given query. The search is performed across all configured repositories (local, remote, and project-specific).")
+    @Deprecated
     public static MavenSearchResultPage searchMavenIndex(
-            @AIToolParam("The search query (e.g., 'junit platform', 'g:org.apache.commons')") String query,
+            @AIToolParam("The search query, with terms separated by spaces (e.g., 'junit platform').") String query,
             @AIToolParam("The starting index (0-based) for pagination. Defaults to 0 if null.") Integer startIndex,
             @AIToolParam("The maximum number of results to return. Defaults to 100 if null.") Integer pageSize) throws Exception {
         

@@ -1,4 +1,4 @@
-package uno.anahata.nb.ai;
+package uno.anahata.ai.nb;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,13 +56,14 @@ public class AnahataInstaller extends ModuleInstall {
         } else {
             log.info("No handoff file found. Normal startup.");
             // Optional: Open AI panel on IDE startup
+            /*
             java.awt.EventQueue.invokeLater(() -> {
                 log.info("Launching lone Anahata.");
                 AnahataTopComponent tc = new AnahataTopComponent();
                 tc.open();
                 tc.requestActive();
                 log.info("Lone Anahata launched.");
-            });
+            });*/
         }
 
         logId("restored() finished");
@@ -81,9 +82,6 @@ public class AnahataInstaller extends ModuleInstall {
                 String uuid = atc.getSessionUuid();
                 if (uuid != null) {
                     sessionUuids.add(uuid);
-                    // It's good practice to ensure the latest state is saved.
-                    // The autobackup is tied to the GeminiChat instance, so we might need a more direct way to save.
-                    // For now, we rely on the existing autobackup mechanism.
                     log.info("Found open Anahata session to handoff: " + uuid);
                 }
             }
@@ -105,6 +103,17 @@ public class AnahataInstaller extends ModuleInstall {
                 tc.close();
                 log.info("Closed old AnahataTopComponent: " + ((AnahataTopComponent) tc).getSessionUuid());
             }
+            if (tc instanceof LiveSessionsTopComponent) {
+                tc.close();
+                log.info("Closed old LiveSession: " + ((AnahataTopComponent) tc).getSessionUuid());
+            }
+        }
+        
+        // Close the LiveSessionsTopComponent to ensure it gets reloaded
+        TopComponent liveSessions = WindowManager.getDefault().findTopComponent("AnahataInstancesTopComponent");
+        if (liveSessions != null) {
+            liveSessions.close();
+            log.info("Closed old LiveSessionsTopComponent to allow for reload.");
         }
 
         super.uninstalled();

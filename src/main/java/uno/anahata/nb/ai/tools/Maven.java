@@ -41,14 +41,21 @@ import uno.anahata.nb.ai.model.maven.MavenBuildResult.ProcessStatus;
 /**
  * Provides AI tool methods for interacting with Maven projects.
  * @author pablo
+ * @deprecated This class is deprecated as of 2025-11-16 and will be removed in a future version. 
+ *             All functionality has been consolidated into {@link MavenTools}.
  */
+@Deprecated
 public class Maven {
     private static final Logger LOG = Logger.getLogger(Maven.class.getName());
     private static final int MAX_OUTPUT_LINES = 100;
     private static final int MAX_LINE_LENGTH = 2000;
     private static final long DEFAULT_TIMEOUT_MS = 300_000; // 5 minutes
 
+    /**
+     * @deprecated Use {@link MavenTools#getMavenPath()} instead.
+     */
     @AIToolMethod("Gets the path to the Maven installation configured in NetBeans.")
+    @Deprecated
     public static String getMavenPath() {
         try {
             Preferences prefs = NbPreferences.root().node("org/netbeans/modules/maven");
@@ -58,7 +65,11 @@ public class Maven {
         }
     }
 
+    /**
+     * @deprecated Use {@link MavenTools#runGoals(String, List, List, Map, List, Long)} instead.
+     */
     @AIToolMethod(value = "Executes a list of Maven goals on a Project synchronously (waits for the build to finish), capturing the last " + MAX_OUTPUT_LINES + " lines of the output.", behavior = uno.anahata.gemini.functions.ContextBehavior.EPHEMERAL)
+    @Deprecated
     public static MavenBuildResult runGoals(
             @AIToolParam("The ID of the project to run the goals on.") String projectId,
             @AIToolParam("A list of Maven goals to execute (e.g., ['clean', 'install']).") List<String> goals,
@@ -165,7 +176,11 @@ public class Maven {
         return new MavenBuildResult(status, exitCode, stdoutChunk, stderrChunk, logFilePath);
     }
     
+    /**
+     * @deprecated Use {@link MavenTools#downloadProjectDependencies(String, List)} instead.
+     */
     @AIToolMethod("Downloads all missing dependencies artifacts (e.g., 'sources', 'javadoc') for a given Maven project's dependencies.")
+    @Deprecated
     public static String downloadProjectDependencies(
             @AIToolParam("The ID of the project to download dependencies for.") String projectId,
             @AIToolParam("A list of classifiers to download (e.g., ['sources', 'javadoc']).") List<String> classifiers) throws Exception {
@@ -206,7 +221,11 @@ public class Maven {
         return buildResultString(artifactTypeNames, "Project", projectId, totalSuccessCount, totalFailCount, errors);
     }
 
+    /**
+     * @deprecated Use {@link MavenTools#downloadDependencyArtifact(String, String, String, String, String, String)} instead.
+     */
     @AIToolMethod("Downloads a specific classified artifact (e.g., 'sources', 'javadoc', or the main artifact if classifier is null) for a single dependency. This can be used to verify an artifact exists before adding it to a POM. Returns true on success, false on failure.")
+    @Deprecated
     public static boolean downloadDependencyArtifact(
             @AIToolParam("The ID of the project to use for repository context.") String projectId,
             @AIToolParam("The groupId of the dependency.") String groupId,

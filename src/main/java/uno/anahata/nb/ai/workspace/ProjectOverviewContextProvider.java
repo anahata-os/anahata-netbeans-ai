@@ -33,7 +33,7 @@ public class ProjectOverviewContextProvider extends ContextProvider {
 
     @Override
     public String getDisplayName() {
-        return "Project Overview (Compact)";
+        return "Project Overview (Compact, all open projects)";
     }
     
     @Override
@@ -87,7 +87,8 @@ public class ProjectOverviewContextProvider extends ContextProvider {
         
         if (!Strings.isNullOrEmpty(overview.getAnahataMdContent())) {
             sb.append("\n  ## anahata.md (Project-Specific Instructions)\n");
-            sb.append("  This file contains critical, high-level instructions for this specific project. You must read and adhere to these instructions before modifying any code.\n\n");
+            sb.append("  This file contains critical, high-level instructions for this specific project. You must read and adhere to these instructions before modifying any code.\n"
+                    +  "  The contents of this file are always provided to you on every turn so no need to read via explicit tool calling, just use the 'last Modified on disk' from your stateful resources overview to update it with suggestChange");
             sb.append(overview.getAnahataMdContent()).append("\n");
         }
 
@@ -115,7 +116,7 @@ public class ProjectOverviewContextProvider extends ContextProvider {
     }
 
     private String formatProjectFile(ProjectFile file, String indent) {
-        String status = file.getResourceStatus() != null ? " [" + file.getResourceStatus() + "]" : "";
+        String status = file.getResourceStatus() != null ? " [In context: " + file.getResourceStatus() +  "]": "";
         return String.format("%s- 📄 %s (%s)%s\n",
                              indent,
                              file.getName(),

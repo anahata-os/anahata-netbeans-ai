@@ -30,12 +30,19 @@ import uno.anahata.nb.ai.model.maven.ResolvedDependencyScope;
 /**
  * Provides AI tool methods for querying and modifying a project's pom.xml file.
  * @author pablo
+ * @deprecated This class is deprecated as of 2025-11-16 and will be removed in a future version. 
+ *             All functionality has been consolidated into {@link MavenTools}.
  */
+@Deprecated
 public class MavenPom {
     private static final Logger LOG = Logger.getLogger(MavenPom.class.getName());
     private static final ExecutorService MAVEN_EXECUTORS = AnahataExecutors.newCachedThreadPoolExecutor("nb-maven");
 
+    /**
+     * @deprecated Use {@link MavenTools#addDependency(String, String, String, String, String, String, String)} instead.
+     */
     @AIToolMethod("The definitive 'super-tool' for adding a Maven dependency. It follows a safe, multi-phase process and returns a structured result object. The model is responsible for interpreting the result.")
+    @Deprecated
     public static AddDependencyResult addDependency(
             @AIToolParam("The ID of the project to modify.") String projectId,
             @AIToolParam("The groupId of the dependency.") String groupId,
@@ -71,7 +78,9 @@ public class MavenPom {
 
             String effectiveScope = (scope == null || scope.isBlank()) ? "compile" : scope;
             String effectiveType = (type == null || type.isBlank()) ? "jar" : type;
-            ModelUtils.addDependency(pom, groupId, artifactId, version, classifier, effectiveScope, effectiveType, false);
+            String effectiveClassifier = (classifier == null || classifier.isBlank()) ? null : classifier;
+            
+            ModelUtils.addDependency(pom, groupId, artifactId, version, effectiveClassifier, effectiveScope, effectiveType, false);
             resultBuilder.pomModificationSuccess(true);
             summary.append("Result: SUCCESS. Dependency added to pom.xml.\n\n");
 
@@ -106,7 +115,11 @@ public class MavenPom {
         }
     }
 
+    /**
+     * @deprecated Use {@link MavenTools#getDeclaredDependencies(String)} instead.
+     */
     @AIToolMethod("Gets the list of dependencies directly declared in the pom.xml, grouped by scope and groupId for maximum token efficiency.")
+    @Deprecated
     public static List<DependencyScope> getDeclaredDependencies(
             @AIToolParam("The ID of the project to analyze.") String projectId) throws Exception {
         
@@ -116,7 +129,11 @@ public class MavenPom {
         return groupDeclaredDependencies(dependencies);
     }
 
+    /**
+     * @deprecated Use {@link MavenTools#getResolvedDependencies(String)} instead.
+     */
     @AIToolMethod("Gets the final, fully resolved list of transitive dependencies for the project, representing the actual runtime classpath. The output is in an ultra-compact format (List<ResolvedDependencyScope>) for maximum token efficiency.")
+    @Deprecated
     public static List<ResolvedDependencyScope> getResolvedDependencies(
             @AIToolParam("The ID of the project to analyze.") String projectId) throws Exception {
 

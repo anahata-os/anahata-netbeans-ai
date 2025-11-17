@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/NetBeansModuleDevelopment-files/contextAction.java to edit this template
  */
-package uno.anahata.nb.ai;
+package uno.anahata.ai.nb;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

@@ -437,15 +437,15 @@
             <exclusions>
                 
                 <!--
-                <exclusion>
-                    <groupId>com.google.inject</groupId>
-                    <artifactId>guice</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jspecify.jspecify</groupId>
-                    <artifactId>jspecify</artifactId>
-                </exclusion>
-                        -->
+        <exclusion>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.jspecify.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+        </exclusion>
+                -->
                 <exclusion>
                     <groupId>aopalliance</groupId>
                     <artifactId>asm</artifactId>
@@ -459,15 +459,15 @@
             <version>${netbeans.version}</version>
             <exclusions>
                 <!--
-                <exclusion>
-                    <groupId>com.google.inject</groupId>
-                    <artifactId>guice</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.jspecify.jspecify</groupId>
-                    <artifactId>jspecify</artifactId>
-                </exclusion>
-                        -->
+        <exclusion>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.jspecify.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+        </exclusion>
+                -->
             </exclusions>
         </dependency>
         
@@ -506,24 +506,23 @@
         </dependency>
         -->
         <!--
-        <dependency>
-            <groupId>org.netbeans.modules</groupId>
-            <artifactId>org-netbeans-modules-maven-model</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.modules</groupId>
-            <artifactId>org-netbeans-modules-maven-apisupport</artifactId>
-            <version>${netbeans.version}</version>
-        </dependency>
-                -->
+<dependency>
+    <groupId>org.netbeans.modules</groupId>
+    <artifactId>org-netbeans-modules-maven-model</artifactId>
+    <version>${netbeans.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.netbeans.modules</groupId>
+    <artifactId>org-netbeans-modules-maven-apisupport</artifactId>
+    <version>${netbeans.version}</version>
+</dependency>
+        -->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
             <version>RELEASE270</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -583,13 +582,16 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.42</version>
-                        </path>
-                    </annotationProcessorPaths>
+                    <!--
+    <annotationProcessorPaths>
+        <path>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+        </path>
+    </annotationProcessorPaths>
+                    -->
+                                    
                     
                 </configuration>
             </plugin>
@@ -605,4 +607,28 @@
             </plugin>
         </plugins>
     </build>
+    <!-- Doesnt work, if lombok is in the annoationProcessorPath, the nb annotation processor doesnt "kick in" -->
+    <profiles>
+        <profile>
+            <id>nbm-packaging</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.11.0</version>
+                        <configuration>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
+                            <compilerArgs>
+                                <arg>-parameters</arg>
+                            </compilerArgs>
+                            <!-- This empty configuration overrides the default, disabling Lombok -->
+                            <annotationProcessorPaths/>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
