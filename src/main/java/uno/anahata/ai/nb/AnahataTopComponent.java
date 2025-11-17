@@ -19,7 +19,7 @@ import uno.anahata.gemini.Chat;
 import uno.anahata.gemini.status.ChatStatus;
 import uno.anahata.gemini.status.StatusListener;
 import uno.anahata.gemini.ui.AnahataPanel;
-import uno.anahata.nb.ai.mime.NetBeansEditorKitProvider;
+import uno.anahata.ai.nb.mime.NetBeansEditorKitProvider;
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenAnahataAction")
 @ActionReference(path = "Menu/Window", position = 333)

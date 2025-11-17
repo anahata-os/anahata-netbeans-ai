@@ -4,7 +4,7 @@
  */
 package uno.anahata.ai.nb;
 
-import uno.anahata.nb.ai.util.ClassPathBuilder;
+import uno.anahata.ai.nb.util.ClassPathBuilder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;

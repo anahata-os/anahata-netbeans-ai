@@ -15,7 +15,7 @@ import org.openide.modules.ModuleInstall;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import uno.anahata.gemini.AnahataConfig;
-import uno.anahata.nb.ai.util.NetBeansModuleUtils;
+import uno.anahata.ai.nb.util.NetBeansModuleUtils;
 
 public class AnahataInstaller extends ModuleInstall {
 
