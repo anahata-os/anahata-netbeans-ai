@@ -16,7 +16,7 @@ import uno.anahata.ai.nb.tools.IDE;
 import uno.anahata.ai.nb.tools.JavaDocs;
 import uno.anahata.ai.nb.tools.JavaIntrospection;
 import uno.anahata.ai.nb.tools.JavaSources;
-import uno.anahata.ai.nb.tools.MavenTools;
+import uno.anahata.ai.nb.tools.deprecated.MavenTools;
 import uno.anahata.ai.nb.tools.NetBeansProjectJVM;
 import uno.anahata.ai.nb.tools.Output;
 import uno.anahata.ai.nb.tools.Projects;

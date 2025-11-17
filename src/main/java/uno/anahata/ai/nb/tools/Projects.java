@@ -1,5 +1,6 @@
 package uno.anahata.ai.nb.tools;
 
+import uno.anahata.ai.nb.tools.deprecated.MavenPom;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;

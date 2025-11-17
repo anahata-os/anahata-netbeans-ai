@@ -1,4 +1,4 @@
-package uno.anahata.ai.nb.tools;
+package uno.anahata.ai.nb.util;
 
 import java.io.IOException;
 import java.io.Reader;

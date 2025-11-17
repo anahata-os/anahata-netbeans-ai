@@ -1,4 +1,4 @@
-package uno.anahata.ai.nb.tools;
+package uno.anahata.ai.nb.tools.deprecated;
 
 import java.util.ArrayList;
 import java.util.Collections;

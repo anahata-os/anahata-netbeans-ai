@@ -1,4 +1,4 @@
-package uno.anahata.ai.nb.tools;
+package uno.anahata.ai.nb.tools.deprecated;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +26,8 @@ import uno.anahata.ai.nb.model.maven.DependencyScope;
 import uno.anahata.ai.nb.model.maven.MavenBuildResult;
 import uno.anahata.ai.nb.model.maven.ResolvedDependencyGroup;
 import uno.anahata.ai.nb.model.maven.ResolvedDependencyScope;
+import uno.anahata.ai.nb.tools.Maven;
+import uno.anahata.ai.nb.tools.Projects;
 
 /**
  * Provides AI tool methods for querying and modifying a project's pom.xml file.

@@ -1,5 +1,6 @@
 package uno.anahata.ai.nb.tools;
 
+import uno.anahata.ai.nb.util.TeeInputOutput;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;

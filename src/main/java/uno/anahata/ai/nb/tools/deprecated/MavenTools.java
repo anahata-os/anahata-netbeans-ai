@@ -1,4 +1,4 @@
-package uno.anahata.ai.nb.tools;
+package uno.anahata.ai.nb.tools.deprecated;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -56,6 +56,8 @@ import uno.anahata.ai.nb.model.maven.MavenBuildResult;
 import uno.anahata.ai.nb.model.maven.MavenSearchResultPage;
 import uno.anahata.ai.nb.model.maven.ResolvedDependencyGroup;
 import uno.anahata.ai.nb.model.maven.ResolvedDependencyScope;
+import uno.anahata.ai.nb.tools.Projects;
+import uno.anahata.ai.nb.util.TeeInputOutput;
 
 /**
  * Consolidated "super-tool" class for all Maven-related AI operations.
