@@ -19,7 +19,7 @@ import org.openide.nodes.Node;
 import org.openide.windows.Mode;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
-import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.ai.tools.AIToolMethod;
 import uno.anahata.ai.nb.model.windows.TopComponentInfo;
 
 public class TopComponents {

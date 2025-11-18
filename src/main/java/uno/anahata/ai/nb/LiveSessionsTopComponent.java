@@ -6,13 +6,9 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,21 +18,15 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.util.ImageUtilities;
-import org.openide.windows.Mode;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
-import uno.anahata.gemini.Chat;
-import uno.anahata.gemini.context.ContextManager;
-import uno.anahata.gemini.status.ChatStatus;
-import uno.anahata.gemini.ui.SwingChatConfig;
+import uno.anahata.ai.status.ChatStatus;
+import uno.anahata.ai.swing.SwingChatConfig;
 
 @TopComponent.Description(
         preferredID = "LiveSessionsTopComponent",
@@ -53,15 +43,10 @@ import uno.anahata.gemini.ui.SwingChatConfig;
 public class LiveSessionsTopComponent extends TopComponent {
 
     private final JTable table;
-    private final DefaultTableModel model;
+    private final LiveSessionsTableModel model;
     private final Timer refreshTimer;
-    private final JButton discardButton;
-
-    private static final int SESSION_COL = 0;
-    private static final int STATUS_COL = 1;
-    private static final int MESSAGES_COL = 2;
-    private static final int CONTEXT_COL = 3;
-    private static final int UUID_COL = 4;
+    private final JButton closeButton;
+    private final JButton disposeButton;
 
     public LiveSessionsTopComponent() {
         setName("Anahata Sessions");
@@ -77,7 +62,8 @@ public class LiveSessionsTopComponent extends TopComponent {
         Image addIcon = ImageUtilities.loadImage("org/netbeans/modules/autoupdate/ui/resources/add.png", true);
         Image newSessionIcon = null;
         if (anahataIcon != null && addIcon != null) {
-            newSessionIcon = ImageUtilities.mergeImages(anahataIcon, addIcon, 0, 0);
+            // Overlay the 'add' icon at the bottom-right corner
+            newSessionIcon = ImageUtilities.mergeImages(anahataIcon, addIcon, 8, 8);
         }
 
         JButton newButton = new JButton("New");
@@ -88,62 +74,45 @@ public class LiveSessionsTopComponent extends TopComponent {
         newButton.addActionListener(e -> createNewSession());
         toolBar.add(newButton);
 
-        discardButton = new JButton("Discard");
-        discardButton.setToolTipText("Close the selected AI session");
-        discardButton.setIcon(ImageUtilities.loadImageIcon("org/openide/actions/delete.gif", true));
-        discardButton.addActionListener(e -> discardSelectedSession());
-        discardButton.setEnabled(false); // Disabled by default
-        toolBar.add(discardButton);
+        closeButton = new JButton("Close");
+        closeButton.setToolTipText("Close the selected AI session window");
+        closeButton.setIcon(ImageUtilities.loadImageIcon("org/openide/actions/close.gif", true));
+        closeButton.addActionListener(e -> closeSelectedSession());
+        closeButton.setEnabled(false);
+        toolBar.add(closeButton);
+        
+        toolBar.add(Box.createHorizontalGlue()); // Pushes subsequent components to the right
+
+        disposeButton = new JButton("Dispose");
+        disposeButton.setToolTipText("Permanently dispose of the selected session");
+        disposeButton.setIcon(ImageUtilities.loadImageIcon("org/openide/actions/delete.gif", true));
+        disposeButton.addActionListener(e -> disposeSelectedSession());
+        disposeButton.setEnabled(false);
+        toolBar.add(disposeButton);
 
         add(toolBar, BorderLayout.NORTH);
 
-        String[] columnNames = {"Session", "Status", "Messages", "Context %", "UUID"};
-        model = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Table is now read-only
-            }
-
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                switch (columnIndex) {
-                    case SESSION_COL: return String.class;
-                    case STATUS_COL: return ChatStatus.class;
-                    case MESSAGES_COL: return Integer.class;
-                    case CONTEXT_COL: return Double.class;
-                    case UUID_COL: return String.class;
-                    default: return Object.class;
-                }
-            }
-        };
-
+        model = new LiveSessionsTableModel();
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setFillsViewportHeight(true);
         
-        // Selection listener to enable/disable discard button
+        // Selection listener to enable/disable buttons
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                discardButton.setEnabled(table.getSelectedRow() != -1);
+                updateButtonState();
             }
         });
 
         // Custom Renderers
         table.setDefaultRenderer(ChatStatus.class, new StatusCellRenderer());
-        table.getColumnModel().getColumn(CONTEXT_COL).setCellRenderer(new ContextUsageCellRenderer());
-
-        // Hide the UUID column
-        TableColumn uuidColumn = table.getColumnModel().getColumn(UUID_COL);
-        uuidColumn.setMinWidth(0);
-        uuidColumn.setMaxWidth(0);
-        uuidColumn.setWidth(0);
-        uuidColumn.setPreferredWidth(0);
+        table.getColumnModel().getColumn(LiveSessionsTableModel.CONTEXT_COL).setCellRenderer(new ContextUsageCellRenderer());
 
         // Sorting
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        TableRowSorter<LiveSessionsTableModel> sorter = new TableRowSorter<>(model);
         table.setRowSorter(sorter);
-        sorter.setComparator(CONTEXT_COL, Comparator.comparingDouble(d -> (Double) d));
-        sorter.setSortKeys(List.of(new javax.swing.RowSorter.SortKey(SESSION_COL, javax.swing.SortOrder.ASCENDING)));
+        sorter.setComparator(LiveSessionsTableModel.CONTEXT_COL, Comparator.comparingDouble(d -> (Double) d));
+        sorter.setSortKeys(List.of(new javax.swing.RowSorter.SortKey(LiveSessionsTableModel.SESSION_COL, javax.swing.SortOrder.ASCENDING)));
 
         // Double-click listener to focus a session
         table.addMouseListener(new MouseAdapter() {
@@ -153,8 +122,9 @@ public class LiveSessionsTopComponent extends TopComponent {
                     int viewRow = table.getSelectedRow();
                     if (viewRow >= 0) {
                         int modelRow = table.convertRowIndexToModel(viewRow);
-                        String sessionUuid = (String) model.getValueAt(modelRow, UUID_COL);
-                        findTopComponentByUuid(sessionUuid).ifPresent(TopComponent::requestFocus);
+                        AnahataTopComponent tc = model.getTopComponentAt(modelRow);
+                        tc.open();
+                        tc.requestActive();
                     }
                 }
             }
@@ -162,7 +132,7 @@ public class LiveSessionsTopComponent extends TopComponent {
 
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        refreshTimer = new Timer(1000, e -> refreshTable());
+        refreshTimer = new Timer(1000, e -> model.refresh());
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
@@ -173,66 +143,17 @@ public class LiveSessionsTopComponent extends TopComponent {
     }
 
     private void setColumnWidths() {
-        TableColumn statusColumn = table.getColumnModel().getColumn(STATUS_COL);
+        TableColumn statusColumn = table.getColumnModel().getColumn(LiveSessionsTableModel.STATUS_COL);
         statusColumn.setMinWidth(120);
         statusColumn.setMaxWidth(150);
 
-        TableColumn msgColumn = table.getColumnModel().getColumn(MESSAGES_COL);
+        TableColumn msgColumn = table.getColumnModel().getColumn(LiveSessionsTableModel.MESSAGES_COL);
         msgColumn.setMinWidth(60);
         msgColumn.setMaxWidth(80);
 
-        TableColumn ctxColumn = table.getColumnModel().getColumn(CONTEXT_COL);
+        TableColumn ctxColumn = table.getColumnModel().getColumn(LiveSessionsTableModel.CONTEXT_COL);
         ctxColumn.setMinWidth(80);
         ctxColumn.setMaxWidth(100);
-    }
-
-    /**
-     * Performs an intelligent refresh of the table, updating, adding, and removing rows
-     * without rebuilding the entire model. This prevents UI interruptions.
-     */
-    private void refreshTable() {
-        try {
-            Map<String, AnahataTopComponent> activeTcs = getActiveTopComponents().stream()
-                    .filter(tc -> tc.getChat() != null)
-                    .collect(Collectors.toMap(AnahataTopComponent::getSessionUuid, Function.identity()));
-
-            // Remove closed sessions
-            for (int i = model.getRowCount() - 1; i >= 0; i--) {
-                String uuidInTable = (String) model.getValueAt(i, UUID_COL);
-                if (!activeTcs.containsKey(uuidInTable)) {
-                    model.removeRow(i);
-                }
-            }
-
-            // Update existing and add new sessions
-            activeTcs.forEach((uuid, tc) -> {
-                Chat chat = tc.getChat();
-                ContextManager cm = chat.getContextManager();
-                double percentage = cm.getTokenThreshold() == 0 ? 0 : (double) cm.getTotalTokenCount() / cm.getTokenThreshold();
-                String displayName = StringUtils.isNotBlank(chat.getNickname()) ? chat.getNickname() : chat.getShortId();
-
-                Optional<Integer> existingRow = findRowByUuid(uuid);
-                if (existingRow.isPresent()) {
-                    // Update existing row
-                    int row = existingRow.get();
-                    model.setValueAt(displayName, row, SESSION_COL);
-                    model.setValueAt(chat.getStatusManager().getCurrentStatus(), row, STATUS_COL);
-                    model.setValueAt(cm.getContext().size(), row, MESSAGES_COL);
-                    model.setValueAt(percentage, row, CONTEXT_COL);
-                } else {
-                    // Add new row
-                    model.addRow(new Object[]{
-                        displayName,
-                        chat.getStatusManager().getCurrentStatus(),
-                        cm.getContext().size(),
-                        percentage,
-                        uuid
-                    });
-                }
-            });
-        } catch (Exception e) {
-            log.error("Error refreshing session table", e);
-        }
     }
 
     @Override
@@ -250,50 +171,43 @@ public class LiveSessionsTopComponent extends TopComponent {
     private void createNewSession() {
         AnahataTopComponent tc = new AnahataTopComponent();
         tc.open();
-        tc.requestFocus();
+        tc.requestActive();
     }
 
-    private void discardSelectedSession() {
-        int viewRow = table.getSelectedRow();
-        if (viewRow >= 0) {
-            int modelRow = table.convertRowIndexToModel(viewRow);
-            String sessionUuid = (String) model.getValueAt(modelRow, UUID_COL);
-            findTopComponentByUuid(sessionUuid).ifPresent(TopComponent::close);
+    private void closeSelectedSession() {
+        AnahataTopComponent tc = getSelectedTopComponent();
+        if (tc != null) {
+            tc.close();
         }
     }
     
-    private Optional<Integer> findRowByUuid(String uuid) {
-        for (int i = 0; i < model.getRowCount(); i++) {
-            if (uuid.equals(model.getValueAt(i, UUID_COL))) {
-                return Optional.of(i);
-            }
+    private void disposeSelectedSession() {
+        AnahataTopComponent tc = getSelectedTopComponent();
+        if (tc != null) {
+            AnahataTopComponent.disposeSession(tc);
         }
-        return Optional.empty();
     }
-
-    /**
-     * Robustly finds all open AnahataTopComponent instances by iterating through all modes.
-     */
-    private List<AnahataTopComponent> getActiveTopComponents() {
-        List<AnahataTopComponent> tcs = new ArrayList<>();
-        WindowManager wm = WindowManager.getDefault();
-        for (Mode mode : wm.getModes()) {
-            for (TopComponent tc : wm.getOpenedTopComponents(mode)) {
-                if (tc instanceof AnahataTopComponent) {
-                    tcs.add((AnahataTopComponent) tc);
-                }
-            }
+    
+    private AnahataTopComponent getSelectedTopComponent() {
+        int viewRow = table.getSelectedRow();
+        if (viewRow >= 0) {
+            int modelRow = table.convertRowIndexToModel(viewRow);
+            return model.getTopComponentAt(modelRow);
         }
-        return tcs;
+        return null;
     }
-
-    private Optional<AnahataTopComponent> findTopComponentByUuid(String uuid) {
-        if (StringUtils.isBlank(uuid)) {
-            return Optional.empty();
+    
+    private void updateButtonState() {
+        AnahataTopComponent selected = getSelectedTopComponent();
+        boolean isSelected = selected != null;
+        
+        disposeButton.setEnabled(isSelected);
+        
+        if (isSelected && selected.isOpened()) {
+            closeButton.setEnabled(true);
+        } else {
+            closeButton.setEnabled(false);
         }
-        return getActiveTopComponents().stream()
-                .filter(tc -> uuid.equals(tc.getSessionUuid()))
-                .findFirst();
     }
 
     // -- Custom Cell Renderers --

@@ -17,9 +17,9 @@ import org.netbeans.api.project.Sources;
 import org.netbeans.spi.java.classpath.ClassPathProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.gemini.functions.spi.RunningJVM;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
+import uno.anahata.ai.tools.spi.RunningJVM;
 
 /**
  * A NetBeans-aware wrapper around the core {@link RunningJVM} tool.

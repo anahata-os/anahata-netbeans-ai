@@ -2,11 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
-    <artifactId>anahata-netbeans-ai</artifactId>
+    <artifactId>anahata-ai-nb</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <name>Anahata NetBeans AI Plugin</name>
-    <description>Elevate your coding experience with an AI partner that understands your workflow. Powered by Google Gemini, Anahata provides deep IDE integration, enabling intuitive interaction with your projects, code, and development environment. It's more than a toolit's a harmonious extension of your creative process, designed to bring flow and intelligence to your work.</description>
+    <description>Elevate your coding experience with an AI partner that understands your workflow. 
+        Anahata provides deep IDE integration, enabling intuitive interaction with your projects, code, and development environment. 
+        It's more than a toolit's a harmonious extension of your creative process, designed to bring flow and intelligence to your work.</description>
     <organization>
         <name>Anahata</name>
         <url>http://anahata.uno</url>
@@ -16,6 +18,10 @@
         <developer>
             <name>Priyadarshi</name>
             <email>p@anahata.uno</email>
+        </developer>
+        <developer>
+            <name>Anahata</name>
+            <email>anahata@anahata.uno</email>
         </developer>
     </developers>
     <properties>
@@ -533,13 +539,9 @@
                 <configuration>
                     <author>Anahata</author>
                     <homePageUrl>http://anahata.uno</homePageUrl>
-                    <codeNameBase>uno.anahata.netbeans.ai</codeNameBase>
+                    <codeNameBase>uno.anahata.ai.nb</codeNameBase>
                     <brandingToken>anahata</brandingToken>
                     <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
-                    <publicPackages>
-                        <publicPackage>uno.anahata.nb.ai.vcs</publicPackage>
-                        <publicPackage>uno.anahata.nb.ai.model.ide</publicPackage>
-                    </publicPackages>
                     <moduleDependencies>
                         <dependency>
                             <id>org.netbeans.api:org-netbeans-modules-versioning</id>

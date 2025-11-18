@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import uno.anahata.gemini.context.stateful.ResourceStatus;
+import uno.anahata.ai.context.stateful.ResourceStatus;
 
 /**
  * Represents a single file within a project, including its metadata and status.

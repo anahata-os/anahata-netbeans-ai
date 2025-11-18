@@ -17,8 +17,8 @@ import org.openide.loaders.DataObject;
 import org.openide.text.Line;
 import org.openide.text.Line.ShowOpenType;
 import org.openide.text.Line.ShowVisibilityType;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
 
 /**
  *

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uno.anahata.gemini.functions.spi.pojos.TextChunk;
+import uno.anahata.ai.tools.spi.pojos.TextChunk;
 
 @Data
 @NoArgsConstructor

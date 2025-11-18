@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import uno.anahata.gemini.Chat;
-import uno.anahata.gemini.content.ContextPosition;
-import uno.anahata.gemini.content.ContextProvider;
-import uno.anahata.gemini.internal.GsonUtils;
+import uno.anahata.ai.Chat;
+import uno.anahata.ai.context.provider.ContextPosition;
+import uno.anahata.ai.context.provider.ContextProvider;
+import uno.anahata.ai.internal.GsonUtils;
 import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.model.projects.ProjectOverview;
 

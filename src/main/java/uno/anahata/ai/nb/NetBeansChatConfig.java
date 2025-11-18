@@ -2,8 +2,8 @@ package uno.anahata.ai.nb;
 
 import com.google.genai.types.Part;
 import java.util.List;
-import uno.anahata.gemini.content.ContextProvider;
-import uno.anahata.gemini.ui.SwingChatConfig;
+import uno.anahata.ai.context.provider.ContextProvider;
+import uno.anahata.ai.swing.SwingChatConfig;
 import uno.anahata.ai.nb.context.CoreNetBeansInstructionsProvider;
 import uno.anahata.ai.nb.context.IdeAlertsContextProvider;
 import uno.anahata.ai.nb.context.ProjectOverviewContextProvider;
@@ -13,6 +13,7 @@ import uno.anahata.ai.nb.tools.Coding;
 import uno.anahata.ai.nb.tools.Editor;
 import uno.anahata.ai.nb.tools.Git;
 import uno.anahata.ai.nb.tools.IDE;
+import uno.anahata.ai.nb.tools.JavaAnalysis;
 import uno.anahata.ai.nb.tools.JavaDocs;
 import uno.anahata.ai.nb.tools.JavaIntrospection;
 import uno.anahata.ai.nb.tools.JavaSources;
@@ -34,27 +35,20 @@ public class NetBeansChatConfig extends SwingChatConfig {
     @Override
     public List<Class<?>> getToolClasses() {
         List<Class<?>> ret = super.getToolClasses();
-        ret.add(NetBeansProjectJVM.class);
+        ret.add(Coding.class);
+        ret.add(Editor.class);
         ret.add(Git.class);
         ret.add(IDE.class);
-        
-        // Register the new consolidated Maven tool
-        ret.add(MavenTools.class);
-        
-        // Deprecated Maven tools, to be removed.
-        // ret.add(Maven.class);
-        // ret.add(MavenSearch.class);
-        // ret.add(MavenPom.class);
-        
-        ret.add(Output.class);
-        ret.add(Projects.class);
-        ret.add(Editor.class);
-        ret.add(TopComponents.class);
-        ret.add(Coding.class);
-        ret.add(Refactor.class);
+        ret.add(JavaAnalysis.class);
+        ret.add(JavaDocs.class);
         ret.add(JavaIntrospection.class);
         ret.add(JavaSources.class);
-        ret.add(JavaDocs.class);
+        ret.add(MavenTools.class);
+        ret.add(NetBeansProjectJVM.class);
+        ret.add(Output.class);
+        ret.add(Projects.class);
+        ret.add(Refactor.class);
+        ret.add(TopComponents.class);
         return ret;
     }
 

@@ -2,8 +2,8 @@ package uno.anahata.ai.nb.model.java;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
-import uno.anahata.gemini.functions.spi.pojos.FileInfo;
-import uno.anahata.gemini.functions.spi.pojos.TextChunk;
+import uno.anahata.ai.tools.spi.pojos.FileInfo;
+import uno.anahata.ai.tools.spi.pojos.TextChunk;
 
 @Getter
 @Schema(

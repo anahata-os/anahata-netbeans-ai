@@ -1,12 +1,12 @@
 package uno.anahata.ai.nb.model.coding;
 
-import uno.anahata.gemini.functions.spi.pojos.FileInfo;
+import uno.anahata.ai.tools.spi.pojos.FileInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import uno.anahata.gemini.context.stateful.StatefulResource;
-import uno.anahata.gemini.functions.spi.pojos.FileInfo;
+import uno.anahata.ai.context.stateful.StatefulResource;
+import uno.anahata.ai.tools.spi.pojos.FileInfo;
 
 /**
  * Represents the result of a proposeChange operation, indicating whether the user

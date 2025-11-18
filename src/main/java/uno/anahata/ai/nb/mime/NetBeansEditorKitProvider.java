@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.EditorKit;
 import org.netbeans.api.editor.mimelookup.MimeLookup;
-import uno.anahata.gemini.ui.render.editorkit.EditorKitProvider;
+import uno.anahata.ai.swing.render.editorkit.EditorKitProvider;
 import uno.anahata.ai.nb.mime.DisabledModulesMimeUtils.MimeInfo;
 import uno.anahata.ai.nb.mime.MimeUtils;
 

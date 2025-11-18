@@ -13,12 +13,12 @@ import javax.lang.model.element.TypeElement;
 import org.netbeans.api.java.queries.JavadocForBinaryQuery;
 import org.netbeans.api.java.source.JavaSource;
 import org.openide.filesystems.FileObject;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
 import uno.anahata.ai.nb.model.java.ClassSearchResult;
-import uno.anahata.gemini.functions.spi.pojos.TextChunk;
+import uno.anahata.ai.tools.spi.pojos.TextChunk;
 import uno.anahata.ai.nb.util.NetBeansJavaQueryUtils;
-import uno.anahata.gemini.internal.TextUtils;
+import uno.anahata.ai.internal.TextUtils;
 
 /**
  * Provides tools for retrieving Javadoc and source information for classes and methods.

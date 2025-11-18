@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module-Install: uno/anahata/nb/ai/AnahataInstaller.class
-OpenIDE-Module-Display-Category: AI
-OpenIDE-Module-Display-Class: Artificial Intelligence
+OpenIDE-Module-Install: uno/anahata/ai/nb/AnahataInstaller.class
+OpenIDE-Module-Display-Category: Anahata
+OpenIDE-Module-Display-Class: AI
 OpenIDE-Module-Requires: org.openide.windows.WindowManager

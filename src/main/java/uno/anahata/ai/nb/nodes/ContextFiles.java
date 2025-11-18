@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uno.anahata.gemini.ChatMessage;
-import uno.anahata.gemini.Chat;
-import uno.anahata.gemini.context.ContextListener;
-import uno.anahata.gemini.context.stateful.ResourceTracker;
-import uno.anahata.gemini.functions.ToolManager;
+import uno.anahata.ai.ChatMessage;
+import uno.anahata.ai.Chat;
+import uno.anahata.ai.context.ContextListener;
+import uno.anahata.ai.context.stateful.ResourceTracker;
+import uno.anahata.ai.tools.ToolManager;
 
 
 public class ContextFiles implements ContextListener {

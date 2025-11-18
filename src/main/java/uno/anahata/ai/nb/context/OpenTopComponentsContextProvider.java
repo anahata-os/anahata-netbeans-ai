@@ -4,10 +4,10 @@ import com.google.genai.types.Part;
 import java.util.Collections;
 import java.util.List;
 import lombok.SneakyThrows;
-import uno.anahata.gemini.Chat;
-import uno.anahata.gemini.content.ContextPosition;
-import uno.anahata.gemini.content.ContextProvider;
-import uno.anahata.gemini.internal.GsonUtils;
+import uno.anahata.ai.Chat;
+import uno.anahata.ai.context.provider.ContextPosition;
+import uno.anahata.ai.context.provider.ContextProvider;
+import uno.anahata.ai.internal.GsonUtils;
 import uno.anahata.ai.nb.tools.TopComponents;
 
 public class OpenTopComponentsContextProvider extends ContextProvider {

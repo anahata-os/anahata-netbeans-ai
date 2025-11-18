@@ -7,7 +7,7 @@ import org.netbeans.modules.refactoring.api.RenameRefactoring;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.lookup.Lookups;
-import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.ai.tools.AIToolMethod;
 
 /**
  * A tool for performing programmatic refactoring operations within the NetBeans IDE.

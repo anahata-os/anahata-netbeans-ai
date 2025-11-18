@@ -14,13 +14,13 @@ import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.gemini.functions.ContextBehavior;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
+import uno.anahata.ai.tools.ContextBehavior;
 import uno.anahata.ai.nb.model.java.SourceFileInfo;
 import uno.anahata.ai.nb.model.java.SourceOrigin;
-import uno.anahata.gemini.functions.spi.pojos.TextChunk;
-import uno.anahata.gemini.internal.TextUtils;
+import uno.anahata.ai.tools.spi.pojos.TextChunk;
+import uno.anahata.ai.internal.TextUtils;
 
 /**
  * Provides tools for retrieving Java source code.

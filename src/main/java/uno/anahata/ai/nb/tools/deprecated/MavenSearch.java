@@ -9,8 +9,8 @@ import org.netbeans.modules.maven.indexer.api.QueryField;
 import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
 import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
 import org.netbeans.modules.maven.indexer.api.RepositoryQueries.Result;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.AIToolParam;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
 import uno.anahata.ai.nb.model.maven.MavenArtifactSearchResult;
 import uno.anahata.ai.nb.model.maven.MavenSearchResultPage;
 

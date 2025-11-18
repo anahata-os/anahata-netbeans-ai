@@ -26,7 +26,7 @@ import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
 import org.openide.modules.SpecificationVersion;
 import org.openide.util.Lookup;
-import uno.anahata.gemini.functions.spi.RunningJVM;
+import uno.anahata.ai.tools.spi.RunningJVM;
 
 /**
  * 

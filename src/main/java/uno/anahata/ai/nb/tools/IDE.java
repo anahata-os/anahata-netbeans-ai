@@ -19,10 +19,10 @@ import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.filesystems.FileObject;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.gemini.functions.spi.pojos.TextChunk;
-import uno.anahata.gemini.internal.TextUtils;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
+import uno.anahata.ai.tools.spi.pojos.TextChunk;
+import uno.anahata.ai.internal.TextUtils;
 
 @Slf4j
 public class IDE {

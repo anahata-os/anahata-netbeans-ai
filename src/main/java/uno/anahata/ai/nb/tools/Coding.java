@@ -39,11 +39,11 @@ import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.windows.WindowManager;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.spi.LocalFiles;
-import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.gemini.functions.ContextBehavior;
-import uno.anahata.gemini.functions.spi.pojos.FileInfo;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.spi.LocalFiles;
+import uno.anahata.ai.tools.AIToolParam;
+import uno.anahata.ai.tools.ContextBehavior;
+import uno.anahata.ai.tools.spi.pojos.FileInfo;
 import uno.anahata.ai.nb.model.coding.SuggestChangeResult;
 
 /**

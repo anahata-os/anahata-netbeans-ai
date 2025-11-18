@@ -5,7 +5,7 @@ import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.openide.awt.Actions;
 import org.openide.util.Utilities;
-import uno.anahata.gemini.functions.AIToolMethod;
+import uno.anahata.ai.tools.AIToolMethod;
 
 /**
  * A Core Function provider that groups all functions for interacting with Git.

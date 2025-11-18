@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import org.openide.modules.Dependency;
 import org.openide.modules.ModuleInfo;
 import org.openide.modules.Modules;
-import uno.anahata.gemini.functions.spi.RunningJVM;
+import uno.anahata.ai.tools.spi.RunningJVM;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import org.openide.filesystems.FileObject;

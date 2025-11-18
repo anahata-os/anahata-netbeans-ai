@@ -25,7 +25,7 @@ import org.openide.modules.Modules;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
-import uno.anahata.gemini.functions.spi.RunningJVM;
+import uno.anahata.ai.tools.spi.RunningJVM;
 
 
 /**

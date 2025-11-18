@@ -32,10 +32,10 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.NbPreferences;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
-import uno.anahata.gemini.functions.AIToolMethod;
-import uno.anahata.gemini.functions.AIToolParam;
-import uno.anahata.gemini.functions.spi.pojos.TextChunk;
-import uno.anahata.gemini.internal.TextUtils;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
+import uno.anahata.ai.tools.spi.pojos.TextChunk;
+import uno.anahata.ai.internal.TextUtils;
 import uno.anahata.ai.nb.model.maven.MavenBuildResult;
 import uno.anahata.ai.nb.model.maven.MavenBuildResult.ProcessStatus;
 
@@ -69,7 +69,7 @@ public class Maven {
     /**
      * @deprecated Use {@link MavenTools#runGoals(String, List, List, Map, List, Long)} instead.
      */
-    @AIToolMethod(value = "Executes a list of Maven goals on a Project synchronously (waits for the build to finish), capturing the last " + MAX_OUTPUT_LINES + " lines of the output.", behavior = uno.anahata.gemini.functions.ContextBehavior.EPHEMERAL)
+    @AIToolMethod(value = "Executes a list of Maven goals on a Project synchronously (waits for the build to finish), capturing the last " + MAX_OUTPUT_LINES + " lines of the output.", behavior = uno.anahata.ai.tools.ContextBehavior.EPHEMERAL)
     @Deprecated
     public static MavenBuildResult runGoals(
             @AIToolParam("The ID of the project to run the goals on.") String projectId,
