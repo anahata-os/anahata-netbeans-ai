@@ -1,9 +1,8 @@
 package uno.anahata.ai.nb;
 
-import com.google.genai.types.Part;
 import java.util.List;
-import uno.anahata.ai.context.provider.ContextProvider;
 import uno.anahata.ai.swing.SwingChatConfig;
+import uno.anahata.ai.context.provider.ContextProvider;
 import uno.anahata.ai.nb.context.CoreNetBeansInstructionsProvider;
 import uno.anahata.ai.nb.context.IdeAlertsContextProvider;
 import uno.anahata.ai.nb.context.ProjectOverviewContextProvider;
@@ -56,7 +55,8 @@ public class NetBeansChatConfig extends SwingChatConfig {
     public String getSessionId() {
         return "netbeans-" + sessionUuid;
     }
-
+    
+    
     @Override
     public List<ContextProvider> getContextProviders() {
         List<ContextProvider> providers = super.getContextProviders();

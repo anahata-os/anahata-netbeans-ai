@@ -65,7 +65,7 @@ public class LiveSessionsTableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case SESSION_COL:
-                return chat.getDisplayName(); // Use the new display name method
+                return chat.getNickname(); // Use the new display name method
             case TC_ID_COL:
                 return tc.getTopComponentId();
             case STATUS_COL:
