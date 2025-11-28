@@ -3,35 +3,47 @@ package uno.anahata.ai.nb.context;
 import com.google.genai.types.Part;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
+import lombok.SneakyThrows;
 import uno.anahata.ai.Chat;
 import uno.anahata.ai.context.provider.ContextPosition;
 import uno.anahata.ai.context.provider.ContextProvider;
+import uno.anahata.ai.internal.GsonUtils;
+import uno.anahata.ai.nb.model.ide.ProjectDiagnostics;
+import uno.anahata.ai.nb.model.projects.ProjectOverview;
 import uno.anahata.ai.nb.tools.IDE;
+import uno.anahata.ai.nb.tools.Projects;
 
+@Getter
 public class IdeAlertsContextProvider extends ContextProvider {
 
-    public IdeAlertsContextProvider() {
+    String projectId;
+
+    public IdeAlertsContextProvider(String projectId) {
         super(ContextPosition.AUGMENTED_WORKSPACE);
+        this.projectId = projectId;
     }
-    
 
     @Override
     public String getId() {
-        return "netbeans-ide-alerts";
+        return projectId + "-alerts";
     }
 
     @Override
     public String getDisplayName() {
-        return "IDE Alerts";
+        return projectId + " Alerts";
     }
 
     @Override
+    @SneakyThrows
     public List<Part> getParts(Chat chat) {
-        try {
-            String alerts = IDE.getCachedIDEAlerts();
-            return Collections.singletonList(Part.fromText(alerts));
-        } catch (Exception e) {
-            return Collections.singletonList(Part.fromText("Error getting IDE alerts: " + e.getMessage()));
+
+        if (Projects.getOpenProjects().contains(projectId)) {
+            ProjectDiagnostics alerts = IDE.getProjectAlerts(projectId);
+            return Collections.singletonList(Part.fromText(GsonUtils.getGson().toJson(alerts)));
+        } else {
+            return Collections.singletonList(Part.fromText(projectId + " is not open, consider disabling this provider"));
         }
+
     }
 }

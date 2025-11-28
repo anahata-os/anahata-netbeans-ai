@@ -380,14 +380,22 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-java-source</artifactId>
+            <artifactId>org-netbeans-modules-java-project-ui</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-source-base</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-source</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-editor-lib</artifactId>
@@ -528,6 +536,11 @@
             <artifactId>org-netbeans-modules-settings</artifactId>
             <version>RELEASE270</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-jumpto</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -556,8 +569,24 @@
                             <type>spec</type>
                         </dependency>
                         <dependency>
+                            <id>org.netbeans.api:org-netbeans-modules-java-source-base</id>
+                            <type>impl</type><!--for Error provider maybe-->
+                        </dependency>
+                        <dependency>
                             <id>org.netbeans.api:org-netbeans-modules-java-source</id>
-                            <type>spec</type>
+                            <type>impl</type><!--for Error provider maybe-->
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.api:org-netbeans-modules-java-project</id>
+                            <type>impl</type><!--for Error provider maybe-->
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.api:org-netbeans-modules-java-project-ui</id>
+                            <type>impl</type><!--for Error provider maybe-->
+                        </dependency>
+                        <dependency>
+                            <id>org.netbeans.api:org-netbeans-modules-jumpto</id>
+                            <type>impl</type>
                         </dependency>
                         <dependency>
                             <id>org.netbeans.modules:org-netbeans-modules-maven</id>
@@ -571,6 +600,7 @@
                             <id>org.netbeans.modules:org-netbeans-modules-maven-indexer</id>
                             <type>impl</type>
                         </dependency>
+                        
                     </moduleDependencies>
                 </configuration>
             </plugin>
@@ -584,15 +614,15 @@
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
-                    <!--
-    <annotationProcessorPaths>
-        <path>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.42</version>
-        </path>
-    </annotationProcessorPaths>
-                    -->
+                    <!--                    
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>1.18.42</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    -->                    
                                     
                     
                 </configuration>
@@ -609,28 +639,4 @@
             </plugin>
         </plugins>
     </build>
-    <!-- Doesnt work, if lombok is in the annoationProcessorPath, the nb annotation processor doesnt "kick in" -->
-    <profiles>
-        <profile>
-            <id>nbm-packaging</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.11.0</version>
-                        <configuration>
-                            <source>${maven.compiler.source}</source>
-                            <target>${maven.compiler.target}</target>
-                            <compilerArgs>
-                                <arg>-parameters</arg>
-                            </compilerArgs>
-                            <!-- This empty configuration overrides the default, disabling Lombok -->
-                            <annotationProcessorPaths/>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
