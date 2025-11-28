@@ -8,6 +8,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.lookup.Lookups;
 import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
 
 /**
  * A tool for performing programmatic refactoring operations within the NetBeans IDE.
@@ -22,8 +23,9 @@ public class Refactor {
      * @return A detailed log of the refactoring process.
      * @throws Exception if there is an error invoking the operation.
      */
-    @AIToolMethod("Performs a programmatic rename refactoring of a file within the IDE, providing detailed feedback.")
-    public static String renameFile(String filePath, String newName) throws Exception {
+    @AIToolMethod("Performs a programmatic NetBeans Rename refactoring action for a java class or any other file within the IDE, providing detailed feedback."
+            + "As in NetBeans terms and ways, the new name should not have a file name extesion. just renames the class or the file without the extension")
+    public static String rename(String filePath, @AIToolParam("The new class file name or the new file name without extension")String newName) throws Exception {
         StringBuilder feedback = new StringBuilder();
         File f = new File(filePath);
         if (!f.exists()) {
