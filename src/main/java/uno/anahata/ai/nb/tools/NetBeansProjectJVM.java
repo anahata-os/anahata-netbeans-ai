@@ -73,9 +73,7 @@ public class NetBeansProjectJVM {
             + "This tool enables a powerful 'hot-reload' workflow by creating a dynamic classpath that prioritizes the project's own build directories (e.g., 'target/classes') over the application's default classpath. "
             + "This ensures that any newly compiled classes are used immediately."
             + "\n\n<b>IMPORTANT NOTE for NetBeans Module (NBM) Development:</b>"
-            + "\nWhen the target project is an NBM, setting `includeCompileAndExecuteDependencies` to `true` can be necessary to test your module's code. "
-            + "However, you must be careful. If your module's dependencies include NetBeans Platform APIs (like `org-openide-windows`), including them will cause fatal `LinkageError` exceptions because those APIs are already provided by the IDE. "
-            + "The safest approach is to set this to `false` when testing code that only interacts with your module's own classes, or ensure the target NBM's POM correctly marks platform APIs with `<scope>provided</scope>`.",
+            + "\nWhen the target project is an NBM that is deployed on the current netbeans instance (e.g. the Anahata NetBeans Plugin), always set `includeCompileAndExecuteDependencies` to `false`.",
             requiresApproval = true
     )
     public static Object compileAndExecuteInProject(

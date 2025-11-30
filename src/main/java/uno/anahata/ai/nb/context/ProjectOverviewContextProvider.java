@@ -2,6 +2,7 @@ package uno.anahata.ai.nb.context;
 
 import com.google.common.base.Strings;
 import com.google.genai.types.Part;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,11 +55,18 @@ public class ProjectOverviewContextProvider extends ContextProvider {
 
         if (Projects.getOpenProjects().contains(projectId)) {
             ProjectOverview overview = Projects.getOverview(projectId, chat);
+            StringBuilder sb = new StringBuilder();
+            if (!Strings.isNullOrEmpty(overview.getAnahataMdContent())) {
+                sb.append("\n## Project-Specific Instructions (contents of " + projectId + File.separatorChar + "anahata.md)\n");
+                sb.append("  This file contains critical, high-level instructions for this specific project. You must read and adhere to these instructions before modifying any code.\n"
+                        + "  The contents of this file are always provided to you on every turn so no need to read via explicit tool calling, just use the 'last Modified on disk' from your stateful resources overview to update it with suggestChange");
+                sb.append(overview.getAnahataMdContent()).append("\n");
+            }
+            parts.add(Part.fromText(sb.toString()));
             parts.add(Part.fromText(generateCompactOverview(overview)));
         } else {
             parts.add(Part.fromText(projectId + " is not open, consider disabling this provider"));
         }
-        
 
         return parts;
     }
@@ -106,13 +114,6 @@ public class ProjectOverviewContextProvider extends ContextProvider {
             for (DependencyScope scope : overview.getMavenDeclaredDependencies()) {
                 sb.append(formatDependencyScope(scope, "    "));
             }
-        }
-
-        if (!Strings.isNullOrEmpty(overview.getAnahataMdContent())) {
-            sb.append("\n  ## anahata.md (Project-Specific Instructions)\n");
-            sb.append("  This file contains critical, high-level instructions for this specific project. You must read and adhere to these instructions before modifying any code.\n"
-                    + "  The contents of this file are always provided to you on every turn so no need to read via explicit tool calling, just use the 'last Modified on disk' from your stateful resources overview to update it with suggestChange");
-            sb.append(overview.getAnahataMdContent()).append("\n");
         }
 
         return sb.toString();

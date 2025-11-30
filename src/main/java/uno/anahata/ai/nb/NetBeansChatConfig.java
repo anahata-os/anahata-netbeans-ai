@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import uno.anahata.ai.context.provider.ContextProvider;
 import uno.anahata.ai.nb.context.CoreNetBeansInstructionsProvider;
-import uno.anahata.ai.nb.context.IdeAlertsContextProvider;
+import uno.anahata.ai.nb.context.ProjectAlertsContextProvider;
 import uno.anahata.ai.nb.context.OpenTopComponentsContextProvider;
 import uno.anahata.ai.nb.context.OutputTabsContextProvider;
 import uno.anahata.ai.nb.context.ProjectOverviewContextProvider;
@@ -26,6 +26,7 @@ import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.tools.Refactor;
 import uno.anahata.ai.nb.tools.TopComponents;
 import uno.anahata.ai.nb.tools.deprecated.MavenTools;
+import uno.anahata.ai.nb.tools.java2.CodeModel;
 import uno.anahata.ai.swing.SwingChatConfig;
 
 public class NetBeansChatConfig extends SwingChatConfig {
@@ -56,6 +57,7 @@ public class NetBeansChatConfig extends SwingChatConfig {
         ret.add(Projects.class);
         ret.add(Refactor.class);
         ret.add(TopComponents.class);
+        ret.add(CodeModel.class);
         return ret;
     }
 
@@ -102,7 +104,7 @@ public class NetBeansChatConfig extends SwingChatConfig {
             projectProviders.computeIfAbsent(projectId, id -> {
                 List<ContextProvider> newProviders = new ArrayList<>();
                 newProviders.add(new ProjectOverviewContextProvider(id));
-                newProviders.add(new IdeAlertsContextProvider(id));
+                newProviders.add(new ProjectAlertsContextProvider(id));
                 return newProviders;
             });
         }

@@ -15,11 +15,11 @@ import uno.anahata.ai.nb.tools.IDE;
 import uno.anahata.ai.nb.tools.Projects;
 
 @Getter
-public class IdeAlertsContextProvider extends ContextProvider {
+public class ProjectAlertsContextProvider extends ContextProvider {
 
     String projectId;
 
-    public IdeAlertsContextProvider(String projectId) {
+    public ProjectAlertsContextProvider(String projectId) {
         super(ContextPosition.AUGMENTED_WORKSPACE);
         this.projectId = projectId;
     }

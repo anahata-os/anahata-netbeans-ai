@@ -6,8 +6,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,10 +25,16 @@ import org.netbeans.api.java.source.ClassIndex;
 import org.netbeans.api.java.source.ClasspathInfo;
 import org.netbeans.api.java.source.ElementHandle;
 import org.netbeans.api.java.source.JavaSource;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.modules.jumpto.type.TypeProviderAccessor;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
+import org.netbeans.spi.jumpto.type.SearchType;
+import org.netbeans.spi.jumpto.type.TypeDescriptor;
+import org.netbeans.spi.jumpto.type.TypeProvider;
 import org.openide.filesystems.FileObject;
-import uno.anahata.ai.tools.AIToolMethod;
-import uno.anahata.ai.tools.AIToolParam;
+import org.openide.util.Lookup;
 import uno.anahata.ai.nb.model.java.MemberInfo;
 import uno.anahata.ai.nb.model.java.MemberSearchResultPage;
 import uno.anahata.ai.nb.model.java.PackageSearchResultPage;
@@ -33,6 +42,10 @@ import uno.anahata.ai.nb.model.java.TypeInfo;
 import uno.anahata.ai.nb.model.java.TypeKind;
 import uno.anahata.ai.nb.model.java.TypeSearchResultPage;
 import uno.anahata.ai.nb.util.NetBeansJavaQueryUtils;
+import uno.anahata.ai.tools.AIToolMethod;
+import uno.anahata.ai.tools.AIToolParam;
+import org.netbeans.api.project.ui.OpenProjects;
+import org.openide.filesystems.FileUtil;
 
 /**
  * Provides robust, API-driven tools for Java type introspection, similar to the NetBeans Navigator.
@@ -103,6 +116,14 @@ public class JavaIntrospection {
                     } else {
                         type = element.asType().toString();
                     }
+                    
+                    // Correctly format inner class names
+                    if (element.getKind().isClass() || element.getKind().isInterface()) {
+                        name = typeElement.getQualifiedName().toString().replace('$', '.') + "." + name;
+                    }
+                    
+                    type = type.replace('$', '.');
+
 
                     Set<String> modifiers = element.getModifiers().stream()
                             .map(javax.lang.model.element.Modifier::toString)
@@ -208,10 +229,12 @@ public class JavaIntrospection {
         return new TypeSearchResultPage(start, totalCount, page);
     }
 
-    @AIToolMethod("Searches for types across all classpaths by simple name.")
+    //@AIToolMethod("Searches for types across all classpaths by simple name.")
     public static TypeSearchResultPage searchTypesByName(
-            @AIToolParam("The simple name query. Wildcards '*' are not needed for prefix/suffix searches.") String simpleNameQuery,
+            @AIToolParam("The simple name query. Wildcards '*' and '?' are supported for REGEXP search. Otherwise, CAMEL_CASE is used.") String simpleNameQuery,
             @AIToolParam("The kind of type to search for.") TypeKind typeKind,
+            @AIToolParam("If true, the search will be case-sensitive.") boolean caseSensitive,
+            @AIToolParam("If true, results from open projects will be listed first.") boolean preferOpenProjects,
             @AIToolParam("The starting index (0-based) for pagination.") Integer startIndex,
             @AIToolParam("The maximum number of results to return per page.") Integer pageSize) {
 
@@ -299,14 +322,14 @@ public class JavaIntrospection {
         }
         for (Constructor<?> c : clazz.getDeclaredConstructors()) {
             List<String> params = Arrays.stream(c.getParameterTypes()).map(Class::getName).collect(Collectors.toList());
-            allMembers.add(new MemberInfo(c.getName(), "CONSTRUCTOR", "void", getModifiersAsSet(c.getModifiers()), params));
+            allMembers.add(new MemberInfo(c.getName().replace('$', '.'), "CONSTRUCTOR", "void", getModifiersAsSet(c.getModifiers()), params));
         }
         for (Method method : clazz.getDeclaredMethods()) {
             List<String> params = Arrays.stream(method.getParameterTypes()).map(Class::getName).collect(Collectors.toList());
-            allMembers.add(new MemberInfo(method.getName(), "METHOD", method.getReturnType().getName(), getModifiersAsSet(method.getModifiers()), params));
+            allMembers.add(new MemberInfo(method.getName(), "METHOD", method.getReturnType().getName().replace('$', '.'), getModifiersAsSet(method.getModifiers()), params));
         }
         for (Class<?> innerClass : clazz.getDeclaredClasses()) {
-            allMembers.add(new MemberInfo(innerClass.getSimpleName(), "CLASS", innerClass.getName(), getModifiersAsSet(innerClass.getModifiers()), new ArrayList<>()));
+            allMembers.add(new MemberInfo(innerClass.getName().replace('$', '.'), "CLASS", innerClass.getName().replace('$', '.'), getModifiersAsSet(innerClass.getModifiers()), new ArrayList<>()));
         }
         
         int totalCount = allMembers.size();
