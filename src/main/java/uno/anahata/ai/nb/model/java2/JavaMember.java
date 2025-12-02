@@ -6,7 +6,6 @@ package uno.anahata.ai.nb.model.java2;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.netbeans.api.java.source.ElementHandle;
 
 /**
@@ -16,12 +15,12 @@ import org.netbeans.api.java.source.ElementHandle;
  *
  * @author pablo
  */
-@RequiredArgsConstructor
 @Getter
 public class JavaMember {
 
     /**
-     * The serializable handle to the actual code element.
+     * The serializable handle to the actual code element. This may be null if
+     * the member was discovered via a method that doesn't produce a handle.
      */
     private final ElementHandle<? extends Element> handle;
 
@@ -39,6 +38,13 @@ public class JavaMember {
      * A human-readable representation of the member's signature or type.
      */
     private final String details;
+
+    public JavaMember(ElementHandle<? extends Element> handle, String name, ElementKind kind, String details) {
+        this.handle = handle;
+        this.name = name;
+        this.kind = kind;
+        this.details = details;
+    }
 
     @Override
     public String toString() {

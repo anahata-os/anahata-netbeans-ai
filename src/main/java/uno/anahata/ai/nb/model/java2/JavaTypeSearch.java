@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.SneakyThrows;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -27,7 +26,7 @@ import org.openide.util.Lookup;
  */
 public class JavaTypeSearch {
 
-    private final List<JavaTypeDescription> results;
+    private final List<JavaType> results;
 
     public JavaTypeSearch(String query, boolean caseSensitive, boolean preferOpenProjects) {
         // Determine SearchType
@@ -74,14 +73,19 @@ public class JavaTypeSearch {
             });
         }
         
-        this.results = Collections.unmodifiableList(javaDescriptors);
+        // Convert to JavaType
+        this.results = Collections.unmodifiableList(
+            javaDescriptors.stream()
+                .map(JavaType::new)
+                .collect(Collectors.toList())
+        );
     }
 
     /**
      * Gets the results of the search.
-     * @return An unmodifiable list of found JavaTypeDescriptors.
+     * @return An unmodifiable list of found JavaTypes.
      */
-    public List<JavaTypeDescription> getResults() {
+    public List<JavaType> getResults() {
         return results;
     }
 }

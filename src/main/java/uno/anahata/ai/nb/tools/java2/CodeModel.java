@@ -21,6 +21,8 @@ import org.netbeans.modules.java.source.ui.JavaTypeDescription;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import uno.anahata.ai.nb.model.Page;
+import uno.anahata.ai.nb.model.java2.JavaMember;
+import uno.anahata.ai.nb.model.java2.JavaMemberSearch;
 import uno.anahata.ai.nb.model.java2.JavaType;
 import uno.anahata.ai.nb.model.java2.JavaTypeSearch;
 import uno.anahata.ai.tools.AIToolMethod;
@@ -38,18 +40,7 @@ public class CodeModel {
             @AIToolParam("The maximum number of results to return per page.") Integer pageSize) {
 
         JavaTypeSearch finder = new JavaTypeSearch(query, caseSensitive, preferOpenProjects);
-        List<JavaTypeDescription> descriptors = finder.getResults();
-
-        List<JavaType> allResults = descriptors.stream()
-                .map(desc -> {
-                    try {
-                        return new JavaType(desc);
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        List<JavaType> allResults = finder.getResults();
 
         int start = startIndex != null ? startIndex : 0;
         int size = pageSize != null ? pageSize : 100;
@@ -60,7 +51,13 @@ public class CodeModel {
     @AIToolMethod("Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow.")
     public static String getTypeSources(
             @AIToolParam("The minimalist keychain DTO from a findTypes call.") JavaType javaType) throws Exception {
-        return javaType.getSource();
+        return javaType.getSource().getContent();
+    }
+    
+    @AIToolMethod("Gets a list of all members (fields, constructors, methods) for a given type.")
+    public static List<JavaMember> getMembers(
+            @AIToolParam("The keychain DTO for the type to inspect.") JavaType javaType) throws Exception {
+        return javaType.getMembers();
     }
 
     @AIToolMethod("Gets the source for a type using a specific project's classpath. This is the 'Ctrl+Click', context-aware, one-turn tool.")
