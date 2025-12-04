@@ -13,6 +13,8 @@ import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeFactorySupport;
 import org.netbeans.spi.project.ui.support.NodeList;
+import org.openide.filesystems.FileChangeAdapter;
+import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
@@ -59,14 +61,7 @@ public class AnahataNodeFactory implements NodeFactory {
         @Override
         public Image getIcon(int type) {
             log.log(Level.INFO, "ENTRY getIcon(type={0})", type);
-            Image folderIcon = ImageUtilities.loadImage(FOLDER_ICON_PATH);
-            Image overlayIcon = ImageUtilities.loadImage(OVERLAY_ICON_PATH);
-            // Scale the overlay icon to 12x12
-            Image scaledOverlay = overlayIcon.getScaledInstance(12, 12, Image.SCALE_SMOOTH);
-            // Use an ImageIcon to ensure the scaled image is fully loaded before merging
-            Image finalOverlay = new ImageIcon(scaledOverlay).getImage();
-            // Adjust position for the new size (16-12=4) to keep it in the bottom-right
-            Image mergedIcon = ImageUtilities.mergeImages(folderIcon, finalOverlay, 4, 4);
+            Image mergedIcon = createMergedIcon(FOLDER_ICON_PATH);
             log.log(Level.INFO, "EXIT getIcon() -> {0}", mergedIcon);
             return mergedIcon;
         }
@@ -74,34 +69,66 @@ public class AnahataNodeFactory implements NodeFactory {
         @Override
         public Image getOpenedIcon(int type) {
             log.log(Level.INFO, "ENTRY getOpenedIcon(type={0})", type);
-            Image folderIcon = ImageUtilities.loadImage(FOLDER_OPEN_ICON_PATH);
+            Image mergedIcon = createMergedIcon(FOLDER_OPEN_ICON_PATH);
+            log.log(Level.INFO, "EXIT getOpenedIcon() -> {0}", mergedIcon);
+            return mergedIcon;
+        }
+
+        private Image createMergedIcon(String baseIconPath) {
+            Image folderIcon = ImageUtilities.loadImage(baseIconPath);
             Image overlayIcon = ImageUtilities.loadImage(OVERLAY_ICON_PATH);
             // Scale the overlay icon to 12x12
             Image scaledOverlay = overlayIcon.getScaledInstance(12, 12, Image.SCALE_SMOOTH);
             // Use an ImageIcon to ensure the scaled image is fully loaded before merging
             Image finalOverlay = new ImageIcon(scaledOverlay).getImage();
             // Adjust position for the new size (16-12=4) to keep it in the bottom-right
-            Image mergedIcon = ImageUtilities.mergeImages(folderIcon, finalOverlay, 4, 4);
-            log.log(Level.INFO, "EXIT getOpenedIcon() -> {0}", mergedIcon);
-            return mergedIcon;
+            return ImageUtilities.mergeImages(folderIcon, finalOverlay, 4, 4);
         }
     }
 
     private static class AnahataFileChildren extends Children.Keys<FileObject> {
 
         private final Project project;
+        private final FileObject projectDir;
+        private final FileChangeAdapter fileChangeListener;
 
         public AnahataFileChildren(Project project) {
             super();
             log.log(Level.INFO, "ENTRY AnahataFileChildren(project={0})", project.getProjectDirectory().getName());
             this.project = project;
+            this.projectDir = project.getProjectDirectory();
+            this.fileChangeListener = new FileChangeAdapter() {
+                @Override
+                public void fileDataCreated(FileEvent fe) {
+                    refreshKeys();
+                }
+
+                @Override
+                public void fileDeleted(FileEvent fe) {
+                    refreshKeys();
+                }
+            };
             log.info("EXIT AnahataFileChildren()");
         }
 
         @Override
         protected void addNotify() {
             log.info("ENTRY addNotify()");
-            FileObject projectDir = project.getProjectDirectory();
+            projectDir.addFileChangeListener(fileChangeListener);
+            refreshKeys();
+            log.info("EXIT addNotify()");
+        }
+
+        @Override
+        protected void removeNotify() {
+            log.info("ENTRY removeNotify()");
+            projectDir.removeFileChangeListener(fileChangeListener);
+            setKeys(new ArrayList<>());
+            log.info("EXIT removeNotify()");
+        }
+
+        private void refreshKeys() {
+            log.info("ENTRY refreshKeys()");
             List<FileObject> mdFiles = new ArrayList<>();
             boolean anahataMdExists = false;
             for (FileObject child : projectDir.getChildren()) {
@@ -118,8 +145,8 @@ public class AnahataNodeFactory implements NodeFactory {
                     log.info("anahata.md not found, creating it.");
                     FileObject newFile = projectDir.createData("anahata.md");
                     try (Writer writer = new OutputStreamWriter(newFile.getOutputStream())) {
-                        writer.write("# Anahata Project Notes\n\nThis file is for Anahata AI Assistant's notes regarding the '" 
-                                     + project.getProjectDirectory().getName() + "' project.\n");
+                        writer.write("# Anahata Project Notes\n\nThis file is for Anahata AI Assistant's notes regarding the '"
+                                + project.getProjectDirectory().getName() + "' project.\n");
                     }
                     mdFiles.add(newFile);
                 } catch (IOException e) {
@@ -128,7 +155,7 @@ public class AnahataNodeFactory implements NodeFactory {
             }
 
             setKeys(mdFiles);
-            log.log(Level.INFO, "EXIT addNotify() - Set keys: {0}", mdFiles);
+            log.log(Level.INFO, "EXIT refreshKeys() - Set keys: {0}", mdFiles);
         }
 
         @Override
