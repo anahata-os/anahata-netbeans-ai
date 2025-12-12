@@ -24,7 +24,7 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
 
     @Override
     public String getDisplayName() {
-        return "NetBeans Core";
+        return "Core NetBeans Instructions";
     }
 
     @Override
