@@ -2,11 +2,9 @@ package uno.anahata.ai.nb.tools;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.JEditorPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
@@ -46,7 +44,7 @@ public class Output {
             @AIToolParam("A regex pattern to filter lines. Can be null or empty to return all lines.") String grepPattern,
             @AIToolParam("The maximum length of each line. Lines longer than this will be truncated. Set to 0 for no limit.") int maxLineLength) throws Exception {
 
-        final AtomicReference<String> result = new AtomicReference<>();
+        final StringBuilder resultBuilder = new StringBuilder();
         SwingUtilities.invokeAndWait(() -> {
             Optional<JTextComponent> targetComp = findTextComponentById(id);
             if (targetComp.isPresent()) {
@@ -57,37 +55,38 @@ public class Output {
                     linesShown,
                     processResult.getMatchingLineCount(),
                     processResult.getTotalLineCount());
-                result.set(header + "\n\n" + processResult.getText());
+                resultBuilder.append(header).append("\n\n").append(processResult.getText());
             } else {
-                result.set("Error: No tab found with ID '" + id + "'");
+                resultBuilder.append("Error: No tab found with ID '").append(id).append("'");
             }
         });
-        return result.get();
+        return resultBuilder.toString();
     }
 
+    /**
+     * Recursively finds all OutputTab components and extracts their information.
+     * This method MUST be called from the Event Dispatch Thread (EDT).
+     * @param component The current component to inspect.
+     * @param tabInfos The list to populate with OutputTabInfo objects.
+     */
     private static void findOutputTabsRecursive(Component component, List<OutputTabInfo> tabInfos) {
         if (component == null) {
             return;
         }
 
         if (component.getClass().getName().equals(OUTPUT_TAB_CLASS)) {
-            try {
-                // Use getName() as getDisplayName() is not reliably accessible via reflection
-                Method getNameMethod = component.getClass().getMethod("getName");
-                String title = (String) getNameMethod.invoke(component);
-                
-                boolean isRunning = title != null && title.contains("<b>"); // Heuristic for running status
+            // Use getName() directly
+            String title = component.getName();
+            
+            boolean isRunning = title != null && title.contains("<b>"); // Heuristic for running status
 
-                findTextComponent(component).ifPresent(textComponent -> {
-                    String text = textComponent.getText();
-                    int contentSize = text.length();
-                    int totalLines = text.lines().toArray().length;
-                    long id = System.identityHashCode(textComponent);
-                    tabInfos.add(new OutputTabInfo(id, title, contentSize, totalLines, isRunning));
-                });
-            } catch (Exception e) {
-                log.error("Error processing OutputTab component: {}", component.getClass().getName(), e);
-            }
+            findTextComponent(component).ifPresent(textComponent -> {
+                String text = textComponent.getText();
+                int contentSize = text.length();
+                int totalLines = text.lines().toArray().length;
+                long id = System.identityHashCode(textComponent);
+                tabInfos.add(new OutputTabInfo(id, title, contentSize, totalLines, isRunning));
+            });
         }
 
         if (component instanceof Container) {
@@ -98,6 +97,12 @@ public class Output {
         }
     }
 
+    /**
+     * Recursively finds the first JTextComponent within a given component hierarchy.
+     * This method MUST be called from the Event Dispatch Thread (EDT).
+     * @param comp The component to start the search from.
+     * @return An Optional containing the JTextComponent if found, or empty otherwise.
+     */
     private static Optional<JTextComponent> findTextComponent(Component comp) {
         if (comp instanceof JEditorPane) {
             return Optional.of((JEditorPane) comp);
@@ -113,35 +118,44 @@ public class Output {
         return Optional.empty();
     }
 
+    /**
+     * Finds a JTextComponent by its System.identityHashCode. This method MUST be called from the Event Dispatch Thread (EDT).
+     * @param id The System.identityHashCode of the target JTextComponent.
+     * @return An Optional containing the JTextComponent if found, or empty otherwise.
+     */
     private static Optional<JTextComponent> findTextComponentById(long id) {
-        final List<JTextComponent> foundTextComponents = new ArrayList<>();
-        SwingUtilities.invokeLater(() -> {
-            TopComponent outputTC = WindowManager.getDefault().findTopComponent("output");
-            if (outputTC != null) {
-                findTextComponentRecursive(outputTC, id, foundTextComponents);
-            }
-        });
-        return foundTextComponents.stream().findFirst();
+        TopComponent outputTC = WindowManager.getDefault().findTopComponent("output");
+        if (outputTC != null) {
+            return findTextComponentRecursive(outputTC, id);
+        }
+        return Optional.empty();
     }
     
-    private static void findTextComponentRecursive(Component component, long targetId, List<JTextComponent> foundList) {
+    /**
+     * Recursively searches for a JTextComponent with a matching System.identityHashCode.
+     * This method MUST be called from the Event Dispatch Thread (EDT).
+     * @param component The current component to inspect.
+     * @param targetId The System.identityHashCode of the target JTextComponent.
+     * @return An Optional containing the JTextComponent if found, or empty otherwise.
+     */
+    private static Optional<JTextComponent> findTextComponentRecursive(Component component, long targetId) {
         if (component == null) {
-            return;
+            return Optional.empty();
         }
         
         if (component instanceof JTextComponent && System.identityHashCode(component) == targetId) {
-            foundList.add((JTextComponent) component);
-            return; 
+            return Optional.of((JTextComponent) component);
         }
 
         if (component instanceof Container) {
             Container container = (Container) component;
             for (Component child : container.getComponents()) {
-                findTextComponentRecursive(child, targetId, foundList);
-                if (!foundList.isEmpty()) { // Stop early if found
-                    return;
+                Optional<JTextComponent> found = findTextComponentRecursive(child, targetId);
+                if (found.isPresent()) {
+                    return found;
                 }
             }
         }
+        return Optional.empty();
     }
 }
