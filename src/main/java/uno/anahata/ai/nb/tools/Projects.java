@@ -56,10 +56,15 @@ public class Projects {
         return projectIds;
     }
 
-    @AIToolMethod("Opens a project in the IDE, waiting for the asynchronous open operation to complete.")
-    public static String openProject(@AIToolParam("The project id (folder name) to open.") String projectId) throws Exception {
-        String projectsFolderPath = System.getProperty("user.home") + File.separator + "NetBeansProjects";
-        File projectDir = new File(projectsFolderPath, projectId);
+    @AIToolMethod("Opens a project in the IDE, waiting for the asynchronous open operation to complete. The projectId can be either the folder name (relative to NetBeansProjects) or an absolute path.")
+    public static String openProject(@AIToolParam("The project id (folder name) or absolute path to open.") String projectId) throws Exception {
+        File projectDir;
+        if (new File(projectId).isAbsolute()) {
+            projectDir = new File(projectId);
+        } else {
+            String projectsFolderPath = System.getProperty("user.home") + File.separator + "NetBeansProjects";
+            projectDir = new File(projectsFolderPath, projectId);
+        }
 
         if (!projectDir.exists() || !projectDir.isDirectory()) {
             return "Error: Project directory not found at " + projectDir.getAbsolutePath();
