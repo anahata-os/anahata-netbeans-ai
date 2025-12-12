@@ -2,6 +2,7 @@ package uno.anahata.ai.nb.tools;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,28 +17,23 @@ import uno.anahata.ai.tools.AIToolParam;
 import uno.anahata.ai.nb.model.ide.OutputTabInfo;
 import uno.anahata.ai.tools.spi.pojos.TextChunk;
 import uno.anahata.ai.internal.TextUtils;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Output {
-    private static final String TABBED_PANE_CLASS = "org.netbeans.core.windows.view.ui.CloseButtonTabbedPane";
     private static final String OUTPUT_TAB_CLASS = "org.netbeans.core.output2.OutputTab";
 
     @AIToolMethod("Lists all tabs in the NetBeans Output Window, returning their display names, total lines, and running status.")
     public static List<OutputTabInfo> listOutputTabs() throws Exception {
         final List<OutputTabInfo> tabInfos = new ArrayList<>();
         SwingUtilities.invokeAndWait(() -> {
-            findOutputTabbedPane().ifPresent(tabbedPane -> {
-                findComponents(tabbedPane, OUTPUT_TAB_CLASS).forEach(tabComponent -> {
-                    String title = tabComponent.getName();
-                    boolean isRunning = title != null && title.contains("<b>");
-                    findTextComponent(tabComponent).ifPresent(textComponent -> {
-                        String text = textComponent.getText();
-                        int contentSize = text.length();
-                        int totalLines = text.lines().toArray().length;
-                        long id = System.identityHashCode(textComponent);
-                        tabInfos.add(new OutputTabInfo(id, title, contentSize, totalLines, isRunning));
-                    });
-                });
-            });
+            TopComponent outputTC = WindowManager.getDefault().findTopComponent("output");
+            if (outputTC == null) {
+                log.warn("Output TopComponent not found.");
+                return;
+            }
+
+            findOutputTabsRecursive(outputTC, tabInfos);
         });
         return tabInfos;
     }
@@ -69,12 +65,37 @@ public class Output {
         return result.get();
     }
 
-    private static Optional<Container> findOutputTabbedPane() {
-        TopComponent outputTC = WindowManager.getDefault().findTopComponent("output");
-        if (outputTC == null) {
-            return Optional.empty();
+    private static void findOutputTabsRecursive(Component component, List<OutputTabInfo> tabInfos) {
+        if (component == null) {
+            return;
         }
-        return findComponents(outputTC, TABBED_PANE_CLASS).stream().map(c -> (Container)c).findFirst();
+
+        if (component.getClass().getName().equals(OUTPUT_TAB_CLASS)) {
+            try {
+                // Use getName() as getDisplayName() is not reliably accessible via reflection
+                Method getNameMethod = component.getClass().getMethod("getName");
+                String title = (String) getNameMethod.invoke(component);
+                
+                boolean isRunning = title != null && title.contains("<b>"); // Heuristic for running status
+
+                findTextComponent(component).ifPresent(textComponent -> {
+                    String text = textComponent.getText();
+                    int contentSize = text.length();
+                    int totalLines = text.lines().toArray().length;
+                    long id = System.identityHashCode(textComponent);
+                    tabInfos.add(new OutputTabInfo(id, title, contentSize, totalLines, isRunning));
+                });
+            } catch (Exception e) {
+                log.error("Error processing OutputTab component: {}", component.getClass().getName(), e);
+            }
+        }
+
+        if (component instanceof Container) {
+            Container container = (Container) component;
+            for (Component child : container.getComponents()) {
+                findOutputTabsRecursive(child, tabInfos);
+            }
+        }
     }
 
     private static Optional<JTextComponent> findTextComponent(Component comp) {
@@ -93,27 +114,34 @@ public class Output {
     }
 
     private static Optional<JTextComponent> findTextComponentById(long id) {
-        return findOutputTabbedPane()
-                .flatMap(tabbedPane -> {
-                    return findComponents(tabbedPane, OUTPUT_TAB_CLASS).stream()
-                        .map(Output::findTextComponent)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .filter(textComp -> System.identityHashCode(textComp) == id)
-                        .findFirst();
-                });
-    }
-
-    private static List<Component> findComponents(Container start, String className) {
-        List<Component> result = new ArrayList<>();
-        for (Component comp : start.getComponents()) {
-            if (comp.getClass().getName().equals(className)) {
-                result.add(comp);
+        final List<JTextComponent> foundTextComponents = new ArrayList<>();
+        SwingUtilities.invokeLater(() -> {
+            TopComponent outputTC = WindowManager.getDefault().findTopComponent("output");
+            if (outputTC != null) {
+                findTextComponentRecursive(outputTC, id, foundTextComponents);
             }
-            if (comp instanceof Container) {
-                result.addAll(findComponents((Container) comp, className));
+        });
+        return foundTextComponents.stream().findFirst();
+    }
+    
+    private static void findTextComponentRecursive(Component component, long targetId, List<JTextComponent> foundList) {
+        if (component == null) {
+            return;
+        }
+        
+        if (component instanceof JTextComponent && System.identityHashCode(component) == targetId) {
+            foundList.add((JTextComponent) component);
+            return; 
+        }
+
+        if (component instanceof Container) {
+            Container container = (Container) component;
+            for (Component child : container.getComponents()) {
+                findTextComponentRecursive(child, targetId, foundList);
+                if (!foundList.isEmpty()) { // Stop early if found
+                    return;
+                }
             }
         }
-        return result;
     }
 }
