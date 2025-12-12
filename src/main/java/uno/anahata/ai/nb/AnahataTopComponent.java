@@ -22,7 +22,7 @@ import org.openide.windows.WindowManager;
 import uno.anahata.ai.Chat;
 import uno.anahata.ai.status.ChatStatus;
 import uno.anahata.ai.status.StatusListener;
-import uno.anahata.ai.swing.AnahataPanel;
+import uno.anahata.ai.swing.ChatPanel;
 import uno.anahata.ai.nb.mime.NetBeansEditorKitProvider;
 
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenAnahataAction")
@@ -38,7 +38,7 @@ public final class AnahataTopComponent extends TopComponent implements Externali
 
     private static final List<AnahataTopComponent> ALL_SESSIONS = new CopyOnWriteArrayList<>();
 
-    private transient AnahataPanel geminiPanel;
+    private transient ChatPanel chatPanel;
     private transient boolean isInitialized = false;
 
     @Getter
@@ -80,11 +80,11 @@ public final class AnahataTopComponent extends TopComponent implements Externali
             setName(sessionUuid);
             setLayout(new BorderLayout());
             NetBeansChatConfig config = new NetBeansChatConfig(sessionUuid);
-            geminiPanel = new AnahataPanel(new NetBeansEditorKitProvider());
-            geminiPanel.init(config);
-            geminiPanel.initComponents();
-            add(geminiPanel, BorderLayout.CENTER); // Add the panel only once.
-            geminiPanel.checkAutobackupOrStartupContent();
+            chatPanel = new ChatPanel(new NetBeansEditorKitProvider());
+            chatPanel.init(config);
+            chatPanel.initComponents();
+            add(chatPanel, BorderLayout.CENTER); // Add the panel only once.
+            chatPanel.checkAutobackupOrStartupContent();
             getChat().addStatusListener(this);
             statusChanged(getChat().getStatusManager().getCurrentStatus(), null);
             isInitialized = true;
@@ -104,14 +104,14 @@ public final class AnahataTopComponent extends TopComponent implements Externali
      */
     public void performShutdown() {
         logId("performShutdown()");
-        if (geminiPanel != null && geminiPanel.getChat() != null) {
+        if (chatPanel != null && chatPanel.getChat() != null) {
             getChat().removeStatusListener(this);
-            geminiPanel.getChat().shutdown();
+            chatPanel.getChat().shutdown();
         }
     }
 
     public Chat getChat() {
-        return geminiPanel != null ? geminiPanel.getChat() : null;
+        return chatPanel != null ? chatPanel.getChat() : null;
     }
 
     public NetBeansChatConfig getNetBeansChatConfig() {

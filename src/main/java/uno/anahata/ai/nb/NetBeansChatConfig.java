@@ -38,6 +38,9 @@ public class NetBeansChatConfig extends SwingChatConfig {
 
     public NetBeansChatConfig(String sessionUuid) {
         this.sessionUuid = sessionUuid;
+        providers.add(new CoreNetBeansInstructionsProvider());
+        providers.add(new OpenTopComponentsContextProvider());
+        providers.add(new OutputTabsContextProvider());
     }
 
     @Override
@@ -69,18 +72,13 @@ public class NetBeansChatConfig extends SwingChatConfig {
     @Override
     public List<ContextProvider> getContextProviders() {
         // 1. Start with the base list of providers from the superclass.
-        List<ContextProvider> allProviders = super.getContextProviders();
+        List<ContextProvider> allProviders = new ArrayList(providers);
 
         // 2. Synchronize our project-specific providers with the current IDE state.
         synchronizeProjectProviders();
 
         // 3. Add all currently active project providers to the final list.
         projectProviders.values().forEach(allProviders::addAll);
-
-        // 4. Add the non-project-specific NetBeans providers.
-        allProviders.add(new CoreNetBeansInstructionsProvider());
-        allProviders.add(new OpenTopComponentsContextProvider());
-        allProviders.add(new OutputTabsContextProvider());
 
         return allProviders;
     }
