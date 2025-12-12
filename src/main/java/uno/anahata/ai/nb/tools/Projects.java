@@ -1,6 +1,5 @@
 package uno.anahata.ai.nb.tools;
 
-import uno.anahata.ai.nb.tools.deprecated.MavenPom;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -42,6 +41,7 @@ import uno.anahata.ai.nb.model.maven.DependencyScope;
 import uno.anahata.ai.nb.model.projects.ProjectFile;
 import uno.anahata.ai.nb.model.projects.ProjectOverview;
 import uno.anahata.ai.nb.model.projects.SourceFolder;
+import uno.anahata.ai.nb.tools.deprecated.MavenTools;
 
 @Slf4j
 public class Projects {
@@ -171,7 +171,7 @@ public class Projects {
         NbMavenProject nbMavenProject = target.getLookup().lookup(NbMavenProject.class);
         if (nbMavenProject != null) {
             // Get declared dependencies
-            List<DependencyScope> temp = MavenPom.getDeclaredDependencies(projectId);
+            List<DependencyScope> temp = MavenTools.getDeclaredDependencies(projectId);
             if (temp != null && !temp.isEmpty()) {
                 mavenDeclaredDependencies = temp;
             }
