@@ -38,7 +38,7 @@ public class NetBeansChatConfig extends SwingChatConfig {
 
     public NetBeansChatConfig(String sessionUuid) {
         this.sessionUuid = sessionUuid;
-        providers.add(new CoreNetBeansInstructionsProvider());
+        providers.add(0, new CoreNetBeansInstructionsProvider());
         providers.add(new OpenTopComponentsContextProvider());
         providers.add(new OutputTabsContextProvider());
     }
