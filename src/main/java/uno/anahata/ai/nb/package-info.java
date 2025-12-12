@@ -5,7 +5,7 @@
  * <h2>Key Components:</h2>
  * <ul>
  *   <li>{@link uno.anahata.ai.nb.AnahataTopComponent}: The primary UI component, a NetBeans
- *       {@code TopComponent}, that hosts the main chat interface (`AnahataPanel`). It manages
+ *       {@code TopComponent}, that hosts the main chat interface (`ChatPanel`). It manages
  *       the lifecycle of a single chat session within the IDE.</li>
  *
  *   <li>{@link uno.anahata.ai.nb.LiveSessionsTopComponent}: A session manager window that
