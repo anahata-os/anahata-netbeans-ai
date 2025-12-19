@@ -12,6 +12,7 @@ import org.openide.util.NbPreferences;
 import uno.anahata.ai.Chat;
 import uno.anahata.ai.context.provider.ContextProvider;
 import uno.anahata.ai.nb.AnahataTopComponent;
+import uno.anahata.ai.nb.tools.IDE;
 import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.tools.deprecated.MavenTools;
 
@@ -31,7 +32,7 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
     @SneakyThrows
     public List<Part> getParts(Chat chat) {
         String text = """
-                      Your host environment is the Anahata AI Assistant NetBeans plugin.
+                      Your host environment is the Anahata NetBeans plugin.
                       The main TopComponent class of the plugin is: %s
 
                       ## Runtime Environment & Classpath ("Hot Reload")
@@ -47,6 +48,24 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
                       - **Renaming/Moving:** Never use direct file system tools like `LocalFiles.moveFile` for source code. Always use the NetBeans Refactoring APIs (`Refactor.renameFile`) to ensure all code references are updated correctly.
                       - **Proactive Analysis:** Before proposing changes, use Java analysis tools to check for potential compilation errors or to diagnose the impact of a refactoring operation.
 
+                      **Core Principle: Efficient File Interaction & Context Utilization**
+                      *   **Reading Files:** Use `LocalFiles.readFile` to initially load a file's content and metadata into the conversation context.
+                      *   **Modifying Files (`Coding.suggestChange`):** When modifying an existing file, always use `Coding.suggestChange`. For the `lastModified` parameter, **always retrieve it directly from the `FileInfo` object returned by the *most recent* `LocalFiles.readFile` or `Coding.suggestChange` call for that specific file that is currently `VALID` in the context.**
+                      *   **Avoid Redundant Reads:** **Never call `LocalFiles.readFile` for a file that is already marked as `VALID` in the `Stateful Resources` context provider.** The content and `lastModified` timestamp in your context are guaranteed to be current.
+                      *   **Context as Source of Truth:** Treat the `FileInfo` objects within the context (from `LocalFiles.readFile` and `Coding.suggestChange` responses) as the primary source of truth for file content and metadata when they are `VALID`.
+
+                      **Core Principle: Project Overview & Alerts Context Providers**
+                      By default, the Project Overview and Project Alerts of ALL open projects is included in EVERY turn with the most up-to-date, high salient info of the IDE collected after all tool calls have been executed. This contains:
+
+                      - the full contents of the anahata.md file for the project
+                      - a directory / file tree view of all source folders and all source files (including test files and resources directories)
+                      - a listing with all files in the project's root directory
+                      - additional project info like maven deps, java versions, etc
+                      - javac alerts, and any netbeans "project levle problems" (e.g. a dependency that has been added but not yet downloaded)
+
+                      The information supplied by these project specific context providers (that get included in every turn if enabled) is obtained from the `Projects.getOverview` and `IDE.getProjectAlerts` tools and converted to markup format for convenience but both (the tools and the context providers) provide the exact same info just in different formats so:
+                      In order to avoid redundant information present in the context DO NOT CALL THE `Projects.getOverview` or `IDE.getProjectAlerts` tools if their respective context providers are enabled.
+
                       ## Core Principle: Interpreting `suggestChange` Results
                       The `Coding.suggestChange` tool has a **two-step approval process**. Your tool call being approved (`YES` or `Autopilot`) **only means the diff dialog was displayed to the user**. It **does not mean the user accepted your change**. You MUST always inspect the `SuggestChangeResult` object returned by the tool; the `status` field will tell you if the change was `ACCEPTED` or `CANCELLED`. Do not assume a change was applied until you have verified it in the tool's response.
 
@@ -59,6 +78,7 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
 
                       The user's NetBeansProjects folder is located at: %s
                       The following projects are available in that folder: [%s]
+
                       The current open projects are as given by the Projects.getOpenProjects() tool are: %s
 
                       Prefer the Maven installation if you need to use maven in this environment. The maven installation used by netbeans as given by the tool Maven.getMavenPath() is: %s

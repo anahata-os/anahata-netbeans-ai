@@ -519,6 +519,7 @@ public class MavenTools {
         if (Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
             return false;
         }
+        LOG.log(Level.INFO, "Attempting to resolve artifact: {0}:{1}:{2}:{3}:{4}", new Object[]{art.getGroupId(), art.getArtifactId(), art.getVersion(), art.getType(), classifier});
         try {
             Artifact artifactToResolve = embedder.createArtifactWithClassifier(
                     art.getGroupId(),
@@ -533,12 +534,16 @@ public class MavenTools {
                     project.getMavenProject().getRemoteArtifactRepositories(),
                     embedder.getLocalRepository()
             );
+            LOG.log(Level.INFO, "Successfully resolved artifact: {0}", artifactToResolve.getId());
             return true;
         } catch (ArtifactNotFoundException e) {
+            LOG.log(Level.WARNING, "Artifact not found: {0}", e.getMessage());
             errors.append(classifier).append(" not found for ").append(art.getId()).append("\n");
         } catch (ArtifactResolutionException e) {
+            LOG.log(Level.WARNING, "Artifact resolution error: {0}", e.getMessage());
             errors.append("Could not resolve ").append(classifier).append(" for ").append(art.getId()).append(": ").append(e.getMessage()).append("\n");
         } catch (Exception e) {
+            LOG.log(Level.SEVERE, "Unexpected error during artifact resolution", e);
             errors.append("An unexpected error occurred for ").append(art.getId()).append(" while downloading ").append(classifier).append(": ").append(e.getMessage()).append("\n");
         }
         return false;
