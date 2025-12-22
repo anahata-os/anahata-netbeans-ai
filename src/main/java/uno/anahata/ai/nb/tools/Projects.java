@@ -141,6 +141,7 @@ public class Projects {
         List<String> rootFolderNames = new ArrayList<>();
         List<SourceFolder> sourceFolders = new ArrayList<>();
         String anahataMdContent = null;
+        Long anahataMdLastModified = null;
 
         for (FileObject child : root.getChildren()) {
             if (child.isFolder()) {
@@ -150,6 +151,7 @@ public class Projects {
                 rootFiles.add(pf);
                 if (pf.getName().equals("anahata.md")) {
                     anahataMdContent = Files.readString(FileUtil.toFile(child).toPath());
+                    anahataMdLastModified = pf.getLastModified();
                 }
             }
         }
@@ -198,6 +200,7 @@ public class Projects {
                 root.getPath(),
                 packaging,
                 anahataMdContent,
+                anahataMdLastModified,
                 rootFiles,
                 rootFolderNames,
                 sourceFolders,

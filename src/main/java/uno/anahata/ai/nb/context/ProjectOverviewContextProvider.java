@@ -58,9 +58,10 @@ public class ProjectOverviewContextProvider extends ContextProvider {
             StringBuilder sb = new StringBuilder();
             if (!Strings.isNullOrEmpty(overview.getAnahataMdContent())) {
                 sb.append("\n## Project-Specific Instructions (contents of " + projectId + File.separatorChar + "anahata.md)\n");
+                sb.append("  - Last Modified on Disk: ").append(overview.getAnahataMdLastModified()).append("\n");
                 sb.append("  This file contains critical, high-level instructions for this specific project. You must read and adhere to these instructions before modifying any code.\n"
-                        + "  The contents of this file are always provided to you on every turn so no need to read via explicit tool calling, just use the 'last Modified on disk' from your stateful resources overview to update it with suggestChange");
-                sb.append(overview.getAnahataMdContent()).append("\n");
+                        + "  The contents of this file are always provided to you on every turn so no need to read via explicit tool calling, just use the 'Last Modified on Disk' timestamp provided above to update it with suggestChange if needed.");
+                sb.append("\n\n").append(overview.getAnahataMdContent()).append("\n");
             }
             parts.add(Part.fromText(sb.toString()));
             parts.add(Part.fromText(generateCompactOverview(overview)));
