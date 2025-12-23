@@ -30,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import lombok.extern.slf4j.Slf4j;
 import org.netbeans.api.diff.Diff;
 import org.netbeans.api.diff.DiffView;
 import org.netbeans.api.diff.StreamSource;
@@ -49,6 +50,7 @@ import uno.anahata.ai.nb.model.coding.SuggestChangeResult;
 /**
  * Tools related to coding tasks and modifying source files.
  */
+@Slf4j
 public class Coding {
 
     @AIToolMethod(value = "Proposes a change to a an existing file by showing the netbeans modal diff dialog to the user."
@@ -149,6 +151,7 @@ public class Coding {
 
                     acceptButton.addActionListener(e -> {
                         try {
+                            log.info("User pressed accept and save");
                             String finalText = new String(proposedFileObject.asBytes());
                             
                             // Use NetBeans API to write the file
@@ -167,12 +170,13 @@ public class Coding {
                                 writer.write(finalText);
                             }
 
-                            //File updatedFile = new File(filePath);
-                            FileInfo fileInfo = LocalFiles.readFile(filePath);
+                            // Use the new FileInfo(path) constructor to avoid the redundant read check in LocalFiles.readFile
+                            FileInfo fileInfo = new FileInfo(filePath);
                             String userComment = commentTextArea.getText();
                             resultHolder.set(new SuggestChangeResult(SuggestChangeResult.Status.ACCEPTED, userComment, fileInfo));
 
-                        } catch (IOException ex) {
+                        } catch (Exception ex) {
+                            log.error("Error during suggestChange acceptance", ex);
                             exceptionHolder.set(ex);
                         } finally {
                             dialog.dispose();
@@ -217,8 +221,12 @@ public class Coding {
         if (exceptionHolder.get() != null) {
             throw exceptionHolder.get();
         }
-
-        return resultHolder.get();
+        
+        SuggestChangeResult ret = resultHolder.get();
+        
+        log.info("Collected suggestChange result " + ret);
+        
+        return ret;
     }
 
     private static void findAndSetEditable(Component comp, int targetIndex, boolean editable) {
