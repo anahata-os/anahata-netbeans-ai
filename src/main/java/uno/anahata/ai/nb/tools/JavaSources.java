@@ -49,9 +49,9 @@ public class JavaSources {
     )
     public static SourceFileInfo getSource(
             @AIToolParam("The fully qualified name of the class.") String fqn,
-            @AIToolParam("The starting line number (1-based) for pagination. If null, the entire file is returned.") Integer startLine,
-            @AIToolParam("The number of lines to return. If null, all lines from the start line are returned.") Integer lineCount,
-            @AIToolParam("The maximum length of each line. Lines longer than this will be truncated. Set to 0 or null for no limit.") Integer maxLineLength) throws Exception {
+            @AIToolParam(value = "The starting line number (1-based). Use null for the beginning of the file.", required = false) Integer startLine,
+            @AIToolParam(value = "The number of lines to return. Use null for all lines.", required = false) Integer lineCount,
+            @AIToolParam(value = "The maximum length of each line. Use null for no limit.", required = false) Integer maxLineLength) throws Exception {
 
         // Step 1: Find .class file
         String classAsPath = fqn.replace('.', '/') + ".class";
@@ -109,7 +109,9 @@ public class JavaSources {
         // Step 6: Handle pagination
         TextChunk chunk = null;
         String fullContent = null;
-        boolean isPaginated = (startLine != null && startLine > 1) || lineCount != null || (maxLineLength != null && maxLineLength > 0);
+        boolean isPaginated = (startLine != null && startLine > 1) 
+                || (lineCount != null && lineCount > 0) 
+                || (maxLineLength != null && maxLineLength > 0);
 
         if (isPaginated) {
             chunk = TextUtils.processText(content, startLine != null ? startLine - 1 : 0, lineCount, null, maxLineLength);
