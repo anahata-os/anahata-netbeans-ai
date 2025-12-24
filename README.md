@@ -74,6 +74,18 @@ Experience the power of Anahata directly within your NetBeans IDE. *Click on any
   </tr>
   <tr>
     <td align="center">
+      <a href="docs/screenshots/project_and_javac_alerts.png"><img src="docs/screenshots/project_and_javac_alerts.png" width="100%" alt="Project & Javac Alerts"></a><br>
+      <b>Project & Javac Alerts</b><br>
+      Real-time diagnostics and project-level problem reporting.
+    </td>
+    <td align="center">
+      <a href="docs/screenshots/refactor_rename.png"><img src="docs/screenshots/refactor_rename.png" width="100%" alt="Safe Refactoring"></a><br>
+      <b>Safe Refactoring</b><br>
+      Programmatic renaming of classes and members using NetBeans APIs.
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
       <a href="docs/screenshots/context-heatmap-pie.png"><img src="docs/screenshots/context-heatmap-pie.png" width="100%" alt="Token Usage at a Glance"></a><br>
       <b>Token Usage at a Glance</b><br>
       Gain full transparency into your context window with visual breakdowns.
