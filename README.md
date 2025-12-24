@@ -51,24 +51,64 @@ Anahata can execute high-level IDE actions and perform deep code analysis with a
 
 The Anahata NetBeans Plugin is the premier showcase for **`anahata-ai`**, our powerful, enterprise-ready framework for integrating multi-modal AI into any Java application.
 
-The framework features a robust tool-calling engine, embeddable Swing UI components, and a flexible configuration system. It is available under a dual-license model (AGPLv3 for open-source, commercial for proprietary use).
+The framework features a robust tool-calling engine, embeddable Swing UI components, and a flexible configuration system. It is available under a dual-license model (Apache License, Version 2.0 for open-source, commercial for proprietary use).
 ---
 
-## ❤️ Support Operation "Deep Strike"
+## 📸 Visual Showcase: Anahata in Action
 
-This is an ambitious, community-driven project. If you believe in the mission of creating a truly intelligent development partner, please consider supporting our work.
+Experience the power of Anahata directly within your NetBeans IDE:
 
--   **[Sponsor us on GitHub](https://github.com/sponsors/anahata-os)**
--   **Crypto Donations:** *(Address to be added)*
+![Anahata Chat Panel](docs/screenshots/Screenshot from 2025-12-24 12-19-47.png)
+*The Anahata Chat Panel: Your AI development partner, seamlessly integrated into NetBeans.*
+
+![Context Heatmap](docs/screenshots/Screenshot from 2025-12-24 12-18-37.png)
+*Gain full transparency with the Context Heatmap, visualizing the AI's real-time understanding.*
+
+![Tool Execution & Code Suggestion](docs/screenshots/Screenshot from 2025-12-24 12-17-53.png)
+*Watch Anahata execute IDE actions and propose intelligent code changes.*
+
+![Refactoring in Action](docs/screenshots/Screenshot from 2025-12-24 12-17-44.png)
+*Anahata leverages NetBeans' refactoring capabilities for safe and efficient code modifications.*
+
+![Project Awareness](docs/screenshots/Screenshot from 2025-12-24 12-17-37.png)
+*Anahata understands your entire project structure, from files to dependencies.*
+
+![IDE Overview](docs/screenshots/Screenshot from 2025-12-24 12-10-51.png)
+*A broader view of the NetBeans IDE with Anahata integrated.*
+
+![Project Structure](docs/screenshots/Screenshot from 2025-12-24 12-13-58.png)
+*Anahata's deep understanding of your project's file and folder structure.*
+
+![Output Window Interaction](docs/screenshots/Screenshot from 2025-12-24 12-16-13.png)
+*Interacting with the NetBeans Output Window through Anahata.*
+
+![Chat Panel in Action](docs/screenshots/Screenshot from 2025-12-24 12-27-36.png)
+*A more recent view of the Anahata Chat Panel during an active session.*
+
+![Anahata Session Management](docs/screenshots/Screenshot from 2025-12-24 12-11-22.png)
+*Manage your AI sessions with ease, saving and loading conversations.*
+
+![Anahata Context Providers](docs/screenshots/Screenshot from 2025-12-24 12-16-40.png)
+*Explore the real-time data feeding Anahata's intelligence via Context Providers.*
+
+![Anahata API Keys](docs/screenshots/Screenshot from 2025-12-24 12-37-36.png)
+*Configure your API keys securely within the Anahata plugin.*
+
+## ❤️ Support Operation "Deep Strike" & Commercial Licensing
+
+This ambitious, community-driven project thrives on your support. If you believe in the mission of creating a truly intelligent development partner, please consider contributing.
+
+-   **[Sponsor us on GitHub](https://github.com/sponsors/anahata-os)**: The most direct way to fuel our continued innovation.
+-   **Commercial Licensing & Support Tiers**: For proprietary, closed-source applications, a commercial license is required. This allows you to integrate Anahata's power without open-sourcing your own code. Learn more about our unique **[Anahata Software License (ASL) V108, "The Immutable Edict" Edition](ASL_108.md)**, including donation options and support tiers, by clicking [here](ASL_108.md).
 
 ## Getting Started
 
-*(Instructions to be added once the plugin is packaged for distribution).*
+*(Instructions to be added once the plugin is packaged for distribution on the NetBeans Plugin Portal under the **Anahata** category).*
 
-## Licensing: Open Core Model
+## Licensing
 
-This project is available under a dual-license model to accommodate both open-source and commercial needs.
+This project operates under a dual-license model:
 
--   **Open Source:** For use in open-source projects, the software is licensed under the **[Anahata Software License (ASL) V108, "The Immutable Edict" Edition](LICENSE)**.
+-   **Open Source:** For use in open-source projects, the software is licensed under the **[Apache License, Version 2.0](LICENSE)**.
 
--   **Commercial Use:** For use in proprietary, closed-source applications, a **commercial license is required**. Please see the [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) file for more information.
+-   **Commercial Use:** For proprietary, closed-source applications, a commercial license is required. Please refer to the **[Anahata Software License (ASL) V108, "The Immutable Edict" Edition](ASL_108.md)** for comprehensive details on commercial licensing, support tiers, and how your contributions directly empower our development. This is where the fun begins!
