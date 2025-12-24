@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="src/main/resources/icons/anahata_357x353.png" width="200" alt="Anahata Logo">
+  <img src="src/main/resources/icons/anahata_logo_horizontal.png" width="800" alt="Anahata Logo">
 </p>
 
-# 🚀 Anahata NetBeans Plugin: Code from the Heart
+# 🚀 Code from the Heart
 
 [![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
 
