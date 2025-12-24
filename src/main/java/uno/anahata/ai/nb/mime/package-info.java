@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package provides a sophisticated bridge between the Anahata AI framework's
  * Swing UI and the Apache NetBeans editor infrastructure. Its primary purpose is

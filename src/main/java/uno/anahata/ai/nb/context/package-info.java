@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package contains the sensory system of the Anahata AI Assistant for NetBeans.
  * It is composed of {@link uno.anahata.ai.context.provider.ContextProvider}

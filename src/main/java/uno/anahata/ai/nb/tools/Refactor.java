@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 package uno.anahata.ai.nb.tools;
 
 import java.io.File;

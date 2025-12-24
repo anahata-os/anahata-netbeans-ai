@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package contains utility classes that provide helper functions and bridge
  * various NetBeans Platform APIs for use by the plugin's core components and tools.

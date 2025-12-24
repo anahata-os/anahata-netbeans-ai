@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package serves as the data backbone for the Anahata AI Assistant plugin.
  * It contains all the Data Transfer Objects (DTOs) and Plain Old Java Objects (POJOs)

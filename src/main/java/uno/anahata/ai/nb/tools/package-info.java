@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package contains the heart of the Anahata NetBeans AI Plugin's unique
  * capabilities. It provides a suite of AI-callable tools that grant the model

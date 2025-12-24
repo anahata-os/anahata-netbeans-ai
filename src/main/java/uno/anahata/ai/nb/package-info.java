@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package contains the core integration classes that bridge the Anahata AI framework
  * with the Apache NetBeans IDE. It is the central hub of the `anahata-netbeans-ai` plugin.

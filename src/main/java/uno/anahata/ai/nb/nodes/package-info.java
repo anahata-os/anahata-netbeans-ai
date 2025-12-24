@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package provides the visual integration between the Anahata AI's context and
  * the NetBeans project tree UI, primarily using the NetBeans Nodes API. Its purpose

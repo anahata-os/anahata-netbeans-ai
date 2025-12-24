@@ -1,3 +1,4 @@
+/* Licensed under the Apache License, Version 2.0 */
 /**
  * This package contains experimental, non-functional placeholder classes for a
  * future integration with a custom, native NetBeans Version Control System (VCS).
