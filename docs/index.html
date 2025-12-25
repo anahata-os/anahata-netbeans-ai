@@ -3,44 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anahata AI Assistant for NetBeans</title>
+    <title>Anahata AI | Code from the Heart</title>
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <img src="assets/anahata_logo_transparent.png.png" alt="Anahata Logo" class="logo">
-            <p>Your AI partner for Apache NetBeans, powered by Google Gemini.</p>
+    <nav>
+        <div class="container nav-container">
+            <img src="assets/logo-horizontal.png" alt="Anahata Logo" class="nav-logo">
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <a href="#features">Features</a>
+                <a href="#showcase">Showcase</a>
+                <a href="#safety">Safety</a>
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://github.com/sponsors/anahata-os" class="btn-sponsor">Sponsor <i class="fas fa-heart"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <h1 class="fade-in">Code from the Heart</h1>
+            <p class="tagline fade-in-delay">The first AI Assistant that doesn't just talk about code—it lives inside your IDE's heartbeat.</p>
+            <div class="hero-cta fade-in-delay-2">
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai/releases" class="btn-primary">Download Plugin</a>
+                <a href="#features" class="btn-secondary">Explore Features</a>
+            </div>
         </div>
     </header>
+
     <main>
-        <div class="container">
-            <section id="download">
-                <h2>Get Started</h2>
-                <p>Download the plugin from the official Apache NetBeans Plugin Portal and start your journey towards a more intuitive coding experience.</p>
-                <a href="#" class="button">Download Now (Coming Soon)</a>
-            </section>
-            <section id="features">
-                <h2>Code From The Heart</h2>
-                <ul>
-                    <li><strong>Deep IDE Integration:</strong> Works with your projects, files, and IDE actions.</li>
-                    <li><strong>Full Project Awareness:</strong> Understands your entire codebase for context-aware suggestions.</li>
-                    <li><strong>Local Tool Access:</strong> Securely uses your local file system, shell, and build tools.</li>
-                    <li><strong>Multimodal:</strong> Understands text, code, and screenshots for seamless interaction.</li>
-                </ul>
-            </section>
-            <section id="support">
-                <h2>Support The Vision</h2>
-                <p>The Anahata AI Assistant is a labor of love. If you find it valuable, please consider supporting its continued development and helping us grow the community.</p>
-                <a href="https://github.com/sponsors/anahata-os" class="button" target="_blank">Sponsor on GitHub</a>
-            </section>
-        </div>
+        <section id="tech-stack" class="container" style="padding: 4rem 0; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div class="tech-grid" style="display: flex; justify-content: center; gap: 5rem; align-items: center; flex-wrap: wrap;">
+                <div class="tech-item" title="Apache NetBeans">
+                    <i class="devicon-netbeans-plain colored" style="font-size: 3.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">NetBeans</span>
+                </div>
+                <div class="tech-item" title="Java">
+                    <i class="devicon-java-plain colored" style="font-size: 4rem; margin-bottom: 0.5rem; display: block;"></i>
+                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">Java</span>
+                </div>
+                <div class="tech-item" title="Apache Maven">
+                    <i class="devicon-maven-plain colored" style="font-size: 3.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">Maven</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="philosophy" class="container">
+            <div class="section-header">
+                <h2>The "Flywheel" Philosophy</h2>
+                <p>Anahata isn't just a plugin; it's an ecosystem designed to accelerate your development cycle.</p>
+            </div>
+            <div class="philosophy-grid">
+                <div class="philosophy-image">
+                    <img src="screenshots/deep-strike-splash.png" alt="Deep Strike Philosophy">
+                </div>
+                <div class="philosophy-content">
+                    <div class="comparison-card">
+                        <h3>The Anahata Advantage</h3>
+                        <ul>
+                            <li><i class="fas fa-sync-alt"></i> <strong>The Flywheel:</strong> Open-source innovation driving commercial-grade reliability.</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Deep Integration:</strong> Real-time IDE awareness and "Hot Reload" capabilities.</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Actionable Intelligence:</strong> Runs builds, refactors, and manages Maven dependencies.</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Context Mastery:</strong> Sees your projects, files, and diagnostics as a single entity.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="dark-bg">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Intelligent Context Mastery</h2>
+                    <p>Anahata manages its own memory so you don't have to.</p>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <img src="screenshots/context-heatmap-pie.png" alt="Token Usage">
+                        <h3>Visual Transparency</h3>
+                        <p>Full breakdown of token usage at a glance.</p>
+                    </div>
+                    <div class="feature-card">
+                        <img src="screenshots/context-providers-tab.png" alt="Context Providers">
+                        <h3>Dynamic Awareness</h3>
+                        <p>Pulls context from Maven, Git, and the Editor.</p>
+                    </div>
+                    <div class="feature-card">
+                        <img src="screenshots/prune-as-you-go.png" alt="PAYG Algorithm">
+                        <h3>Prune-As-You-Go</h3>
+                        <p>The AI keeps its workspace tidy and efficient.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="showcase" class="container">
+            <div class="section-header">
+                <h2>Deep Java Intelligence</h2>
+                <p>Syntactically and semantically perfect assistance.</p>
+            </div>
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <img src="screenshots/tools-tab-javasources.png" alt="Source Mastery">
+                    <div class="showcase-overlay">
+                        <h3>Source-Level Mastery</h3>
+                    </div>
+                </div>
+                <div class="showcase-item">
+                    <img src="screenshots/live-sessions-maven-integration.png" alt="Maven Integration">
+                    <div class="showcase-overlay">
+                        <h3>Maven Ecosystem</h3>
+                    </div>
+                </div>
+                <div class="showcase-item">
+                    <img src="screenshots/refactor_rename.png" alt="Safe Refactoring">
+                    <div class="showcase-overlay">
+                        <h3>Safe Refactoring</h3>
+                    </div>
+                </div>
+                <div class="showcase-item">
+                    <img src="screenshots/suggest-change-confirmation.png" alt="Interactive Proposals">
+                    <div class="showcase-overlay">
+                        <h3>Interactive Proposals</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="safety" class="dark-bg">
+            <div class="container">
+                <div class="section-header">
+                    <h2>The Butler Principle</h2>
+                    <p>Safety, transparency, and explicit consent are at our core.</p>
+                </div>
+                <div class="safety-grid">
+                    <div class="safety-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Explicit Consent</h3>
+                        <p>Anahata never acts without your approval. Every tool call is visible and confirmable.</p>
+                    </div>
+                    <div class="safety-card">
+                        <i class="fas fa-eye"></i>
+                        <h3>Full Transparency</h3>
+                        <p>See exactly what context is being sent and how tokens are being used.</p>
+                    </div>
+                    <div class="safety-card">
+                        <i class="fas fa-lock"></i>
+                        <h3>Local Execution</h3>
+                        <p>Your code stays in your environment. Tools run locally on your JVM.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="creative" class="container">
+            <div class="section-header">
+                <h2>The Creative Suite</h2>
+                <p>Flow state engineering for the modern developer.</p>
+            </div>
+            <div class="creative-hero">
+                <img src="screenshots/dj-dashboard.png" alt="DJ Engine">
+                <div class="creative-content">
+                    <h3>The Anahata DJ Engine</h3>
+                    <p>Elevate your coding sessions with AI-generated MIDI music, voice recording, and integrated radio.</p>
+                    <div class="prompt-hints" style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px dashed var(--primary-light);">
+                        <p style="font-weight: 600; margin-bottom: 1rem; color: var(--primary-light);"><i class="fas fa-terminal"></i> Try these commands:</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                            <code style="background: #000; padding: 4px 10px; border-radius: 4px; font-family: 'Fira Code', monospace; border: 1px solid var(--primary-light);">"Let's DJ"</code>
+                            <code style="background: #000; padding: 4px 10px; border-radius: 4px; font-family: 'Fira Code', monospace; border: 1px solid var(--primary-light);">"Play some psytrance"</code>
+                            <code style="background: #000; padding: 4px 10px; border-radius: 4px; font-family: 'Fira Code', monospace; border: 1px solid var(--primary-light);">"Start a random radio station"</code>
+                            <code style="background: #000; padding: 4px 10px; border-radius: 4px; font-family: 'Fira Code', monospace; border: 1px solid var(--primary-light);">"Stop the music"</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="barca">
+            <div class="container barca-flex">
+                <div class="barca-content">
+                    <h2 style="color: var(--barca-gold);">Visca el Barça! <i class="fas fa-trophy"></i></h2>
+                    <h3 style="color: #fff;">Més que un bot</h3>
+                    <p style="color: #eee;">Anahata isn't just a tool; it's a personality. Proudly supporting the best club in the world.</p>
+                    
+                    <div class="sextete-box" style="margin-top: 3rem;">
+                        <h4 style="color: var(--barca-gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.2rem;">The Sextete of Productivity</h4>
+                        <ul class="sextete-list">
+                            <li class="sextete-item"><i class="fas fa-brain"></i> Context Awareness</li>
+                            <li class="sextete-item"><i class="fas fa-code"></i> Java Intelligence</li>
+                            <li class="sextete-item"><i class="fas fa-box-open"></i> Maven Mastery</li>
+                            <li class="sextete-item"><i class="fas fa-magic"></i> Safe Refactoring</li>
+                            <li class="sextete-item"><i class="fas fa-music"></i> Creative Flow</li>
+                            <li class="sextete-item"><i class="fas fa-user-shield"></i> Explicit Consent</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="margin-top: 2.5rem; font-style: italic; color: #ddd; font-size: 1.1rem;">"Entertain yourself while you watch your Anahata agent make you win your own <strong>'Sextete'</strong> of productivity."</p>
+                </div>
+                <img src="screenshots/visca-el-barca.png" alt="FC Barcelona" class="barca-logo">
+            </div>
+        </section>
     </main>
+
+    <button id="back-to-top" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+
     <footer>
-        <div class="container">
-            <p>&copy; 2025 Anahata. All Rights Reserved.</p>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <img src="assets/logo-horizontal.png" alt="Anahata Logo">
+                <p>Built with passion for the Java community.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Community</h4>
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai/issues">Issues</a>
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai/discussions">Discussions</a>
+                <a href="https://github.com/sponsors/anahata-os">Sponsor</a>
+            </div>
+            <div class="footer-legal">
+                <h4>Legal</h4>
+                <a href="ASL_108.html">ASL V108 (The Immutable Edict)</a>
+                <a href="LICENSE.html">Apache License 2.0</a>
+                <p>&copy; 2025 Anahata. All Rights Reserved.</p>
+            </div>
         </div>
     </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Back to Top Button
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        };
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>
