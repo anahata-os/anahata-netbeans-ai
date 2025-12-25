@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>28.0.0</version>
     <packaging>nbm</packaging>
-    <name>Anahata NetBeans AI Plugin</name>
+    <name>Anahata</name>
     <description>Elevate your coding experience with an AI partner that understands your workflow. 
         Anahata provides deep IDE integration, enabling intuitive interaction with your projects, code, and development environment. 
-        It's more than a toolit's a harmonious extension of your creative process, designed to bring flow and intelligence to your work.</description>
+        It's more than a tool; it's a harmonious extension of your creative process, designed to bring flow and intelligence to your work.</description>
     <organization>
         <name>Anahata</name>
         <url>http://anahata.uno</url>
@@ -87,12 +87,6 @@
                     <groupId>com.formdev</groupId>
                     <artifactId>flatlaf</artifactId>
                 </exclusion>
-                <!--
-        <exclusion>
-            <groupId>org.jspecify</groupId>
-            <artifactId>jspecify</artifactId>
-        </exclusion>
-                -->
             </exclusions>
         </dependency>
         
@@ -280,7 +274,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>RELEASE270</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -305,7 +299,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
-            <version>RELEASE270</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -320,7 +314,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
-            <version>RELEASE270</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -375,7 +369,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE270</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -385,12 +379,12 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-ui</artifactId>
-            <version>RELEASE270</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE270</version>
+            <version>${netbeans.version}</version>
         </dependency>
         
         <!-- NetBeans Modules -->
@@ -433,9 +427,6 @@
             <artifactId>org-netbeans-libs-javacapi</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <!--
-                <dependency><groupId>org.netbeans.api</groupId><artifactId>org-netbeans-libs-flexmark</artifactId><version>${netbeans.version}</version></dependency>
-        -->
         
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -482,10 +473,6 @@
                             <type>impl</type>
                             <id>org.netbeans.api:org-netbeans-modules-java-sourceui</id>
                         </dependency>
-                        <!--
-                        <dependency><type>impl</type><id>org.netbeans.api:org-netbeans-modules-java-sourceui</id></dependency>
-                        <dependency><type>impl</type><id>org.netbeans.api:org-netbeans-libs-flexmark</id></dependency>
-                        -->
                         <dependency>
                             <type>impl</type>
                             <id>org.netbeans.api:org-netbeans-modules-java-project</id>

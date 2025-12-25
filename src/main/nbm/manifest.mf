@@ -1,5 +1,7 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Install: uno/anahata/ai/nb/AnahataInstaller.class
-OpenIDE-Module-Display-Category: Anahata
-OpenIDE-Module-Display-Class: AI
+OpenIDE-Module-Name: Anahata
+OpenIDE-Module-Display-Category: AI
+OpenIDE-Module-Localizing-Bundle: uno/anahata/nb/ai/Bundle.properties
+OpenIDE-Module-Icon: icons/anahata_32.png
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
