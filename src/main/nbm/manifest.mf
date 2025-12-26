@@ -1,6 +1,8 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Install: uno/anahata/ai/nb/AnahataInstaller.class
 OpenIDE-Module-Name: Anahata
+OpenIDE-Module-Author: Anahata
+OpenIDE-Module-Homepage: https://anahata.uno
 OpenIDE-Module-Display-Category: AI
 OpenIDE-Module-Localizing-Bundle: uno/anahata/nb/ai/Bundle.properties
 OpenIDE-Module-Icon: icons/anahata_32.png

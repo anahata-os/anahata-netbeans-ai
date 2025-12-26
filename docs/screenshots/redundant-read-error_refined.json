@@ -1,0 +1,6 @@
+{
+  "original": "redundant-read-error.png",
+  "comment": "Readundant tool call detection and failure tracking",
+  "scale": 1.00,
+  "crop": {"x": 0, "y": 17, "w": 841, "h": 561}
+}

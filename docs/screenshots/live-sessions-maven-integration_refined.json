@@ -1,0 +1,6 @@
+{
+  "original": "live-sessions-maven-integration.png",
+  "comment": "Watch the LLM manage integrate with the netbeans maven module to run maven goals on your output tabs",
+  "scale": 1.00,
+  "crop": {"x": 555, "y": 128, "w": 1088, "h": 681}
+}

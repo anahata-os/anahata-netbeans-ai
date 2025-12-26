@@ -1,0 +1,6 @@
+{
+  "original": "context-heatmap-detailed.png",
+  "comment": "context window explorer",
+  "scale": 1.00,
+  "crop": {"x": 28, "y": 115, "w": 914, "h": 626}
+}

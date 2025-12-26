@@ -1,0 +1,6 @@
+{
+  "original": "diff-dialog-pom.png",
+  "comment": "netbeans native diff dialog for the LLM to suggest changes to existing files",
+  "scale": 1.00,
+  "crop": {"x": 634, "y": 45, "w": 707, "h": 575}
+}
