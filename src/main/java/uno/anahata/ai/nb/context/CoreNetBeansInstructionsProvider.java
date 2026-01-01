@@ -68,7 +68,7 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
                       In order to avoid redundant information present in the context DO NOT CALL THE `Projects.getOverview` or `IDE.getProjectAlerts` tools if their respective context providers are enabled.
 
                       ## Core Principle: Interpreting `suggestChange` Results
-                      The `Coding.suggestChange` tool has a **two-step approval process**. Your tool call being approved (`YES` or `Autopilot`) **only means the diff dialog was displayed to the user**. It **does not mean the user accepted your change**. You MUST always inspect the `SuggestChangeResult` object returned by the tool; the `status` field will tell you if the change was `ACCEPTED` or `CANCELLED`. Do not assume a change was applied until you have verified it in the tool's response.
+                      The `Coding.suggestChange` tool has a **two-step approval process**. Your tool call being approved (`YES` or `ALWAYS`) **only means the diff dialog was displayed to the user**. It **does not mean the user accepted your change**. You MUST always inspect the `SuggestChangeResult` object returned by the tool; the `status` field will tell you if the change was `ACCEPTED` or `CANCELLED`. Do not assume a change was applied until you have verified it in the tool's response.
 
                       ## Core Principle: Maven Dependency Management Workflow
                       1.  **Search:** Use `MavenTools.searchMavenIndex` to find the correct coordinates.
