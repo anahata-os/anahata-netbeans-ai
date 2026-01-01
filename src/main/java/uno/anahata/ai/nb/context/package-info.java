@@ -12,7 +12,7 @@
  *       as the location of project folders and core principles for interacting with
  *       the IDE's APIs.</li>
  *
- *   <li>{@link uno.anahata.ai.nb.context.IdeAlertsContextProvider}: Provides a
+ *   <li>{@link uno.anahata.ai.nb.context.ProjectAlertsContextProvider}: Provides a
  *       real-time feed of all compilation errors and warnings detected by the IDE's
  *       live parser across all open projects. This is a critical sense that allows
  *       the AI to be "aware" of code health.</li>

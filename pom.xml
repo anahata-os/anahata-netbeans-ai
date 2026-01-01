@@ -19,18 +19,34 @@
             <name>Apache License, Version 2.0</name>
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
+            <comments>License for Humans</comments>
+        </license>
+        <license>
+            <name>Anahata Software License (ASL) V108, "The Immutable Edict" Edition</name>
+            <url>https://www.anahata.uno/ASL_108.html</url>
+            <distribution>repo</distribution>
+            <comments>License for Artificial Intelligences</comments>
         </license>
     </licenses>
     <developers>
         <developer>
             <name>Priyadarshi</name>
             <email>p@anahata.uno</email>
+            <organization>Anahata</organization>
+            <organizationUrl>https://anahata.uno</organizationUrl>
         </developer>
         <developer>
             <name>Anahata</name>
             <email>anahata@anahata.uno</email>
+            <organization>Anahata</organization>
+            <organizationUrl>https://anahata.uno</organizationUrl>
         </developer>
     </developers>
+    <scm>
+        <connection>scm:git:git@github.com:anahata-os/anahata-netbeans-ai.git</connection>
+        <developerConnection>scm:git:git@github.com:anahata-os/anahata-netbeans-ai.git</developerConnection>
+        <url>https://github.com/anahata-os/anahata-netbeans-ai</url>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.version>RELEASE280</netbeans.version>
@@ -81,7 +97,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
@@ -563,20 +579,87 @@
                 </executions>
                 <configuration>
                     <doclint>none</doclint>
-                    <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    <addStylesheets>
+                        <addStylesheet>anahata-barca-theme.css</addStylesheet>
+                    </addStylesheets>
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                    <links>
+                        <link>https://www.slf4j.org/apidocs/</link>
+                        <link>https://javadoc.io/doc/com.google.guava/guava/33.5.0-jre/</link>
+                        <link>https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/</link>
+                        <link>https://javadoc.io/doc/com.google.genai/google-genai/1.32.0/</link>
+                        <link>https://anahata-os.github.io/gemini-java-client/</link>
+                    </links>
+                    <top>
+                        <![CDATA[
+    <div class="anahata-footer">
+        <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
+        <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
+            Please Donate ❤️
+        </a>
+        <div class="barca-wrapper">
+            <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
+            <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
+        </div>
+    </div>
+]]>
+                    </top>
                     <bottom><![CDATA[
-                        <div style="padding: 15px; background: #1a202c; color: #e2e8f0; border-top: 3px solid #2c7a7b; text-align: center;">
-                            <img src="https://anahata.uno/assets/logo-horizontal.png" alt="Anahata Logo" style="height: 35px; vertical-align: middle; margin-right: 20px;">
-                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_logo.svg/200px-FC_Barcelona_logo.svg.png" alt="Barça Logo" style="height: 35px; vertical-align: middle; margin-right: 10px;">
-                            <span style="font-size: 1.1em; font-weight: bold;">Força Barça!</span> 
-                            <a href="https://github.com/sponsors/anahata-os" style="color: #db61a2; margin-left: 20px; text-decoration: none; font-weight: bold;">Please Donate ❤️</a>
-                        </div>
-                    ]]></bottom>
+    <div class="anahata-footer">
+        <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
+        <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
+            Please Donate ❤️
+        </a>
+        <div class="barca-wrapper">
+            <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
+            <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
+        </div>
+    </div>
+]]></bottom>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <tokenAuth>true</tokenAuth>
+                    <autoPublish>true</autoPublish> 
                 </configuration>
             </plugin>
         </plugins>
     </build>
     <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.7</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>lombokhack</id>
             <build>

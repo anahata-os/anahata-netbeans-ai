@@ -23,8 +23,8 @@
  *       innovative session handoff mechanism that preserves chat windows across plugin
  *       reloads.</li>
  *
- *   <li>{@link uno.anahata.ai.nb.AddProjectAction} and {@link uno.anahata.ai.nb.ShowDefaultCompilerClassPathAction}:
- *       Example actions that demonstrate how to integrate AI functionality into the NetBeans
+ *   <li>{@link uno.anahata.ai.nb.ShowDefaultCompilerClassPathAction}:
+ *       An example action that demonstrates how to integrate AI functionality into the NetBeans
  *       menus and UI.</li>
  * </ul>
  *

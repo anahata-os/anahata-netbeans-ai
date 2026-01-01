@@ -5,6 +5,8 @@
 # 🚀 Code from the Heart
 
 [![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
+[![Javadoc](https://img.shields.io/badge/Javadoc-Reference-blue)](https://anahata-os.github.io/anahata-netbeans-ai/)
+[![Deploy Javadoc](https://github.com/anahata-os/anahata-netbeans-ai/actions/workflows/javadoc.yml/badge.svg)](https://anahata-os.github.io/anahata-netbeans-ai/)
 
 **Stop accepting "almost right." Demand an AI that truly understands your workspace.**
 
