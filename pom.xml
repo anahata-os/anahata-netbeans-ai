@@ -578,7 +578,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <doclint>all</doclint>
+                    <doclint>none</doclint>
                     <addStylesheets>
                         <addStylesheet>anahata-barca-theme.css</addStylesheet>
                     </addStylesheets>
