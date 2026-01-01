@@ -1,0 +1,47 @@
+name: Deploy to Central
+
+on:
+  # Trigger on push to main (usually for Snapshots)
+  push:
+    branches: [ "main" ]
+  # Trigger when a Release is published in GitHub UI
+  release:
+    types: [ published ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25 & Maven
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin' # Eclipse Temurin is a standard, reliable distribution
+          cache: 'maven'
+          # AUTO-CONFIGURATION:
+          # This creates a settings.xml with the <server> id "central"
+          # and imports your GPG key into the runner's keyring.
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Build & Deploy
+        env:
+          # Map the secrets to environment variables for setup-java to use
+          MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          # Also pass the passphrase for the Maven GPG Plugin to read
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          # -P release activates your profile (if you have one)
+          # -DskipTests speeds up the deploy (assuming tests run in a separate PR workflow)
+          mvn deploy -DskipTests -P release
