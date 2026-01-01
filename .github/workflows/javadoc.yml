@@ -2,7 +2,7 @@ name: Deploy Javadoc
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 permissions:
   contents: write # Required to push to the main branch
