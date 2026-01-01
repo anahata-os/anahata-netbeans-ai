@@ -30,6 +30,10 @@ public class JavaMemberSearch {
     private final JavaType type;
     private final List<JavaMember> members;
 
+    /**
+     * Constructs a new JavaMemberSearch and performs the search for members of the given JavaType.
+     * @param javaType the type to search members for.
+     */
     @SneakyThrows
     public JavaMemberSearch(JavaType javaType) {
         this.type = javaType;

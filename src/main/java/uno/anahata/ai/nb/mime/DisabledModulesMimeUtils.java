@@ -21,6 +21,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import uno.anahata.ai.nb.util.NetBeansModuleUtils;
 
+/**
+ * Utility class for extracting MIME type information from disabled NetBeans modules.
+ * This is used to identify potential language support that is currently inactive.
+ */
 public final class DisabledModulesMimeUtils {
 
     private static final Logger logger = Logger.getLogger(DisabledModulesMimeUtils.class.getName());
@@ -29,11 +33,31 @@ public final class DisabledModulesMimeUtils {
         // Utility class
     }
 
+    /**
+     * Represents information about a MIME type found in a module.
+     */
     public static class MimeInfo {
+        /**
+         * The MIME type string (e.g., "text/x-java").
+         */
         public final String mimeType;
+        
+        /**
+         * The code name base of the module providing this MIME type.
+         */
         public final String moduleCodeName;
+        
+        /**
+         * Whether the module is currently enabled.
+         */
         public final boolean enabled;
 
+        /**
+         * Constructs a new MimeInfo.
+         * @param mime the MIME type.
+         * @param codeName the module code name.
+         * @param enabled whether the module is enabled.
+         */
         public MimeInfo(String mime, String codeName, boolean enabled) {
             this.mimeType = mime;
             this.moduleCodeName = codeName;
@@ -99,6 +123,11 @@ public final class DisabledModulesMimeUtils {
         return results;
     }
 
+    /**
+     * Extracts editor language paths (MIME types) from a layer.xml document.
+     * @param doc the XML document to parse.
+     * @return a list of extracted MIME types.
+     */
     public static List<String> extractEditorLanguagePaths(Document doc) {
         List<String> mimes = new ArrayList<>();
         NodeList files = doc.getElementsByTagName("file");

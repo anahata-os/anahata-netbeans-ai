@@ -14,12 +14,21 @@ import lombok.Data;
 @Schema(description = "Represents a paginated result set for the members of a Java type.")
 public class MemberSearchResultPage {
     
+    /**
+     * The starting index of the returned page (0-based).
+     */
     @Schema(description = "The starting index of the returned page (0-based).")
     private final int startIndex;
     
+    /**
+     * The total number of members found for the type.
+     */
     @Schema(description = "The total number of members found for the type.")
     private final int totalCount;
     
+    /**
+     * The list of MemberInfo objects for the current page.
+     */
     @Schema(description = "The list of MemberInfo objects for the current page.")
     private final List<MemberInfo> page;
 }

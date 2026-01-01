@@ -28,6 +28,12 @@ public class AnahataContextVCS extends VersioningSystem {
     private static final Logger LOG = Logger.getLogger(AnahataContextVCS.class.getName());
     private final VCSAnnotator annotator = new AnahataContextAnnotator();
 
+    /**
+     * Default constructor for the VCS system.
+     */
+    public AnahataContextVCS() {
+    }
+
     @Override
     public VCSAnnotator getVCSAnnotator() {
         return annotator;

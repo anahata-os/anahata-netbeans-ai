@@ -4,6 +4,9 @@ package uno.anahata.ai.nb.model.ide;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Represents a single diagnostic alert (error, warning, etc.) from the Java compiler.
+ */
 @Getter
 @AllArgsConstructor
 public class JavacAlert {

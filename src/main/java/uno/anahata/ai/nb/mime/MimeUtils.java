@@ -10,6 +10,9 @@ import java.util.Set;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
+/**
+ * Utility class for working with MIME types and file extensions in NetBeans.
+ */
 public final class MimeUtils {
 
     private MimeUtils() {

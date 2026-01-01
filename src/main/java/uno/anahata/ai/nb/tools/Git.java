@@ -13,6 +13,11 @@ import uno.anahata.ai.tools.AIToolMethod;
  */
 public class Git {
 
+    /**
+     * Opens the NetBeans Git Commit dialog. The dialog is context-aware and will automatically find all modified files in the currently open projects.
+     * @return a message indicating the result of the operation.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod(
         value = "Opens the NetBeans Git Commit dialog. The dialog is context-aware "
                 + "and will automatically find all modified files in the "

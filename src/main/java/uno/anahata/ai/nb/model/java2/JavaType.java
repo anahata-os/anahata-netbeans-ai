@@ -9,12 +9,20 @@ import org.netbeans.modules.java.source.ui.JavaTypeDescription;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.URLMapper;
 
+/**
+ * A lightweight, serializable "keychain" DTO that uniquely identifies a Java type.
+ * It holds an ElementHandle and a URL to the class file.
+ */
 @Getter
 public class JavaType {
 
     private final ElementHandle handle;
     private final URL url;
 
+    /**
+     * Constructs a new JavaType from a JavaTypeDescription.
+     * @param descriptor the type descriptor.
+     */
     public JavaType(JavaTypeDescription descriptor) {
         if (descriptor == null) {
             throw new IllegalArgumentException("TypeDescriptor cannot be null.");
@@ -27,6 +35,11 @@ public class JavaType {
         this.url = fo.toURL();
     }
 
+    /**
+     * Resolves the URL back to a FileObject representing the class file.
+     * @return the FileObject for the class file.
+     * @throws Exception if the URL cannot be resolved.
+     */
     public FileObject getClassFileObject() throws Exception {
         FileObject classFile = URLMapper.findFileObject(getUrl());
         if (classFile == null) {
@@ -35,6 +48,11 @@ public class JavaType {
         return classFile;
     }
 
+    /**
+     * Gets the source information for this type.
+     * @return a JavaTypeSource object.
+     * @throws Exception if the source cannot be found.
+     */
     public JavaTypeSource getSource() throws Exception {
         return new JavaTypeSource(this);
     }

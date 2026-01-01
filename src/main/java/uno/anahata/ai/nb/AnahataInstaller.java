@@ -18,11 +18,19 @@ import org.openide.windows.WindowManager;
 import uno.anahata.ai.AnahataConfig;
 import uno.anahata.ai.nb.util.NetBeansModuleUtils;
 
+/**
+ * The NetBeans module installer responsible for lifecycle management.
+ * It handles the initialization of the AI environment and the session handoff
+ * mechanism during plugin reloads.
+ */
 public class AnahataInstaller extends ModuleInstall {
 
     private static final Logger log = Logger.getLogger(AnahataInstaller.class.getName());
     private static final String HANDOFF_FILE_NAME = "reload-handoff.dat";
 
+    /**
+     * Default constructor for the installer.
+     */
     public AnahataInstaller() {
         logId("AnahataInstaller()");
     }

@@ -62,6 +62,16 @@ public class JavaDocs {
         }
     }
 
+    /**
+     * Gets the Javadoc comment for a specific type (class, interface, enum, inner class) from its source file.
+     * @param fqn The fully qualified name of the type.
+     * @param startIndex The starting line number (0-based) for pagination.
+     * @param pageSize The number of lines to return.
+     * @param grepPattern A regex pattern to filter lines.
+     * @param maxLineLength The maximum length of each line.
+     * @return a TextChunk containing the processed Javadoc.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod(value = "Gets the Javadoc comment for a specific type (class, interface, enum, inner class) from its source file.", requiresApproval = false)
     public static TextChunk getJavadocForType(
             @AIToolParam("The fully qualified name of the type.") String fqn,
@@ -78,6 +88,17 @@ public class JavaDocs {
         return TextUtils.processText(rawJavadoc, startIndex, pageSize, grepPattern, maxLineLength);
     }
 
+    /**
+     * Gets the Javadoc comment for a specific method from its source file.
+     * @param fqn The fully qualified class name.
+     * @param methodName The name of the method.
+     * @param startIndex The starting line number (0-based) for pagination.
+     * @param pageSize The number of lines to return.
+     * @param grepPattern A regex pattern to filter lines.
+     * @param maxLineLength The maximum length of each line.
+     * @return a TextChunk containing the processed Javadoc.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod(value = "Gets the Javadoc comment for a specific method from its source file.", requiresApproval = false)
     public static TextChunk getJavadocForMethod(
             @AIToolParam("The fully qualified class name.") String fqn,

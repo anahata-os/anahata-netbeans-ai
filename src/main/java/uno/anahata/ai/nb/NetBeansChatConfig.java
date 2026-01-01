@@ -30,6 +30,10 @@ import uno.anahata.ai.nb.tools.deprecated.MavenTools;
 import uno.anahata.ai.nb.tools.java2.CodeModel;
 import uno.anahata.ai.swing.SwingChatConfig;
 
+/**
+ * NetBeans-specific implementation of SwingChatConfig.
+ * It manages the registration of IDE-specific tools and context providers.
+ */
 public class NetBeansChatConfig extends SwingChatConfig {
 
     private final String sessionUuid;
@@ -37,6 +41,10 @@ public class NetBeansChatConfig extends SwingChatConfig {
     // A map to hold and manage our dynamic project-specific providers.
     private final Map<String, List<ContextProvider>> projectProviders = new HashMap<>();
 
+    /**
+     * Constructs a new NetBeansChatConfig for the given session.
+     * @param sessionUuid the unique identifier for the chat session.
+     */
     public NetBeansChatConfig(String sessionUuid) {
         this.sessionUuid = sessionUuid;
         providers.add(0, new CoreNetBeansInstructionsProvider());

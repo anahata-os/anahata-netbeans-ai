@@ -23,6 +23,14 @@ import uno.anahata.ai.tools.AIToolParam;
  */
 public class JavaAnalysis {
 
+    /**
+     * Finds all method body usages of a given field within a specific Java class.
+     * @param filePath The absolute path to the Java source file.
+     * @param fqn The fully qualified name of the class to inspect.
+     * @param fieldName The name of the field to search for.
+     * @return a list of method names where the field is used.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Finds all method body usages of a given field within a specific Java class.")
     public static List<String> findFieldUsagesInClass(
             @AIToolParam("The absolute path to the Java source file.") String filePath,

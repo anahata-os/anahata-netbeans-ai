@@ -31,9 +31,21 @@ import uno.anahata.ai.tools.AIToolMethod;
 import uno.anahata.ai.tools.AIToolParam;
 import uno.anahata.ai.tools.spi.pojos.TextChunk;
 
+/**
+ * Provides tools for interacting with the NetBeans IDE, such as reading logs and scanning for project alerts.
+ */
 @Slf4j
 public class IDE {
 
+    /**
+     * Reads the NetBeans IDE's log file (messages.log) with optional filtering and pagination.
+     * @param grepPattern A regex pattern to filter log lines.
+     * @param startIndex The starting line number (0-based) for pagination.
+     * @param pageSize The number of lines to return.
+     * @param maxLineLength The maximum length of each line.
+     * @return a string containing the processed log content.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Reads the NetBeans IDE's log file (messages.log) with optional filtering and pagination.")
     public static String getLogs(
             @AIToolParam("A regex pattern to filter log lines. Can be null or empty to return all lines.") String grepPattern,
@@ -76,6 +88,12 @@ public class IDE {
         throw new IOException("Could not find a readable 'messages.log' file in the primary or fallback locations.");
     }
 
+    /**
+     * Performs a live scan of a specific project to find all high-level project problems and Java source file errors/warnings.
+     * @param projectId The ID of the project to scan.
+     * @return a ProjectDiagnostics object containing the found alerts.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Performs a live scan of a specific project to find all high-level project problems and Java source file errors/warnings.")
     public static ProjectDiagnostics getProjectAlerts(@AIToolParam("The ID of the project to scan.") String projectId) throws Exception {
         Project targetProject = Projects.findProject(projectId);

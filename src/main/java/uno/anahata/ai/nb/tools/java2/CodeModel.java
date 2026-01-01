@@ -30,8 +30,27 @@ import uno.anahata.ai.tools.AIToolMethod;
 import uno.anahata.ai.tools.AIToolParam;
 import uno.anahata.ai.tools.spi.pojos.FileInfo;
 
+/**
+ * Provides tools for interacting with the Java code model in NetBeans.
+ * This includes finding types, getting members, and retrieving source code.
+ */
 public class CodeModel {
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
+    private CodeModel() {
+    }
+
+    /**
+     * Finds multiple Java types matching a query and returns a paginated result of minimalist, machine-readable keys.
+     * @param query The search query for the types (e.g., simple name, FQN, wildcards).
+     * @param caseSensitive Whether the search should be case-sensitive.
+     * @param preferOpenProjects Whether to prioritize results from open projects.
+     * @param startIndex The starting index (0-based) for pagination.
+     * @param pageSize The maximum number of results to return per page.
+     * @return a paginated result of JavaType objects.
+     */
     @AIToolMethod("Finds multiple Java types matching a query and returns a paginated result of minimalist, machine-readable keys.")
     public static Page<JavaType> findTypes(
             @AIToolParam("The search query for the types (e.g., simple name, FQN, wildcards).") String query,
@@ -49,18 +68,37 @@ public class CodeModel {
         return new Page<>(allResults, start, size);
     }
 
+    /**
+     * Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow.
+     * @param javaType The minimalist keychain DTO from a findTypes call.
+     * @return the content of the source file.
+     * @throws Exception if the source cannot be retrieved.
+     */
     @AIToolMethod("Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow.")
     public static String getTypeSources(
             @AIToolParam("The minimalist keychain DTO from a findTypes call.") JavaType javaType) throws Exception {
         return javaType.getSource().getContent();
     }
     
+    /**
+     * Gets a list of all members (fields, constructors, methods) for a given type.
+     * @param javaType The keychain DTO for the type to inspect.
+     * @return a list of JavaMember objects.
+     * @throws Exception if the members cannot be retrieved.
+     */
     @AIToolMethod("Gets a list of all members (fields, constructors, methods) for a given type.")
     public static List<JavaMember> getMembers(
             @AIToolParam("The keychain DTO for the type to inspect.") JavaType javaType) throws Exception {
         return javaType.getMembers();
     }
 
+    /**
+     * Gets the source for a type using a specific project's classpath. This is the 'Ctrl+Click', context-aware, one-turn tool.
+     * @param typeName The simple or FQN of the type.
+     * @param projectDirectoryPath The absolute path of the project directory to use for context.
+     * @return a FileInfo object containing the source code.
+     * @throws Exception if the source cannot be found.
+     */
     @AIToolMethod("Gets the source for a type using a specific project's classpath. This is the 'Ctrl+Click', context-aware, one-turn tool.")
     public static FileInfo getSources(
             @AIToolParam("The simple or FQN of the type.") String typeName,

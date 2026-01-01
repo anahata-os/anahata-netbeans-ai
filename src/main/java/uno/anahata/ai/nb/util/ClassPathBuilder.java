@@ -26,6 +26,7 @@ import org.openide.util.Lookup;
 import uno.anahata.ai.tools.spi.RunningJVM;
 
 /**
+ * Utility class for building and managing classpaths within the NetBeans environment.
  * 
  * @author anahata
  */
@@ -33,7 +34,17 @@ public class ClassPathBuilder {
 
     private static final Logger logger = Logger.getLogger(ClassPathBuilder.class.getName());
 
-    
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
+    private ClassPathBuilder() {
+    }
+
+    /**
+     * Converts a set of File objects representing JARs or directories into a classpath string.
+     * @param classPath the set of files to include in the classpath.
+     * @return a string representation of the classpath, with entries separated by the system path separator.
+     */
     public static String filesToClassPathString(Set<File> classPath) {
         StringBuilder sb = new StringBuilder();
         for (File jarFile : classPath) {

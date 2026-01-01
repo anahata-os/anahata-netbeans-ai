@@ -7,7 +7,7 @@
  *
  * <h2>Core Tool Categories:</h2>
  * <ul>
- *   <li><b>Project & IDE Interaction:</b>
+ *   <li><b>Project &amp; IDE Interaction:</b>
  *     <ul>
  *       <li>{@link uno.anahata.ai.nb.tools.Projects}: Tools for discovering,
  *           querying, and getting detailed overviews of open NetBeans projects.</li>
@@ -21,7 +21,7 @@
  *     </ul>
  *   </li>
  *
- *   <li><b>Code Analysis & Manipulation:</b>
+ *   <li><b>Code Analysis &amp; Manipulation:</b>
  *     <ul>
  *       <li>{@link uno.anahata.ai.nb.tools.Coding}: Provides the critical
  *           {@code suggestChange} tool, which presents a modal diff view to the
@@ -41,9 +41,9 @@
  *     </ul>
  *   </li>
  *
- *   <li><b>Build & Execution:</b>
+ *   <li><b>Build &amp; Execution:</b>
  *     <ul>
- *       <li>{@link uno.anahata.ai.nb.tools.MavenTools}: A consolidated "super-tool"
+ *       <li>{@link uno.anahata.ai.nb.tools.deprecated.MavenTools}: A consolidated "super-tool"
  *           for all Maven-related operations, including searching for dependencies,
  *           modifying the {@code pom.xml}, and executing build goals. This class
  *           replaces the functionality of the now-deprecated {@code Maven},

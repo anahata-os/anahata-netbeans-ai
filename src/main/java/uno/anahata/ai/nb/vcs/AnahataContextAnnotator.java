@@ -27,6 +27,9 @@ public class AnahataContextAnnotator extends VCSAnnotator implements PropertyCha
     private static final String ANHATA_BADGE_PATH = "icons/anahata_16.png";
     private static final Image ANHATA_BADGE = ImageUtilities.loadImage(ANHATA_BADGE_PATH, true);
 
+    /**
+     * Default constructor for the annotator.
+     */
     public AnahataContextAnnotator() {
         log.info("AnahataContextAnnotator initialized.");
         // Listen for changes in the context so we can refresh the UI

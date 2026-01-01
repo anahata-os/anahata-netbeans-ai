@@ -7,16 +7,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import uno.anahata.ai.tools.spi.pojos.TextChunk;
 
+/**
+ * Represents the detailed result of a Maven build execution, including status, exit code, and captured output.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Represents the detailed result of a Maven build execution, including status, exit code, and captured output.")
 public class MavenBuildResult {
 
+    /**
+     * The final status of the Maven process.
+     */
     @Schema(description = "The final status of the Maven process (e.g., COMPLETED, TIMEOUT).")
     public enum ProcessStatus {
+        /** The process completed normally. */
         COMPLETED,
+        /** The process timed out. */
         TIMEOUT,
+        /** The process was interrupted. */
         INTERRUPTED
     }
 

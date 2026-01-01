@@ -37,6 +37,13 @@ public class JavaMember {
      */
     private final String details;
 
+    /**
+     * Constructs a new JavaMember.
+     * @param handle the element handle.
+     * @param name the member name.
+     * @param kind the member kind.
+     * @param details the member details.
+     */
     public JavaMember(ElementHandle<? extends Element> handle, String name, ElementKind kind, String details) {
         this.handle = handle;
         this.name = name;

@@ -29,6 +29,10 @@ import org.openide.windows.TopComponent;
 import uno.anahata.ai.status.ChatStatus;
 import uno.anahata.ai.swing.SwingChatConfig;
 
+/**
+ * A TopComponent that displays a list of all active Anahata AI sessions.
+ * It allows users to create new sessions, focus existing ones, or dispose of them.
+ */
 @TopComponent.Description(
         preferredID = "LiveSessionsTopComponent",
         iconBase = "icons/anahata_16.png",
@@ -49,6 +53,10 @@ public class LiveSessionsTopComponent extends TopComponent {
     private final JButton closeButton;
     private final JButton disposeButton;
 
+    /**
+     * Default constructor for LiveSessionsTopComponent.
+     * Initializes the UI components, toolbar, and table.
+     */
     public LiveSessionsTopComponent() {
         setName("Anahata Sessions");
         setToolTipText("Manage active Anahata AI sessions");

@@ -29,7 +29,9 @@ import uno.anahata.ai.internal.TextUtils;
  */
 public class JavaSources {
 
-    // Helper class to pass results internally
+    /**
+     * Helper class to pass results internally.
+     */
     private static class ClassSearchResult {
         public final FileObject classFile;
         public final ClassPath ownerCp;
@@ -42,6 +44,16 @@ public class JavaSources {
         }
     }
 
+    /**
+     * Gets rich, contextual information about a Java source file, including its origin (project, JAR, or JDK) and its content, with support for safe pagination.
+     * This is the primary tool for reading source code.
+     * @param fqn The fully qualified name of the class.
+     * @param startLine The starting line number (1-based).
+     * @param lineCount The number of lines to return.
+     * @param maxLineLength The maximum length of each line.
+     * @return a SourceFileInfo object containing the source code and metadata.
+     * @throws Exception if the source cannot be found or read.
+     */
     @AIToolMethod(
         value = "Gets rich, contextual information about a Java source file, including its origin (project, JAR, or JDK) and its content, with support for safe pagination. " +
                 "This is the primary tool for reading source code.",

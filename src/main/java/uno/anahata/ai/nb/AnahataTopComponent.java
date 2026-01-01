@@ -26,6 +26,10 @@ import uno.anahata.ai.status.StatusListener;
 import uno.anahata.ai.swing.ChatPanel;
 import uno.anahata.ai.nb.mime.NetBeansEditorKitProvider;
 
+/**
+ * The main TopComponent for the Anahata AI Assistant plugin.
+ * This component hosts the chat interface and manages the lifecycle of the AI session.
+ */
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.OpenAnahataAction")
 @ActionReference(path = "Menu/Window", position = 333)
 @TopComponent.Description(
@@ -46,6 +50,10 @@ public final class AnahataTopComponent extends TopComponent implements Externali
     @Setter
     private String sessionUuid;
 
+    /**
+     * Default constructor for AnahataTopComponent.
+     * Initializes the component and adds it to the list of active sessions.
+     */
     public AnahataTopComponent() {
         logId("AnahataTopComponent()");
         setName("Anahata");
@@ -53,10 +61,18 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         ALL_SESSIONS.add(this);
     }
 
+    /**
+     * Returns an unmodifiable list of all active AnahataTopComponent sessions.
+     * @return a list of active sessions.
+     */
     public static List<AnahataTopComponent> getAllSessions() {
         return Collections.unmodifiableList(ALL_SESSIONS);
     }
 
+    /**
+     * Disposes of a specific AnahataTopComponent session, closing its UI and shutting down its chat session.
+     * @param tc the TopComponent to dispose.
+     */
     public static void disposeSession(AnahataTopComponent tc) {
         if (tc != null) {
             tc.close(); // Ensure UI is closed first
@@ -65,6 +81,10 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         }
     }
 
+    /**
+     * Returns the unique ID of this TopComponent as registered in the WindowManager.
+     * @return the TopComponent ID.
+     */
     public String getTopComponentId() {
         return WindowManager.getDefault().findTopComponentID(this);
     }
@@ -111,10 +131,18 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         }
     }
 
+    /**
+     * Returns the Chat instance associated with this TopComponent.
+     * @return the Chat instance, or null if not initialized.
+     */
     public Chat getChat() {
         return chatPanel != null ? chatPanel.getChat() : null;
     }
 
+    /**
+     * Returns the NetBeans-specific chat configuration.
+     * @return the NetBeansChatConfig instance.
+     */
     public NetBeansChatConfig getNetBeansChatConfig() {
         return (NetBeansChatConfig) getChat().getConfig();
     }
@@ -138,6 +166,10 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         log.info(Thread.currentThread().getName() + " hashCode=" + System.identityHashCode(this) + " sessionUuid=" + id + ": " + mssg);
     }
 
+    /**
+     * Sets the session UUID for handoff between components.
+     * @param sessionUuid the UUID to set.
+     */
     public void setSessionUuidForHandoff(String sessionUuid) {
         this.sessionUuid = sessionUuid;
         log.info("Session UUID set for handoff: {}", sessionUuid);

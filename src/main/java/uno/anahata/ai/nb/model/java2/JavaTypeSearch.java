@@ -29,6 +29,12 @@ public class JavaTypeSearch {
 
     private final List<JavaType> results;
 
+    /**
+     * Constructs a new JavaTypeSearch and performs the search based on the given parameters.
+     * @param query the search query.
+     * @param caseSensitive whether the search is case-sensitive.
+     * @param preferOpenProjects whether to prioritize results from open projects.
+     */
     public JavaTypeSearch(String query, boolean caseSensitive, boolean preferOpenProjects) {
         // Determine SearchType
         final SearchType searchType;

@@ -55,6 +55,11 @@ import org.openide.filesystems.FileUtil;
  */
 public class JavaIntrospection {
 
+    /**
+     * Gets detailed information about a single, specific Java type.
+     * @param fqn The fully qualified name of the type to inspect.
+     * @return a TypeInfo object containing the type's details.
+     */
     @AIToolMethod("Gets detailed information about a single, specific Java type.")
     public static TypeInfo getTypeInfo(@AIToolParam("The fully qualified name of the type to inspect.") String fqn) {
         ClasspathInfo cpInfo = getClasspathInfo();
@@ -70,6 +75,14 @@ public class JavaIntrospection {
         return new TypeInfo(fqn, simpleName, packageName, origin);
     }
 
+    /**
+     * Gets a paginated list of all members (fields, constructors, methods, inner classes) for a given type.
+     * @param fqn The fully qualified name of the type to inspect.
+     * @param startIndex The starting index (0-based) for pagination.
+     * @param pageSize The maximum number of results to return per page.
+     * @return a MemberSearchResultPage containing the members.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod(value = "Gets a paginated list of all members (fields, constructors, methods, inner classes) for a given type.", requiresApproval = false)
     public static MemberSearchResultPage getMembers(
             @AIToolParam("The fully qualified name of the type to inspect.") String fqn,
@@ -150,6 +163,14 @@ public class JavaIntrospection {
         return new MemberSearchResultPage(start, totalCount, page);
     }
 
+    /**
+     * Finds all subpackages within a given parent package.
+     * @param parentPackage The fully qualified name of the parent package.
+     * @param recursive If true, the search will be recursive.
+     * @param startIndex The starting index (0-based) for pagination.
+     * @param pageSize The maximum number of results to return per page.
+     * @return a PackageSearchResultPage containing the subpackages.
+     */
     @AIToolMethod("Finds all subpackages within a given parent package.")
     public static PackageSearchResultPage findSubpackages(
             @AIToolParam("The fully qualified name of the parent package (e.g., 'java.util'). Use an empty string to find top-level packages.") String parentPackage,
@@ -184,6 +205,15 @@ public class JavaIntrospection {
         return new PackageSearchResultPage(start, totalCount, page);
     }
 
+    /**
+     * Finds all types within a given package, with an option for recursive search.
+     * @param packageName The fully qualified name of the package to search.
+     * @param typeKind The kind of type to search for.
+     * @param recursive If true, the search will include all subpackages.
+     * @param startIndex The starting index (0-based) for pagination.
+     * @param pageSize The maximum number of results to return per page.
+     * @return a TypeSearchResultPage containing the found types.
+     */
     @AIToolMethod("Finds all types within a given package, with an option for recursive search.")
     public static TypeSearchResultPage findTypesInPackage(
             @AIToolParam("The fully qualified name of the package to search (e.g., 'java.util').") String packageName,
@@ -230,6 +260,16 @@ public class JavaIntrospection {
         return new TypeSearchResultPage(start, totalCount, page);
     }
 
+    /**
+     * Searches for types across all classpaths by simple name.
+     * @param simpleNameQuery The simple name query.
+     * @param typeKind The kind of type to search for.
+     * @param caseSensitive If true, the search will be case-sensitive.
+     * @param preferOpenProjects If true, results from open projects will be listed first.
+     * @param startIndex The starting index (0-based) for pagination.
+     * @param pageSize The maximum number of results to return per page.
+     * @return a TypeSearchResultPage containing the found types.
+     */
     //@AIToolMethod("Searches for types across all classpaths by simple name.")
     public static TypeSearchResultPage searchTypesByName(
             @AIToolParam("The simple name query. Wildcards '*' and '?' are supported for REGEXP search. Otherwise, CAMEL_CASE is used.") String simpleNameQuery,

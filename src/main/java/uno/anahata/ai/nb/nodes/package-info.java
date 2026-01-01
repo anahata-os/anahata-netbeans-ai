@@ -5,22 +5,16 @@
  * is to "decorate" files in the Projects window to indicate that they are currently
  * part of the AI's active context.
  *
- * <p>
- * <b>NOTE: This entire package is currently NON-FUNCTIONAL and under review.</b>
- * The file decoration feature does not work, and there are known bugs that need
- * to be addressed before this package can be considered stable.
- *
- * <h2>Key Components and Known Issues:</h2>
+ * <h2>Key Components:</h2>
  * <ul>
  *   <li>{@link uno.anahata.ai.nb.nodes.AnahataNodeFactory}: A NetBeans
- *       {@code NodeFactory} that creates the virtual "Anahata" folder.
- *       <b>Issue:</b> This component has a memory leak and does not refresh correctly
- *       when new files (e.g., an {@code anahata.md}) are added to the project root.</li>
+ *       {@code NodeFactory} that creates the virtual "Anahata" folder. This
+ *       component is responsible for dynamically managing the visibility of
+ *       project-specific AI resources like {@code anahata.md}.</li>
  * </ul>
  *
- * The central registry class, {@code ContextFiles.java}, has been deleted as it
- * was part of the non-functional V1 implementation. The functionality of this
- * package is a high-priority goal for the V1 launch, as noted in the project's
- * main {@code anahata.md} file.
+ * The functionality of this package is a high-priority goal for the V1 launch,
+ * providing users with immediate visual feedback on which files are being
+ * tracked by the assistant.
  */
 package uno.anahata.ai.nb.nodes;

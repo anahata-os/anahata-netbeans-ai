@@ -13,9 +13,21 @@ import org.openide.filesystems.FileObject;
  */
 public class ClassSearchResult {
 
+    /**
+     * The FileObject representing the found class file.
+     */
     public final FileObject classFile;
+    
+    /**
+     * The ClassPath that owns the found class file.
+     */
     public final ClassPath ownerCp;
 
+    /**
+     * Constructs a new ClassSearchResult.
+     * @param classFile the class file found.
+     * @param ownerCp the classpath owning the class file.
+     */
     public ClassSearchResult(FileObject classFile, ClassPath ownerCp) {
         this.classFile = classFile;
         this.ownerCp = ownerCp;

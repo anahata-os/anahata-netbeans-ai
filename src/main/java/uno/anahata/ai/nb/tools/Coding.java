@@ -54,6 +54,16 @@ import uno.anahata.ai.nb.model.coding.SuggestChangeResult;
 @Slf4j
 public class Coding {
 
+    /**
+     * Proposes a change to an existing file by showing the NetBeans modal diff dialog to the user.
+     * 
+     * @param filePath The absolute path of the existing file to modify.
+     * @param proposedContent The full, new proposed content for the file.
+     * @param explanation A clear and concise explanation of the proposed change.
+     * @param lastModified Optimistic locking parameter. Must match the current 'lastModified' timestamp of the resource on disk.
+     * @return A SuggestChangeResult indicating whether the user accepted or cancelled the change.
+     * @throws Exception if an error occurs during the process.
+     */
     @AIToolMethod(value = "Proposes a change to a an existing file by showing the netbeans modal diff dialog to the user."
             + "\n*Important Note*: while the user may YES approve or ALWAYS approve the execution of this tool, "
             + "the approval of the tool execution does not imply the change was approved: "

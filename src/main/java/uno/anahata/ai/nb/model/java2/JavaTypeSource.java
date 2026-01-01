@@ -21,6 +21,11 @@ public class JavaTypeSource {
     private final FileObject sourceFile;
     private final String content;
 
+    /**
+     * Constructs a new JavaTypeSource and attempts to find the source file for the given JavaType.
+     * @param javaType the type to find source for.
+     * @throws Exception if the source cannot be found or read.
+     */
     public JavaTypeSource(JavaType javaType) throws Exception {
         this.javaType = javaType;
         

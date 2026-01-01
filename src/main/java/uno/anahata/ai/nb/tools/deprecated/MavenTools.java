@@ -36,6 +36,7 @@ import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
 import org.netbeans.modules.maven.indexer.api.QueryField;
 import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
 import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
@@ -75,6 +76,14 @@ public class MavenTools {
     private static final long DEFAULT_TIMEOUT_MS = 300_000; // 5 minutes
 
     //<editor-fold defaultstate="collapsed" desc="From MavenSearch.java">
+    /**
+     * Searches the Maven index for artifacts matching a given query.
+     * @param query The search query.
+     * @param startIndex The starting index (0-based) for pagination.
+     * @param pageSize The maximum number of results to return.
+     * @return a MavenSearchResultPage containing the found artifacts.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Searches the Maven index for artifacts matching a given query. The search is performed across all configured repositories (local, remote, and project-specific).")
     public static MavenSearchResultPage searchMavenIndex(
             @AIToolParam("The search query, with terms separated by spaces (e.g., 'junit platform').") String query,
@@ -151,6 +160,17 @@ public class MavenTools {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="From MavenPom.java">
+    /**
+     * The definitive 'super-tool' for adding a Maven dependency.
+     * @param projectId The ID of the project to modify.
+     * @param groupId The groupId of the dependency.
+     * @param artifactId The artifactId of the dependency.
+     * @param version The version of the dependency.
+     * @param scope The scope of the dependency.
+     * @param classifier The classifier of the dependency.
+     * @param type The type of the dependency.
+     * @return an AddDependencyResult object.
+     */
     @AIToolMethod("The definitive 'super-tool' for adding a Maven dependency. It follows a safe, multi-phase process and returns a structured result object. The model is responsible for interpreting the result.")
     public static AddDependencyResult addDependency(
             @AIToolParam("The ID of the project to modify.") String projectId,
@@ -224,6 +244,12 @@ public class MavenTools {
         }
     }
 
+    /**
+     * Gets the list of dependencies directly declared in the pom.xml.
+     * @param projectId The ID of the project to analyze.
+     * @return a list of DependencyScope objects.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Gets the list of dependencies directly declared in the pom.xml, grouped by scope and groupId for maximum token efficiency.")
     public static List<DependencyScope> getDeclaredDependencies(
             @AIToolParam("The ID of the project to analyze.") String projectId) throws Exception {
@@ -234,6 +260,12 @@ public class MavenTools {
         return groupDeclaredDependencies(dependencies);
     }
 
+    /**
+     * Gets the final, fully resolved list of transitive dependencies for the project.
+     * @param projectId The ID of the project to analyze.
+     * @return a list of ResolvedDependencyScope objects.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Gets the final, fully resolved list of transitive dependencies for the project, representing the actual runtime classpath. The output is in an ultra-compact format (List<ResolvedDependencyScope>) for maximum token efficiency.")
     public static List<ResolvedDependencyScope> getResolvedDependencies(
             @AIToolParam("The ID of the project to analyze.") String projectId) throws Exception {
@@ -331,6 +363,10 @@ public class MavenTools {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="From Maven.java">
+    /**
+     * Gets the path to the Maven installation configured in NetBeans.
+     * @return the Maven path.
+     */
     @AIToolMethod("Gets the path to the Maven installation configured in NetBeans.")
     public static String getMavenPath() {
         try {
@@ -341,6 +377,17 @@ public class MavenTools {
         }
     }
 
+    /**
+     * Executes a list of Maven goals on a Project synchronously.
+     * @param projectId The ID of the project to run the goals on.
+     * @param goals A list of Maven goals to execute.
+     * @param profiles A list of profiles to activate.
+     * @param properties A map of properties to set.
+     * @param options A list of additional Maven options.
+     * @param timeout The maximum time to wait for the build to complete.
+     * @return a MavenBuildResult object.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod(value = "Executes a list of Maven goals on a Project synchronously (waits for the build to finish), capturing the last " + MAX_OUTPUT_LINES + " lines of the output.", behavior = uno.anahata.ai.tools.ContextBehavior.EPHEMERAL)
     public static MavenBuildResult runGoals(
             @AIToolParam("The ID of the project to run the goals on.") String projectId,
@@ -447,6 +494,13 @@ public class MavenTools {
         return new MavenBuildResult(status, exitCode, stdoutChunk, stderrChunk, logFilePath);
     }
     
+    /**
+     * Downloads all missing dependencies artifacts for a given Maven project.
+     * @param projectId The ID of the project to download dependencies for.
+     * @param classifiers A list of classifiers to download.
+     * @return a message indicating the result of the operation.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Downloads all missing dependencies artifacts (e.g., 'sources', 'javadoc') for a given Maven project's dependencies.")
     public static String downloadProjectDependencies(
             @AIToolParam("The ID of the project to download dependencies for.") String projectId,
@@ -488,6 +542,17 @@ public class MavenTools {
         return buildResultString(artifactTypeNames, "Project", projectId, totalSuccessCount, totalFailCount, errors);
     }
 
+    /**
+     * Downloads a specific classified artifact for a single dependency.
+     * @param projectId The ID of the project to use for repository context.
+     * @param groupId The groupId of the dependency.
+     * @param artifactId The artifactId of the dependency.
+     * @param version The version of the dependency.
+     * @param classifier The classifier of the artifact to download.
+     * @param type The type of the dependency.
+     * @return true on success, false on failure.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Downloads a specific classified artifact (e.g., 'sources', 'javadoc', or the main artifact if classifier is null) for a single dependency. This can be used to verify an artifact exists before adding it to a POM. Returns true on success, false on failure.")
     public static boolean downloadDependencyArtifact(
             @AIToolParam("The ID of the project to use for repository context.") String projectId,

@@ -12,11 +12,19 @@ import uno.anahata.ai.swing.render.editorkit.EditorKitProvider;
 import uno.anahata.ai.nb.mime.DisabledModulesMimeUtils.MimeInfo;
 import uno.anahata.ai.nb.mime.MimeUtils;
 
+/**
+ * NetBeans-specific implementation of EditorKitProvider.
+ * It uses the NetBeans MimeLookup API to provide EditorKits for various languages.
+ */
 public class NetBeansEditorKitProvider implements EditorKitProvider {
     private static final Logger logger = Logger.getLogger(NetBeansEditorKitProvider.class.getName());
 
     private final Map<String, String> languageToMimeTypeMap;
 
+    /**
+     * Default constructor for NetBeansEditorKitProvider.
+     * Initializes the language-to-MIME-type map using hardcoded fallbacks and the IDE's registered MIME types.
+     */
     public NetBeansEditorKitProvider() {
         logger.log(Level.INFO, "Initializing NetBeansEditorKitProvider language cache...");
         this.languageToMimeTypeMap = new ConcurrentHashMap<>();

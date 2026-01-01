@@ -9,16 +9,25 @@ import org.apache.commons.lang3.StringUtils;
 import uno.anahata.ai.Chat;
 import uno.anahata.ai.status.ChatStatus;
 
+/**
+ * Table model for displaying active Anahata AI sessions.
+ */
 public class LiveSessionsTableModel extends AbstractTableModel {
 
     private List<AnahataTopComponent> sessions = new ArrayList<>();
     private final String[] columnNames = {"Session", "TC ID", "Status", "Messages", "Context %", "State"};
 
+    /** Column index for the session nickname. */
     public static final int SESSION_COL = 0;
+    /** Column index for the TopComponent ID. */
     public static final int TC_ID_COL = 1;
+    /** Column index for the chat status. */
     public static final int STATUS_COL = 2;
+    /** Column index for the message count. */
     public static final int MESSAGES_COL = 3;
+    /** Column index for the context window usage percentage. */
     public static final int CONTEXT_COL = 4;
+    /** Column index for the TopComponent open/closed state. */
     public static final int STATE_COL = 5;
 
     @Override
@@ -113,6 +122,11 @@ public class LiveSessionsTableModel extends AbstractTableModel {
         }
     }
 
+    /**
+     * Returns the AnahataTopComponent at the specified row.
+     * @param row the row index.
+     * @return the AnahataTopComponent, or null if the row is out of bounds.
+     */
     public AnahataTopComponent getTopComponentAt(int row) {
         if (row >= 0 && row < sessions.size()) {
             return sessions.get(row);

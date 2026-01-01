@@ -26,11 +26,18 @@ import org.openide.nodes.Node;
 import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.Lookups;
 
+/**
+ * A factory that creates the "Anahata" virtual folder in the NetBeans Projects window.
+ * This folder contains project-specific AI resources like {@code anahata.md}.
+ */
 @NodeFactory.Registration(projectType = {"org-netbeans-modules-maven", "org-netbeans-modules-java-j2seproject"}, position = 500, parentPath = "Projects/Anahata")
 public class AnahataNodeFactory implements NodeFactory {
 
     private static final Logger log = Logger.getLogger(AnahataNodeFactory.class.getName());
 
+    /**
+     * Default constructor for the node factory.
+     */
     public AnahataNodeFactory() {
         log.info("ENTRY AnahataNodeFactory()");
         log.info("EXIT AnahataNodeFactory()");

@@ -22,11 +22,20 @@ import uno.anahata.ai.tools.AIToolMethod;
 import uno.anahata.ai.tools.AIToolParam;
 
 /**
+ * Provides tools for interacting with the NetBeans editor, such as opening files
+ * and navigating to specific lines.
  *
  * @author anahata
  */
 public class Editor {
 
+    /**
+     * Opens a specified file in the NetBeans editor and optionally scrolls to a specific line.
+     * @param filePath The absolute path of the file to open.
+     * @param scrollToLine The line number to scroll to (1-based).
+     * @return a message indicating the result of the operation.
+     * @throws Exception if an error occurs.
+     */
     @AIToolMethod("Opens a specified file in the NetBeans editor and optionally scrolls to a specific line.")
     public static String openFile(
             @AIToolParam("The absolute path of the file to open.") String filePath,
@@ -70,6 +79,10 @@ public class Editor {
         }
     }
 
+    /**
+     * Gets a list of all files open in the editor, including their path and unsaved changes status.
+     * @return a string listing the open files.
+     */
     @AIToolMethod("Gets a list of all files open in the editor")
     public static String getOpenFiles() {
         StringBuilder sb = new StringBuilder();

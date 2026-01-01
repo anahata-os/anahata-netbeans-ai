@@ -1,0 +1,33 @@
+name: Deploy Javadoc
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write # Required to push to the main branch
+
+jobs:
+  deploy-javadoc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Generate Javadoc
+        run: mvn javadoc:javadoc -DskipTests
+
+      - name: Deploy to GitHub Pages (docs/apidocs)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: main # Deploy back to the main branch
+          folder: target/reports/apidocs
+          target-folder: docs/apidocs # Place Javadocs in docs/apidocs
+          clean: true

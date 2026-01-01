@@ -17,6 +17,10 @@ import uno.anahata.ai.nb.tools.IDE;
 import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.tools.deprecated.MavenTools;
 
+/**
+ * Provides core instructions and environment details for the Anahata NetBeans plugin.
+ * This includes information about the host environment, coding principles, and project structure.
+ */
 public class CoreNetBeansInstructionsProvider extends ContextProvider {
 
     @Override
