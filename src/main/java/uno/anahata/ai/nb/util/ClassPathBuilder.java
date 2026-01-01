@@ -27,7 +27,7 @@ import uno.anahata.ai.tools.spi.RunningJVM;
 
 /**
  * 
- * @author pablo
+ * @author anahata
  */
 public class ClassPathBuilder {
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * A container that groups declared artifacts by their common groupId.
- * @author pablo
+ * @author anahata
  */
 @Data
 @NoArgsConstructor

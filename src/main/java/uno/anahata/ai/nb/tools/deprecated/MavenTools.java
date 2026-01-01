@@ -65,7 +65,7 @@ import uno.anahata.ai.nb.util.TeeInputOutput;
  * This class combines functionality from the deprecated Maven, MavenPom, and MavenSearch classes.
  * It serves as the single, definitive entry point for searching, modifying, and executing Maven tasks.
  * 
- * @author pablo
+ * @author anahata
  */
 public class MavenTools {
     private static final Logger LOG = Logger.getLogger(MavenTools.class.getName());

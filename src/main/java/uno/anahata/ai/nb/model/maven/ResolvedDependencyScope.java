@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  * The top-level container for resolved dependencies, grouping them by scope.
  * This is the ultra-compact version of DependencyScope, designed to save tokens
  * by using ResolvedDependencyGroup which holds a List<String> instead of a List<DeclaredArtifact>.
- * @author pablo
+ * @author anahata
  */
 @Data
 @NoArgsConstructor

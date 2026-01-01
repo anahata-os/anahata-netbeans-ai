@@ -11,7 +11,7 @@ import org.netbeans.api.java.source.ElementHandle;
  * class member (field, method, constructor, etc.). It is designed to be the
  * result of a discovery tool and the input to an action tool.
  *
- * @author pablo
+ * @author anahata
  */
 @Getter
 public class JavaMember {

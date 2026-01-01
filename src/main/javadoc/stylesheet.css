@@ -1,0 +1,260 @@
+/* Anahata Javadoc Theme - Optimized for JDK 17+ (Barça Edition) */
+:root {
+    --primary: #2c7a7b;
+    --primary-light: #319795;
+    --bg-dark: #0d1117;
+    --bg-card: #161b22;
+    --text-main: #c9d1d9;
+    --text-muted: #8b949e;
+    --white: #ffffff;
+    --barca-blue: #004d98;
+    --barca-red: #a50044;
+    --border-color: rgba(48, 54, 61, 0.8);
+}
+
+body {
+    background-color: var(--bg-dark) !important;
+    color: var(--text-main) !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Links */
+a:link, a:visited {
+    color: #58a6ff !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Navigation Overhaul --- */
+
+.flex-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--bg-dark);
+}
+
+/* The main blue bar - Force Horizontal */
+.top-nav, .bottom-nav, .topNav, .bottomNav, #navbar-top, .nav-bar {
+    background: linear-gradient(to right, var(--barca-blue), #003366) !important;
+    color: var(--white) !important;
+    padding: 10px 20px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    height: auto !important;
+    min-height: 50px !important;
+    border-bottom: 3px solid var(--barca-red) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* Force horizontal lists and remove bullets */
+ul.nav-list, ul#navbar-top-firstrow, ul.sub-nav-list, .sub-nav-list {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 15px !important;
+    align-items: center !important;
+}
+
+ul.nav-list li, ul#navbar-top-firstrow li, .sub-nav-list li {
+    display: flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Hide Clutter */
+.skip-nav, .skipNav, .sub-nav-list-small, #navbar-toggle-button, .about-language, .nav-bar-toggle-button {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+}
+
+.nav-list li {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-list li a {
+    color: rgba(255,255,255,0.9) !important;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.nav-list li a:hover {
+    color: var(--white) !important;
+    background-color: rgba(255,255,255,0.15);
+    text-decoration: none;
+}
+
+/* Active item */
+.nav-bar-cell1-rev {
+    background-color: var(--barca-red) !important;
+    color: var(--white) !important;
+    padding: 8px 15px !important;
+    border-radius: 4px;
+    font-weight: 800;
+}
+
+/* Sub-navigation (Summary/Detail) */
+.sub-nav {
+    background-color: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 10px 20px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.sub-nav div {
+    display: flex !important;
+    align-items: center !important;
+    gap: 20px;
+}
+
+/* Search Box */
+.nav-list-search {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+#search-input {
+    background-color: rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: var(--white) !important;
+    padding: 6px 12px !important;
+    border-radius: 20px;
+    font-size: 12px;
+    width: 180px;
+    outline: none;
+}
+
+#search-input:focus {
+    border-color: var(--barca-red) !important;
+    background-color: rgba(0,0,0,0.5) !important;
+}
+
+#reset-button {
+    background-color: var(--barca-red) !important;
+    color: var(--white) !important;
+    border: none !important;
+    padding: 6px 15px !important;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+/* --- Content Styling --- */
+
+.flex-content {
+    padding: 40px 8%;
+}
+
+.header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+}
+
+.title {
+    color: var(--white) !important;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.sub-title {
+    color: var(--text-muted) !important;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Tables */
+div.summary-table {
+    display: grid !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 25px 0 !important;
+    background-color: var(--bg-card) !important;
+}
+
+div.table-header {
+    background-color: #1c2128 !important;
+    color: var(--text-main) !important;
+    font-weight: 700 !important;
+    padding: 14px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+div.col-first, div.col-second, div.col-last {
+    padding: 14px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+div.even-row-color {
+    background-color: rgba(255,255,255,0.03) !important;
+}
+
+/* Tabs */
+button.table-tab, button.active-table-tab {
+    border: 1px solid var(--border-color) !important;
+    padding: 8px 18px !important;
+    font-size: 13px;
+    font-weight: 600;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: none !important;
+    border-radius: 6px 6px 0 0;
+}
+
+button.active-table-tab {
+    color: var(--white) !important;
+    border-bottom: 3px solid var(--barca-red) !important;
+    background-color: var(--bg-card) !important;
+}
+
+/* Code */
+pre {
+    background-color: #010409 !important;
+    padding: 20px !important;
+    border-radius: 8px;
+    border: 1px solid var(--border-color) !important;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    font-size: 13px;
+    overflow-x: auto;
+}
+
+code {
+    font-family: inherit;
+    color: #ff7b72;
+}
+
+/* Footer */
+footer {
+    margin-top: 60px;
+    padding: 30px;
+    border-top: 1px solid var(--border-color);
+}

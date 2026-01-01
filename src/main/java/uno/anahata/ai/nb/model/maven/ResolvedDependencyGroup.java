@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
  * A container that groups fully resolved artifacts by their common groupId.
  * This is the ultra-compact version of DependencyGroup, designed to save tokens
  * by holding a List<String> of compact artifact IDs instead of a List<DeclaredArtifact>.
- * @author pablo
+ * @author anahata
  */
 @Data
 @NoArgsConstructor

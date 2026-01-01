@@ -9,4 +9,6 @@ This document tracks all active, pending, and future work items for the `anahata
     - [x] Verify live deployment at `https://www.anahata.uno/`.
 -   [x] **Plugin Portal Submission Metadata:** Finalized Name (Anahata), Category (AI), Icons, and rich HTML About Panel.
 -   [ ] **Plugin Portal Submission:** Package the NBM and submit to the Apache NetBeans Plugin Portal.
+
+## 1. Deferred for v2
 -   [ ] **Local History Integration:** Implement a mechanism to write user and AI messages to the NetBeans local history for the relevant files being modified.

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * The top-level container that groups dependency groups by their scope.
- * @author pablo
+ * @author anahata
  */
 @Data
 @NoArgsConstructor

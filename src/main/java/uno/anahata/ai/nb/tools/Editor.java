@@ -23,7 +23,7 @@ import uno.anahata.ai.tools.AIToolParam;
 
 /**
  *
- * @author pablo
+ * @author anahata
  */
 public class Editor {
 

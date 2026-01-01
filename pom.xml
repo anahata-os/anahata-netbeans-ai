@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
@@ -530,6 +530,48 @@
                     <archive>
                         <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
+                </configuration>
+            </plugin>
+            
+            <!-- Source plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Javadoc plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.11.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doclint>none</doclint>
+                    <stylesheetfile>${project.basedir}/src/main/javadoc/stylesheet.css</stylesheetfile>
+                    <bottom><![CDATA[
+                        <div style="padding: 15px; background: #1a202c; color: #e2e8f0; border-top: 3px solid #2c7a7b; text-align: center;">
+                            <img src="https://anahata.uno/assets/logo-horizontal.png" alt="Anahata Logo" style="height: 35px; vertical-align: middle; margin-right: 20px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/47/FC_Barcelona_logo.svg/200px-FC_Barcelona_logo.svg.png" alt="Barça Logo" style="height: 35px; vertical-align: middle; margin-right: 10px;">
+                            <span style="font-size: 1.1em; font-weight: bold;">Força Barça!</span> 
+                            <a href="https://github.com/sponsors/anahata-os" style="color: #db61a2; margin-left: 20px; text-decoration: none; font-weight: bold;">Please Donate ❤️</a>
+                        </div>
+                    ]]></bottom>
                 </configuration>
             </plugin>
         </plugins>

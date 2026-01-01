@@ -22,7 +22,7 @@ import org.netbeans.spi.java.classpath.support.ClassPathSupport;
  * upon instantiation. It uses a universal, ClassIndex-based approach that works
  * for all types of classes (project source, JDK, and Maven dependencies).
  *
- * @author pablo
+ * @author anahata
  */
 @Getter
 public class JavaMemberSearch {

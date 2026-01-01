@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * Represents a paginated result set from a Maven index search.
  * 
- * @author pablo
+ * @author anahata
  */
 @Data
 @AllArgsConstructor

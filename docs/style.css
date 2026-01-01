@@ -283,6 +283,9 @@ section {
     margin-bottom: 2rem;
 }
 
+.feature-card h3 { margin-top: 0; margin-bottom: 1rem; color: var(--white); }
+.feature-card p { font-size: 0.95rem; color: var(--text-muted); }
+
 /* Showcase Grid */
 .showcase-grid {
     display: grid;
@@ -291,6 +294,9 @@ section {
 }
 
 .showcase-item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
     position: relative;
     border-radius: 16px;
     overflow: hidden;
@@ -300,6 +306,7 @@ section {
 
 .showcase-item img {
     width: 100%;
+    height: auto;
     display: block;
     transition: var(--transition);
 }
@@ -470,14 +477,47 @@ footer {
 
 .footer-links a:hover { color: var(--primary-light); padding-left: 5px; }
 
+/* Slideshow Styles */
+.slideshow-container { max-width: 1000px; position: relative; margin: auto; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); }
+.mySlides { display: none; }
+.fade { animation-name: fade; animation-duration: 1.5s; }
+@keyframes fade { from {opacity: .4} to {opacity: 1} }
+.prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 18px; transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none; background: rgba(0,0,0,0.3); z-index: 10; }
+.next { right: 0; border-radius: 3px 0 0 3px; }
+.prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+.dot-container { text-align: center; padding: 20px; }
+.dot { cursor: pointer; height: 12px; width: 12px; margin: 0 4px; background-color: #bbb; border-radius: 50%; display: inline-block; transition: background-color 0.6s ease; }
+.active, .dot:hover { background-color: var(--primary-light); }
+
+.nb-badge { background: #2c3e50; color: #3498db; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; border: 1px solid #3498db; margin-bottom: 1rem; display: inline-block; }
+
+.tech-item { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 140px; transition: var(--transition); }
+.tech-item:hover { transform: translateY(-5px); }
+.tech-item img, .tech-item i { display: block; margin: 0 auto; }
+.tech-item span { display: block; width: 100%; text-align: center; margin-top: 0.8rem; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+
+.prompt-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; margin-top: 3rem; }
+.prompt-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; list-style: none; padding: 0; }
+.prompt-item { background: #000; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary); font-family: 'Fira Code', monospace; font-size: 0.9rem; color: var(--primary-light); }
+
+.bonus-section { background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%); border-radius: 24px; padding: 4rem; margin: 4rem 0; border: 1px solid rgba(255,255,255,0.05); }
+
+.coming-soon { font-size: 0.7rem; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-top: 0.5rem; }
+
+.gallery-category { margin-top: 4rem; margin-bottom: 2rem; border-bottom: 2px solid var(--primary); padding-bottom: 1rem; display: flex; align-items: center; gap: 1rem; }
+.gallery-category i { color: var(--primary-light); font-size: 1.8rem; }
+.gallery-category h3 { margin: 0; font-size: 1.8rem; color: var(--white); }
+
 @media (max-width: 992px) {
     .hero h1 { font-size: 3.5rem; }
     .philosophy-grid, .showcase-grid, .safety-grid, .footer-grid { grid-template-columns: 1fr; }
     .barca-flex { flex-direction: column; text-align: center; }
     .sextete-list { grid-template-columns: 1fr; }
+    .bonus-section { padding: 3rem 2rem; }
 }
 
 @media (max-width: 768px) {
+    .container { padding: 0 1.5rem; }
     .hero h1 { font-size: 2.8rem; }
     .menu-toggle { display: block; }
     .nav-links {
@@ -492,4 +532,8 @@ footer {
         border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .nav-links.active { display: flex; }
+    .bonus-section { padding: 2rem 1rem; }
+    .comparison-card { padding: 1.2rem; }
+    .tech-grid { gap: 1.5rem !important; }
+    .philosophy-grid { gap: 2rem; }
 }

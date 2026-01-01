@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Represents a declared artifact in a compact format, designed for token efficiency.
- * @author pablo
+ * @author anahata
  */
 @Data
 @NoArgsConstructor

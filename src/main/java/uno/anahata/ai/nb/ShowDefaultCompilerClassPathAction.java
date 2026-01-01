@@ -28,7 +28,7 @@ import uno.anahata.ai.tools.spi.RunningJVM;
 /**
  * Show gemini's compilers classpath on a new output tab.
  * 
- * @author pablo
+ * @author anahata
  */
 @ActionID(
         category = "Tools",
