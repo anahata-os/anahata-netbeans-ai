@@ -588,6 +588,7 @@
                 </executions>
                 <configuration>
                     <doclint>none</doclint>
+                    <failOnError>false</failOnError>
                     <addStylesheets>
                         <addStylesheet>anahata-barca-theme.css</addStylesheet>
                     </addStylesheets>
@@ -596,7 +597,7 @@
                     <links>
                         <link>https://www.slf4j.org/apidocs/</link>
                         <link>https://javadoc.io/doc/com.google.guava/guava/33.5.0-jre/</link>
-                        <link>https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/2.20.1/</link>
+                        <link>https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/</link>
                         <link>https://javadoc.io/doc/com.google.genai/google-genai/1.32.0/</link>
                         <link>https://anahata-os.github.io/gemini-java-client/</link>
                     </links>
