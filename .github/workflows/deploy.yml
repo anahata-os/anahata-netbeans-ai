@@ -1,7 +1,7 @@
 name: Deploy to Central
 
 on:
-  # Trigger on push to main (usually for Snapshots)
+  # Trigger on push to master (usually for Snapshots)
   push:
     branches: [ "master" ]
   # Trigger when a Release is published in GitHub UI
