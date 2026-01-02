@@ -35,7 +35,8 @@ import uno.anahata.ai.tools.spi.RunningJVM;
         id = "uno.anahata.nb.ai.ShowDefaultCompilerClassPathAction"
 )
 @ActionRegistration(
-        displayName = "Show Anahata Classpath"
+        displayName = "Show Anahata Classpath",
+        iconBase = "icons/anahata_16.png"
 )
 @ActionReference(path = "Menu/Tools", position = 10)
 public final class ShowDefaultCompilerClassPathAction implements ActionListener {
