@@ -1,14 +1,14 @@
-name: Deploy Javadoc
+name: Deploy Website & Javadoc
 
 on:
   push:
     branches: [ "master" ]
 
 permissions:
-  contents: write # Required to push to the main branch
+  contents: write
 
 jobs:
-  deploy-javadoc:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -24,10 +24,19 @@ jobs:
       - name: Generate Javadoc
         run: mvn javadoc:javadoc -DskipTests
 
-      - name: Deploy to GitHub Pages (docs/apidocs)
+      - name: Prepare Deployment Folder
+        run: |
+          # Create a temporary deployment directory
+          mkdir -p _site
+          # Copy the static website from docs/
+          cp -r docs/* _site/
+          # Inject the generated Javadocs into the apidocs/ subfolder
+          mkdir -p _site/apidocs
+          cp -r target/reports/apidocs/* _site/apidocs/
+
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: master # Deploy back to the master branch
-          folder: target/reports/apidocs
-          target-folder: docs/apidocs # Place Javadocs in docs/apidocs
+          branch: gh-pages
+          folder: _site
           clean: true
