@@ -1,0 +1,162 @@
+/* =========================================
+   1. GLOBAL BARÇA THEME & VARIABLES
+   ========================================= */
+:root {
+    --body-background-color: #0d1117 !important;
+    --body-text-color: #e6edf3 !important;
+    --section-background-color: #0d1117 !important;
+    --detail-background-color: #0d1117 !important;
+    --code-background-color: #161b22 !important;
+    --even-row-color: #0d1117 !important;
+    --odd-row-color: #161b22 !important;
+    
+    /* Barça Palette */
+    --barca-blue: #004d98;
+    --barca-garnet: #a50044;
+    --barca-yellow: #ffed00;
+    
+    --table-header-color: var(--barca-blue) !important;
+    --navbar-background-color: #161b22 !important;
+    --subnav-background-color: #0d1117 !important;
+    --toc-background-color: #0d1117 !important;
+    --pre-background-color: #161b22 !important;
+    --link-color: var(--barca-yellow) !important;
+    --border-color: var(--barca-garnet) !important;
+    --title-color: var(--barca-yellow) !important;
+}
+
+/* Force dark background and light text globally */
+html, body {
+    background-color: #0d1117 !important;
+    color: #e6edf3 !important;
+}
+
+/* Prepare body for absolute footer */
+body {
+    position: relative !important;
+    min-height: 100vh !important;
+    padding-bottom: 160px !important; /* Space for footer */
+    margin: 0 !important;
+}
+
+/* Ensure all text in main content is readable */
+main *, .block, .notes, .description, .col-last, .col-second, .horizontal-scroll {
+    color: #e6edf3 !important;
+}
+
+/* =========================================
+   2. UI & NAVIGATION FIXES
+   ========================================= */
+/* Style buttons to match the theme instead of forcing layout */
+button, .hide-sidebar, .show-sidebar, #navbar-toggle-button {
+    background-color: #161b22 !important;
+    color: var(--barca-yellow) !important;
+    border: 1px solid var(--barca-garnet) !important;
+}
+
+/* Remove the vertical line cutting through the branding */
+nav.toc, .toc {
+    border-right: none !important;
+}
+
+/* Allow footer to break out of main */
+main {
+    position: static !important;
+    overflow: visible !important;
+}
+
+/* =========================================
+   3. HEADER & TABLE STYLING (BLAUGRANA)
+   ========================================= */
+h1, .title, .caption span {
+    background-color: var(--barca-blue) !important;
+    color: #ffffff !important;
+    padding: 10px 20px !important;
+    border: 1px solid var(--barca-yellow) !important;
+    display: inline-block !important;
+}
+
+.table-header, .inherited-list h3 {
+    background-color: var(--barca-blue) !important;
+    color: #ffffff !important;
+}
+
+body.class-declaration-page .details h3, 
+body.package-declaration-page h2,
+.summary h2 {
+    background-color: var(--barca-garnet) !important;
+    color: #ffffff !important;
+    border-left: 5px solid var(--barca-yellow) !important;
+    padding: 10px !important;
+}
+
+/* =========================================
+   4. THE ABSOLUTE FULL-WIDTH FOOTER
+   ========================================= */
+footer {
+    all: unset !important; /* Strip Javadoc grid constraints */
+    display: block !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    background-color: #0d1117 !important;
+    border-top: 4px solid var(--barca-blue) !important;
+    padding: 30px 0 !important;
+    z-index: 9999 !important;
+}
+
+/* Remove Javadoc internal wrapper constraints */
+footer p.legal-copy, footer small {
+    display: contents !important;
+}
+
+.anahata-footer {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 96% !important;
+    margin: 0 auto !important;
+}
+
+/* Branding Elements */
+.anahata-footer .anahata-logo { height: 60px; width: auto; }
+.anahata-footer .barca-wrapper { display: flex; align-items: center; gap: 15px; }
+.anahata-footer .forca-text { 
+    font-size: 2em; 
+    font-weight: 900; 
+    color: var(--barca-blue) !important; 
+    text-shadow: 1px 1px 3px var(--barca-yellow) !important; /* Gentler shadow */
+}
+.anahata-footer .barca-red { color: var(--barca-garnet) !important; }
+.anahata-footer .barca-wrapper img { height: 70px; width: auto; }
+
+/* Donate Button - PRESERVED STYLING */
+.anahata-footer .donate-link {
+    display: inline-block !important;
+    color: var(--barca-yellow) !important;
+    background-color: var(--barca-garnet) !important;
+    border: 4px solid var(--barca-yellow) !important;
+    padding: 8px 25px !important;
+    border-radius: 40px !important;
+    font-weight: bold !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+}
+
+/* =========================================
+   5. CODE & LINK FIXES
+   ========================================= */
+pre, code, .member-signature-content, .horizontal-scroll, .inherited-list code {
+    background-color: #161b22 !important;
+    color: #e6edf3 !important;
+}
+
+main a, .external-link, .member-name-link {
+    color: var(--barca-yellow) !important;
+    text-decoration: underline !important;
+}
+
+main a::after { display: none !important; }

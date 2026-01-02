@@ -1,0 +1,6 @@
+{
+  "original": "chat-panel-interaction.png",
+  "comment": "chat to the LLM right inside netbeans",
+  "scale": 1.00,
+  "crop": {"x": 258, "y": 97, "w": 1038, "h": 605}
+}

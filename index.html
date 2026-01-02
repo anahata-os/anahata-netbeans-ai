@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anahata | The Autonomous NetBeans AI Agent</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <img src="assets/logo-horizontal.png" alt="Anahata Logo" class="nav-logo">
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <a href="#java-maven">Java & Maven</a>
+                <a href="#nbm-devs">NBM Bonus</a>
+                <a href="#showcase">Showcase</a>
+                <a href="#docs">Docs</a>
+                <a href="https://discord.gg/29yXQDq4" target="_blank"><i class="fab fa-discord"></i> Discord</a>
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://github.com/sponsors/anahata-os" class="btn-sponsor">Sponsor <i class="fas fa-heart"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <div class="nb-badge fade-in">Pure Java • Open Source • Apache Licensed</div>
+            <h1 class="fade-in">The Autonomous AI Agent for NetBeans.</h1>
+            <p class="tagline fade-in-delay">Experience the first NetBeans-native "Autonomous AI Agent" with dynamic context window management. Specially engineered for Java & Maven developers.</p>
+            <div class="hero-cta fade-in-delay-2">
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai/releases" class="btn-primary">Download Plugin</a>
+                <a href="#java-maven" class="btn-secondary">Explore Features</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="tech-stack" class="container" style="padding: 4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div class="tech-grid" style="display: flex; justify-content: center; gap: 3rem; align-items: center; flex-wrap: wrap;">
+                <div class="tech-item" title="Apache NetBeans">
+                    <img src="assets/logos/apache-netbeans.svg" alt="NetBeans Logo" style="height: 70px; width: auto;">
+                    <span>NetBeans Native</span>
+                </div>
+                <div class="tech-item" title="Java">
+                    <i class="devicon-java-plain colored" style="font-size: 4rem;"></i>
+                    <span>Java 17+</span>
+                </div>
+                <div class="tech-item" title="Apache Maven">
+                    <i class="devicon-maven-plain colored" style="font-size: 3.5rem;"></i>
+                    <span>Maven Integrated</span>
+                </div>
+                <div class="tech-item" title="Google Gemini">
+                    <img src="assets/logos/gemini.svg" alt="Gemini Logo" style="height: 60px; width: auto;">
+                    <span>Gemini</span>
+                </div>
+                <div class="tech-item" style="opacity: 0.5;">
+                    <i class="fas fa-plus-circle" style="font-size: 2.5rem; color: var(--text-muted);"></i>
+                    <span class="coming-soon">More Coming Soon</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="java-maven" class="container">
+            <div class="section-header">
+                <h2>Engineered for Java & Maven Developers</h2>
+                <p>Anahata exploits the deep integration of NetBeans to provide unmatched intelligence and automatic project context augmentation.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-search-plus" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Maven Index Search</h3>
+                    <p>Let the LLM search the NetBeans Maven Index (Central and custom repos) and download your dependencies artifacts, javadocs, and sources automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bug" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Real-time Diagnostics</h3>
+                    <p>Automatic source code parsing error detection and reporting on a "same turn basis." No more unchecked compile errors from blind file writes.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-project-diagram" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Full Project Awareness</h3>
+                    <p>All project actions, top components, source files, class indexing, and source code parsing/caching are available to the model for deep analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-microchip" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Hot Reload Execution</h3>
+                    <p>Test code with all project dependencies on the NetBeans JVM itself with Anahata's custom JIT compiler and child-first ClassLoader for hot reload.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-virus" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Safe Refactoring</h3>
+                    <p>Perform safe NetBeans-native refactor operations with on-the-turn compiler alerts and project problem reporting.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-terminal" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Workspace Management</h3>
+                    <p>Let the LLM browse output tabs for logs, manage open editor tabs, scroll to specific lines, and even adjust NetBeans settings.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-layer-group" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Context Augmentation</h3>
+                    <p>Automatic project context: source packages, directory structures, file sizes, dependencies, tasks, and project-specific instructions.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-eye" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Live Workspace View</h3>
+                    <p>Enable the Live Workspace view to let the LLM "see" your NetBeans window with a per-turn screenshot added to the augmented workspace.</p>
+                </div>
+            </div>
+
+            <div class="prompt-box">
+                <h4 style="margin-top: 0; margin-bottom: 1.5rem; color: var(--white);"><i class="fas fa-terminal"></i> Try these prompts:</h4>
+                <ul class="prompt-list">
+                    <li class="prompt-item">"Search Maven Central for MIDI APIs, add them, and give me a Swing demo."</li>
+                    <li class="prompt-item">"Check the project's problems and fix any compilation errors."</li>
+                    <li class="prompt-item">"Close all editor tabs and open the files we are discussing."</li>
+                    <li class="prompt-item">"Commit and push all changes and verify the GitHub site is updated."</li>
+                    <li class="prompt-item">"Turn off alerts for the 'legacy-module' project."</li>
+                    <li class="prompt-item">"Make a mind blowing website for my project and play the piano when you are done."</li>
+                    <li class="prompt-item">"Close all tabs open on my editor and open the files you are talking about."</li>
+                    <li class="prompt-item">"Open the 'trading-bot' project and analyze its dependencies."</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nbm-devs" class="container">
+            <div class="bonus-section">
+                <div class="section-header" style="margin-bottom: 3rem;">
+                    <span class="nb-badge">Bonus for NBM Developers</span>
+                    <h2 style="margin-top: 1rem;">The Ultimate NetBeans Platform Toolkit</h2>
+                    <p>Develop NetBeans Modules with the power of an AI that lives inside the platform runtime.</p>
+                </div>
+                <div class="philosophy-grid">
+                    <div class="philosophy-content">
+                        <div class="comparison-card" style="border-left-color: var(--accent);">
+                            <h3>NBM Development Superpowers</h3>
+                            <ul>
+                                <li><i class="fas fa-plug"></i> <strong>Runtime API Access:</strong> All NetBeans APIs and modules are available to the LLM at runtime for programmatic interaction.</li>
+                                <li><i class="fas fa-history"></i> <strong>Ultra-fast Lifecycle:</strong> Fly through NetBeans API understanding and test your ideas live without needing to reload your plugin.</li>
+                                <li><i class="fas fa-code-branch"></i> <strong>Internal Introspection:</strong> Run Lookups, Actions, FileSystem interactions, and TopComponent interactions right in the runtime.</li>
+                                <li><i class="fas fa-sync"></i> <strong>NBM Reload Integration:</strong> Test your code on the running instance, update it, and invoke `nbmreload` automatically.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="philosophy-image">
+                        <a href="screenshots/deep-strike-splash.png" target="_blank">
+                            <img src="screenshots/deep-strike-splash.png" alt="NBM Development Support">
+                        </a>
+                    </div>
+                </div>
+                <div class="prompt-box" style="border-color: var(--accent);">
+                    <h4 style="margin-top: 0; margin-bottom: 1.5rem; color: var(--white);"><i class="fas fa-terminal"></i> NBM Prompts:</h4>
+                    <ul class="prompt-list">
+                        <li class="prompt-item" style="border-left-color: var(--accent);">"Give me a report of all TopComponents by editor mode and type."</li>
+                        <li class="prompt-item" style="border-left-color: var(--accent);">"Show me the component tree of the active TopComponent."</li>
+                        <li class="prompt-item" style="border-left-color: var(--accent);">"Reload the plugin and verify the new Action is registered."</li>
+                        <li class="prompt-item" style="border-left-color: var(--accent);">"Perform a Lookup for the active Project and list its services."</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="showcase" class="container">
+            <div class="section-header">
+                <h2>Visual Intelligence Gallery</h2>
+                <p>A deep dive into Anahata's context-aware capabilities and native NetBeans integration.</p>
+            </div>
+
+            <div class="gallery-category">
+                <i class="fas fa-brain"></i>
+                <h3>Deep Context Awareness</h3>
+            </div>
+            <div class="showcase-grid">
+                <a href="screenshots/context-providers-tab.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/context-providers-tab_refined.png" alt="Augmented Context">
+                    <div class="showcase-overlay">
+                        <h3>Augmented Context</h3>
+                        <p>Real-time project state fed directly into the model.</p>
+                    </div>
+                </a>
+                <a href="screenshots/context-heatmap-detailed.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/context-heatmap-detailed_refined.png" alt="Token Precision">
+                    <div class="showcase-overlay">
+                        <h3>Token Precision</h3>
+                        <p>Detailed visualization of context window usage.</p>
+                    </div>
+                </a>
+                <a href="screenshots/context-heatmap-pie.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/context-heatmap-pie_refined.png" alt="Context Overview">
+                    <div class="showcase-overlay">
+                        <h3>Context Overview</h3>
+                        <p>High-level visualization of your augmented workspace.</p>
+                    </div>
+                </a>
+                <a href="screenshots/prune-as-you-go.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/prune-as-you-go_refined.png" alt="Dynamic Pruning">
+                    <div class="showcase-overlay">
+                        <h3>Dynamic Pruning</h3>
+                        <p>AI-driven context management for infinite conversations.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="gallery-category">
+                <i class="fas fa-microchip"></i>
+                <h3>Actionable Intelligence</h3>
+            </div>
+            <div class="showcase-grid">
+                <a href="screenshots/chat-panel-interaction.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/chat-panel-interaction_refined.png" alt="Seamless Interaction">
+                    <div class="showcase-overlay">
+                        <h3>Seamless Interaction</h3>
+                        <p>Chat with the LLM directly inside your IDE workspace.</p>
+                    </div>
+                </a>
+                <a href="screenshots/live-sessions-maven-integration.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/live-sessions-maven-integration_refined.png" alt="Maven Mastery">
+                    <div class="showcase-overlay">
+                        <h3>Maven Mastery</h3>
+                        <p>Natural language control over Maven goals and dependencies.</p>
+                    </div>
+                </a>
+                <a href="screenshots/depency_sources.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/depency_sources_refined.png" alt="Dependency Intelligence">
+                    <div class="showcase-overlay">
+                        <h3>Dependency Intelligence</h3>
+                        <p>Automatic retrieval of sources and javadocs for any library.</p>
+                    </div>
+                </a>
+                <a href="screenshots/tools-tab-javadocs.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/tools-tab-javadocs_refined.png" alt="Javadoc Awareness">
+                    <div class="showcase-overlay">
+                        <h3>Javadoc Awareness</h3>
+                        <p>Deep understanding of library documentation and APIs.</p>
+                    </div>
+                </a>
+                <a href="screenshots/tools-tab-javasources.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/tools-tab-javasources_refined.png" alt="Source Code Analysis">
+                    <div class="showcase-overlay">
+                        <h3>Source Code Analysis</h3>
+                        <p>Native parsing and analysis of your project's source code.</p>
+                    </div>
+                </a>
+                <a href="screenshots/tools-tab-codemodel.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/tools-tab-codemodel_refined.png" alt="Deep Code Insight">
+                    <div class="showcase-overlay">
+                        <h3>Deep Code Insight</h3>
+                        <p>Leveraging NetBeans CodeModel for structural analysis.</p>
+                    </div>
+                </a>
+                <a href="screenshots/refactor_rename.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/refactor_rename_refined.png" alt="Safe Refactoring">
+                    <div class="showcase-overlay">
+                        <h3>Safe Refactoring</h3>
+                        <p>Programmatic renames and moves using NetBeans APIs.</p>
+                    </div>
+                </a>
+                <a href="screenshots/project_and_javac_alerts.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/project_and_javac_alerts_refined.png" alt="Live Diagnostics">
+                    <div class="showcase-overlay">
+                        <h3>Live Diagnostics</h3>
+                        <p>Real-time feedback on compilation errors and project problems.</p>
+                    </div>
+                </a>
+                <a href="screenshots/syntax-highlighting.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/syntax-highlighting_refined.png" alt="Native Highlighting">
+                    <div class="showcase-overlay">
+                        <h3>Native Highlighting</h3>
+                        <p>Rich, IDE-native syntax highlighting for all code snippets.</p>
+                    </div>
+                </a>
+                <a href="screenshots/chat-tool-execution.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/chat-tool-execution.png" alt="Tool Execution">
+                    <div class="showcase-overlay">
+                        <h3>Tool Execution</h3>
+                        <p>Real-time feedback on complex tool chains.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="gallery-category">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Safety & Transparency</h3>
+            </div>
+            <div class="showcase-grid">
+                <a href="screenshots/explicit-consent-dialog.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/explicit-consent-dialog.png" alt="The Butler Principle">
+                    <div class="showcase-overlay">
+                        <h3>The Butler Principle</h3>
+                        <p>Safety first: every action requires your explicit approval.</p>
+                    </div>
+                </a>
+                <a href="screenshots/tool-confirmation-overview.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/tool-confirmation-overview.png" alt="Full Transparency">
+                    <div class="showcase-overlay">
+                        <h3>Full Transparency</h3>
+                        <p>Complete visibility into every tool call and its parameters.</p>
+                    </div>
+                </a>
+                <a href="screenshots/suggest-change-confirmation.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/suggest-change-confirmation.png" alt="Collaborative Coding">
+                    <div class="showcase-overlay">
+                        <h3>Collaborative Coding</h3>
+                        <p>A two-step approval process for all code modifications.</p>
+                    </div>
+                </a>
+                <a href="screenshots/diff-dialog-pom.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/diff-dialog-pom_refined.png" alt="Intelligent Patching">
+                    <div class="showcase-overlay">
+                        <h3>Intelligent Patching</h3>
+                        <p>Native diff dialogs for reviewing AI-proposed changes.</p>
+                    </div>
+                </a>
+                <a href="screenshots/redundant-read-error.png" target="_blank" class="showcase-item">
+                    <img src="screenshots/redundant-read-error_refined.png" alt="Failure Resilience">
+                    <div class="showcase-overlay">
+                        <h3>Failure Resilience</h3>
+                        <p>Automatic detection and tracking of tool execution errors.</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="docs" class="container">
+            <div class="section-header">
+                <h2>Developer Resources</h2>
+                <p>Deep dive into the technical architecture and API references for the Anahata ecosystem.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-book-open" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Anahata Plugin Javadoc</h3>
+                    <p>Complete API reference for the NetBeans Plugin, including context providers and IDE-specific tools.</p>
+                    <a href="apidocs/index.html" class="btn-secondary" style="display: inline-block; margin-top: 1rem;">View Plugin Docs</a>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-code-branch" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
+                    <h3>Gemini Java Client Javadoc</h3>
+                    <p>Technical documentation for the core framework, annotation-driven tools, and context management engine.</p>
+                    <a href="https://anahata-os.github.io/gemini-java-client/" target="_blank" class="btn-secondary" style="display: inline-block; margin-top: 1rem;">View Client Docs</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="safety" class="dark-bg">
+            <div class="container">
+                <div class="section-header">
+                    <h2>The Butler Principle</h2>
+                    <p>Safety, transparency, and explicit consent are at our core.</p>
+                </div>
+                <div class="safety-grid">
+                    <div class="safety-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Explicit Consent</h3>
+                        <p>Anahata never acts without your approval. Every tool call is visible and confirmable.</p>
+                    </div>
+                    <div class="safety-card">
+                        <i class="fas fa-eye"></i>
+                        <h3>Full Transparency</h3>
+                        <p>See exactly what context is being sent and how tokens are being used.</p>
+                    </div>
+                    <div class="safety-card">
+                        <i class="fas fa-lock"></i>
+                        <h3>Local Execution</h3>
+                        <p>Your code stays in your environment. Tools run locally on your JVM.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="creative" class="container">
+            <div class="section-header">
+                <h2>Creative Flow</h2>
+                <p>Engineering the perfect environment for deep work.</p>
+            </div>
+            
+            <div class="slideshow-container">
+                <div class="mySlides fade">
+                    <a href="screenshots/dj-dashboard.png" target="_blank">
+                        <img src="screenshots/dj-dashboard_refined.png" style="width:100%">
+                    </a>
+                </div>
+                <div class="mySlides fade">
+                    <a href="screenshots/radio-tool-active.png" target="_blank">
+                        <img src="screenshots/radio-tool-active_refined.png" style="width:100%">
+                    </a>
+                </div>
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            </div>
+            <div class="dot-container">
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+            </div>
+
+            <div class="creative-hero" style="margin-top: 4rem;">
+                <div class="creative-content">
+                    <h3>The Anahata DJ Engine</h3>
+                    <p>Elevate your coding sessions with AI-generated MIDI music and integrated radio.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="barca">
+            <div class="container barca-flex">
+                <div class="barca-content">
+                    <h2 style="color: var(--barca-gold);">Visca el Barça! <i class="fas fa-trophy"></i></h2>
+                    <h3 style="color: #fff;">Més que un bot</h3>
+                    <p style="color: #eee;">Anahata isn't just a tool; it's a personality. Proudly supporting the best club in the world.</p>
+                    
+                    <div class="sextete-box" style="margin-top: 3rem;">
+                        <h4 style="color: var(--barca-gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.2rem;">The Sextete of Productivity</h4>
+                        <ul class="sextete-list">
+                            <li class="sextete-item"><i class="fas fa-brain"></i> Context Awareness</li>
+                            <li class="sextete-item"><i class="fas fa-code"></i> Java Intelligence</li>
+                            <li class="sextete-item"><i class="fas fa-box-open"></i> Maven Mastery</li>
+                            <li class="sextete-item"><i class="fas fa-magic"></i> Safe Refactoring</li>
+                            <li class="sextete-item"><i class="fas fa-music"></i> Creative Flow</li>
+                            <li class="sextete-item"><i class="fas fa-user-shield"></i> Explicit Consent</li>
+                        </ul>
+                    </div>
+                </div>
+                <a href="screenshots/visca-el-barca.png" target="_blank">
+                    <img src="screenshots/visca-el-barca.png" alt="FC Barcelona" class="barca-logo">
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <button id="back-to-top" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="assets/logo-horizontal.png" target="_blank">
+                    <img src="assets/logo-horizontal.png" alt="Anahata Logo">
+                </a>
+                <p>Built with passion for the NetBeans community.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Community</h4>
+                <a href="https://discord.gg/29yXQDq4" target="_blank">Discord Server</a>
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai/issues">Issues</a>
+                <a href="https://github.com/sponsors/anahata-os">Sponsor</a>
+            </div>
+            <div class="footer-legal">
+                <h4>Legal</h4>
+                <a href="ASL_108.html">ASL V108 (The Immutable Edict)</a>
+                <a href="LICENSE.html">Apache License 2.0</a>
+                <p>&copy; 2025 Anahata. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Back to Top Button
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        };
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Slideshow Logic
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("mySlides");
+            let dots = document.getElementsByClassName("dot");
+            if (n > slides.length) {slideIndex = 1}    
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";  
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex-1].style.display = "block";  
+            dots[slideIndex-1].className += " active";
+        }
+    </script>
+</body>
+</html>
