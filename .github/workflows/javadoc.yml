@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to GitHub Pages (docs/apidocs)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: main # Deploy back to the main branch
+          branch: master # Deploy back to the master branch
           folder: target/reports/apidocs
           target-folder: docs/apidocs # Place Javadocs in docs/apidocs
           clean: true
