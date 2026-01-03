@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/main/resources/icons/anahata_logo_horizontal.png" width="800" alt="Anahata Logo">
+  <img src="docs/assets/messi_photo.png" width="800" alt="Messi Photo">
 </p>
 
 # 🚀 Code from the Heart
@@ -166,6 +166,5 @@ This ambitious, community-driven project thrives on your support. If you believe
 
 ---
 <p align="center">
-  <video src="docs/assets/messi_video.mp4" width="400" autoplay loop muted playsinline></video><br>
   <b>Visca el Barça!</b>
 </p>
