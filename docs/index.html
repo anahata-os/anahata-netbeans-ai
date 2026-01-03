@@ -31,21 +31,28 @@
     <header class="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
-            <div class="nb-badge fade-in">NetBeans 28+ • Pure Java • Open Source • Apache Licensed</div>
+            <div class="hero-badges fade-in">
+                <div class="nb-badge">Pure Java • Open Source • Apache Licensed</div>
+                <a href="https://plugins.netbeans.apache.org/catalogue/?id=124" target="_blank" class="verified-badge">
+                    <i class="fas fa-check-circle"></i> NB 28 - Verified
+                </a>
+            </div>
             <h1 class="fade-in">The Autonomous AI Agent for NetBeans.</h1>
             <p class="tagline fade-in-delay">Experience the first NetBeans-native "Autonomous AI Agent" with dynamic context window management. Specially engineered for Java & Maven developers.</p>
             <div class="hero-cta fade-in-delay-2">
-                <a href="https://netbeans.apache.org/front/main/download/" class="btn-primary" target="_blank"><i class="fas fa-download"></i> Download NetBeans Now!</a>
+                <a href="https://netbeans.apache.org/front/main/download/" class="btn-primary" target="_blank"><i class="fas fa-download"></i> Download NetBeans 28</a>
                 <a href="https://plugins.netbeans.apache.org/catalogue/?id=124" class="btn-secondary" target="_blank"><i class="fas fa-external-link-alt"></i> See In Plugin Portal</a>
             </div>
-            <p class="fade-in-delay-2" style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
-                Already have NetBeans 28? Get Anahata on the <a href="https://plugins.netbeans.apache.org/catalogue/?id=124" target="_blank" style="color: var(--primary-light); text-decoration: underline;">Plugin Portal</a>.
-            </p>
+            
+            <div class="pm-promo fade-in-delay-2">
+                <p>Already have NetBeans 28? Get Anahata on the <strong>Plugin Manager</strong>.</p>
+                <img src="assets/pluginmanager.png" alt="NetBeans Plugin Manager">
+            </div>
         </div>
     </header>
 
     <main>
-        <section id="tech-stack" class="container" style="padding: 4rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <section id="tech-stack" class="container">
             <div class="tech-grid" style="display: flex; justify-content: center; gap: 3rem; align-items: center; flex-wrap: wrap;">
                 <div class="tech-item" title="Apache NetBeans">
                     <img src="assets/logos/apache-netbeans.svg" alt="NetBeans Logo" style="height: 70px; width: auto;">
@@ -437,9 +444,12 @@
                         </ul>
                     </div>
                 </div>
-                <a href="assets/goat.png" target="_blank">
-                    <img src="assets/goat.png" alt="Lionel Messi - The GOAT" class="barca-logo" style="max-width: 400px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                </a>
+                <div class="barca-media">
+                    <video autoplay loop muted playsinline class="barca-video">
+                        <source src="assets/messi_video.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
             </div>
         </section>
     </main>

@@ -101,7 +101,7 @@ Anahata doesn't just guess; it *knows*. By leveraging NetBeans' deep understandi
 
 ## 🛡️ Safety & Trust: The Butler Principle
 
-We believe in **Explicit Consent**. Anahata never acts behind your back. Every tool execution and code change is presented for your review.
+We believe in **Explicit Consent**. Anahata never acts without your approval. Every tool execution and code change is presented for your review.
 
 <table align="center">
   <tr>
@@ -166,6 +166,6 @@ This ambitious, community-driven project thrives on your support. If you believe
 
 ---
 <p align="center">
-  <a href="docs/screenshots/visca-el-barca.png"><img src="docs/screenshots/visca-el-barca.png" width="200" alt="Visca el Barça!"></a><br>
+  <video src="docs/assets/messi_video.mp4" width="400" autoplay loop muted playsinline></video><br>
   <b>Visca el Barça!</b>
 </p>

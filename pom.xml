@@ -497,6 +497,11 @@
                             <artifactId>org-openide-util</artifactId>
                             <version>${netbeans.version}</version>
                         </path>
+                        <path>
+                            <groupId>org.netbeans.api</groupId>
+                            <artifactId>org-netbeans-modules-projectuiapi</artifactId>
+                            <version>${netbeans.version}</version>
+                        </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
