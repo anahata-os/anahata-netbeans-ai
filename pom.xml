@@ -47,6 +47,18 @@
         <developerConnection>scm:git:git@github.com:anahata-os/anahata-netbeans-ai.git</developerConnection>
         <url>https://github.com/anahata-os/anahata-netbeans-ai</url>
     </scm>
+    
+    <distributionManagement>
+        <repository>
+            <id>sonatype-central</id>
+            <url>https://central.sonatype.com/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.version>RELEASE280</netbeans.version>
@@ -61,6 +73,16 @@
             </releases>
             <snapshots>
                 <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
@@ -582,87 +604,6 @@
                     </archive>
                 </configuration>
             </plugin>
-            
-            <!-- Source plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Javadoc plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doclint>none</doclint>
-                    <failOnError>false</failOnError>
-                    <addStylesheets>
-                        <addStylesheet>anahata-barca-theme.css</addStylesheet>
-                    </addStylesheets>
-                    <docfilessubdirs>true</docfilessubdirs>
-                    <detectJavaApiLink>false</detectJavaApiLink>
-                    <links>
-                        <link>https://www.slf4j.org/apidocs/</link>
-                        <link>https://guava.dev/releases/33.5.0-jre/api/docs/</link>
-                        <link>https://anahata-os.github.io/gemini-java-client/</link>
-                    </links>
-                    <top>
-                        <![CDATA[
-    <div class="anahata-footer">
-        <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
-        <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
-            Please Donate ❤️
-        </a>
-        <div class="barca-wrapper">
-            <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
-            <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
-        </div>
-    </div>
-]]>
-                    </top>
-                    <bottom><![CDATA[
-    <div class="anahata-footer">
-        <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
-        <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
-            Please Donate ❤️
-        </a>
-        <div class="barca-wrapper">
-            <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
-            <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
-        </div>
-    </div>
-]]></bottom>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.9.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <tokenAuth>true</tokenAuth>
-                    <autoPublish>true</autoPublish> 
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -670,6 +611,75 @@
             <id>release</id>
             <build>
                 <plugins>
+                    <!-- Source plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Javadoc plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.11.2</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <doclint>none</doclint>
+                            <failOnError>false</failOnError>
+                            <addStylesheets>
+                                <addStylesheet>anahata-barca-theme.css</addStylesheet>
+                            </addStylesheets>
+                            <docfilessubdirs>true</docfilessubdirs>
+                            <detectJavaApiLink>false</detectJavaApiLink>
+                            <links>
+                                <link>https://www.slf4j.org/apidocs/</link>
+                                <link>https://guava.dev/releases/33.5.0-jre/api/docs/</link>
+                                <link>https://anahata-os.github.io/gemini-java-client/</link>
+                            </links>
+                            <top>
+                                <![CDATA[
+            <div class="anahata-footer">
+                <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
+                <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
+                    Please Donate ❤️
+                </a>
+                <div class="barca-wrapper">
+                    <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
+                    <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
+                </div>
+            </div>
+        ]]>
+                            </top>
+                            <bottom><![CDATA[
+            <div class="anahata-footer">
+                <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
+                <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
+                    Please Donate ❤️
+                </a>
+                <div class="barca-wrapper">
+                    <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
+                    <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
+                </div>
+            </div>
+        ]]></bottom>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -688,6 +698,17 @@
                                 <arg>--pinentry-mode</arg>
                                 <arg>loopback</arg>
                             </gpgArguments>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.10.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>sonatype-central</publishingServerId>
+                            <tokenAuth>true</tokenAuth>
+                            <autoPublish>true</autoPublish> 
                         </configuration>
                     </plugin>
                 </plugins>

@@ -23,12 +23,11 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '25'
-          distribution: 'temurin' # Eclipse Temurin is a standard, reliable distribution
+          distribution: 'temurin'
           cache: 'maven'
           # AUTO-CONFIGURATION:
-          # This creates a settings.xml with the <server> id "central"
-          # and imports your GPG key into the runner's keyring.
-          server-id: central
+          # This creates a settings.xml with the <server> id "sonatype-central"
+          server-id: sonatype-central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -36,12 +35,14 @@ jobs:
 
       - name: Build & Deploy
         env:
-          # Map the secrets to environment variables for setup-java to use
           MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
-          # Also pass the passphrase for the Maven GPG Plugin to read
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          # -P release activates your profile (if you have one)
-          # -DskipTests speeds up the deploy (assuming tests run in a separate PR workflow)
-          mvn deploy -DskipTests -P release
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            # For releases: Sign artifacts and use the central portal
+            mvn deploy -DskipTests -P release -ntp
+          else
+            # For snapshots: Force deployment to the Sonatype snapshot repo with the release profile for sources/javadocs
+            mvn deploy -DskipTests -P release -ntp -DaltSnapshotDeploymentRepository=sonatype-central::default::https://central.sonatype.com/repository/maven-snapshots/
+          fi

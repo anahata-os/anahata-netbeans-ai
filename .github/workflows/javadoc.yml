@@ -22,7 +22,8 @@ jobs:
           cache: 'maven'
 
       - name: Generate Javadoc
-        run: mvn javadoc:javadoc -DskipTests
+        # Use the release profile to include custom themes and footers
+        run: mvn javadoc:javadoc -P release -DskipTests -ntp
 
       - name: Prepare Deployment Folder
         run: |
