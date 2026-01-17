@@ -15,7 +15,7 @@ import uno.anahata.ai.context.provider.ContextProvider;
 import uno.anahata.ai.nb.AnahataTopComponent;
 import uno.anahata.ai.nb.tools.IDE;
 import uno.anahata.ai.nb.tools.Projects;
-import uno.anahata.ai.nb.tools.deprecated.MavenTools;
+import uno.anahata.ai.nb.tools.MavenTools;
 
 /**
  * Provides core instructions and environment details for the Anahata NetBeans plugin.
@@ -79,12 +79,11 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
                       2.  **Pre-flight Check:** Use `MavenTools.downloadDependencyArtifact` to verify the main artifact exists.
                       3.  **Add Dependency:** Use the definitive `MavenTools.addDependency` super-tool.
                       4.  **Verify:** Check the `AddDependencyResult` object to confirm success.
-                      **Known Bug:** Be aware that `MavenTools.addDependency` may sometimes incorrectly add a `<classifier>jar</classifier>` tag to the `pom.xml`. You must manually inspect and correct this if it occurs.
 
                       The user's NetBeansProjects folder is located at: %s
                       The following projects are available in that folder: [%s]
 
-                      The current open projects are as given by the Projects.getOpenProjects() tool are: %s
+                      The current open projects (as given by the Projects.getOpenProjects() tool) are: %s
 
                       Prefer the Maven installation if you need to use maven in this environment. The maven installation used by netbeans as given by the tool Maven.getMavenPath() is: %s
                       """.formatted(
