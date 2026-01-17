@@ -26,7 +26,7 @@ import uno.anahata.ai.nb.tools.Output;
 import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.tools.Refactor;
 import uno.anahata.ai.nb.tools.TopComponents;
-import uno.anahata.ai.nb.tools.deprecated.MavenTools;
+import uno.anahata.ai.nb.tools.MavenTools;
 import uno.anahata.ai.nb.tools.java2.CodeModel;
 import uno.anahata.ai.swing.SwingChatConfig;
 
