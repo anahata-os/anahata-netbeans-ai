@@ -1,4 +1,4 @@
-# Project: anahata-netbeans-ai - Anahata NetBeans AI Assistant Plugin
+# Project: anahata-netbeans-ai - Anahata NetBeans AI Assistant Plugin (v1 plugin)
 
 This document provides the essential, high-level overview of the `anahata-netbeans-ai` project. It is intended to be the stable, "always-in-context" guide to the plugin's purpose, architecture, and core principles.
 
