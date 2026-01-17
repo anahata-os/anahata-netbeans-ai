@@ -5,6 +5,7 @@
 # 🚀 Code from the Heart
 
 [![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
+[![Version](https://img.shields.io/badge/version-28.0.5-SNAPSHOT-orange)](https://search.maven.org/artifact/uno.anahata/anahata-netbeans-ai)
 [![Javadoc](https://img.shields.io/badge/Javadoc-Reference-blue)](https://anahata-os.github.io/anahata-netbeans-ai/)
 [![Deploy Javadoc](https://github.com/anahata-os/anahata-netbeans-ai/actions/workflows/javadoc.yml/badge.svg)](https://anahata-os.github.io/anahata-netbeans-ai/)
 
@@ -12,7 +13,7 @@
 
 Anahata is an unprecedented, deeply integrated AI assistant for the Apache NetBeans IDE. It's more than a chatbot—it's a harmonious extension of your creative process, designed to bring flow and intelligence directly to your work.
 
-**Visit our website: [anahata.uno](https://anahata.uno)**
+**[Website](https://anahata.uno) | [Anahata TV (YouTube)](https://www.youtube.com/@anahata108) | [Discord](https://discord.gg/M396BNtX)**
 
 ---
 
@@ -27,7 +28,7 @@ While other AI tools are just glorified autocomplete, Anahata is a true IDE part
 |  | GitHub Copilot, Tabnine, etc. | **Anahata NetBeans Plugin** |
 | :--- | :--- | :--- |
 | **Architecture** | Stateless Text Completion | **Deep, Real-Time IDE Integration** |
-| **Project Context** | Sees only the current file | **Sees all open projects, files, and diagnostics** |
+| **Project Context** | Sees all open projects, files, and diagnostics | **Sees all open projects, files, and diagnostics** |
 | **Capabilities** | Suggests code snippets | **Executes IDE actions, runs builds, performs refactoring** |
 | **Understanding** | Guesses based on patterns | **Knows your code, errors, and dependencies** |
 
@@ -154,6 +155,7 @@ Anahata isn't just about logic; it's about the *flow*. We've integrated a suite 
 -   **"Refactor this method and rename all its usages."** Safe, programmatic updates across your entire project.
 -   **"Add a dependency for JUnit 5 and run the tests."** Maven management without leaving the chat.
 -   **"Find the root cause of this NPE in the logs."** Direct integration with the Output Window and IDE logs.
+-   **"Turn on the radio."** Enjoy your favorite internet radio stations while you code.
 
 ---
 
@@ -162,6 +164,7 @@ Anahata isn't just about logic; it's about the *flow*. We've integrated a suite 
 This ambitious, community-driven project thrives on your support. If you believe in the mission of creating a truly intelligent development partner, please consider contributing.
 
 -   **[Sponsor us on GitHub](https://github.com/sponsors/anahata-os)**: The most direct way to fuel our continued innovation.
+-   **[Join our Discord Server](https://discord.gg/M396BNtX)**: Connect with the community and get real-time support.
 -   **Commercial Licensing**: For proprietary, closed-source applications, please refer to the **[Anahata Software License (ASL) V108](ASL_108.md)**.
 
 ---

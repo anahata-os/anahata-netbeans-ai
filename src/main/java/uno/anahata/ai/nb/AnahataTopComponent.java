@@ -101,10 +101,11 @@ public final class AnahataTopComponent extends TopComponent implements Externali
             setName(sessionUuid);
             setLayout(new BorderLayout());
             NetBeansChatConfig config = new NetBeansChatConfig(sessionUuid);
-            chatPanel = new ChatPanel(new NetBeansEditorKitProvider());
-            chatPanel.init(config);
-            chatPanel.initComponents();
-            add(chatPanel, BorderLayout.CENTER); // Add the panel only once.
+            
+            // Use the new, simplified ChatPanel constructor
+            chatPanel = new ChatPanel(config, new NetBeansEditorKitProvider());
+            add(chatPanel, BorderLayout.CENTER); 
+            
             chatPanel.checkAutobackupOrStartupContent();
             getChat().addStatusListener(this);
             statusChanged(getChat().getStatusManager().getCurrentStatus(), null);

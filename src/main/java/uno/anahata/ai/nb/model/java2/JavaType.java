@@ -4,6 +4,7 @@ package uno.anahata.ai.nb.model.java2;
 import java.net.URL;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.netbeans.api.java.source.ElementHandle;
 import org.netbeans.modules.java.source.ui.JavaTypeDescription;
 import org.openide.filesystems.FileObject;
@@ -14,10 +15,11 @@ import org.openide.filesystems.URLMapper;
  * It holds an ElementHandle and a URL to the class file.
  */
 @Getter
+@NoArgsConstructor
 public class JavaType {
 
-    private final ElementHandle handle;
-    private final URL url;
+    private ElementHandle handle;
+    private URL url;
 
     /**
      * Constructs a new JavaType from a JavaTypeDescription.

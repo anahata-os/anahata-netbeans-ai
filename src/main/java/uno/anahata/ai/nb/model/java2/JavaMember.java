@@ -4,6 +4,7 @@ package uno.anahata.ai.nb.model.java2;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.netbeans.api.java.source.ElementHandle;
 
 /**
@@ -14,28 +15,29 @@ import org.netbeans.api.java.source.ElementHandle;
  * @author anahata
  */
 @Getter
+@NoArgsConstructor
 public class JavaMember {
 
     /**
      * The serializable handle to the actual code element. This may be null if
      * the member was discovered via a method that doesn't produce a handle.
      */
-    private final ElementHandle<? extends Element> handle;
+    private ElementHandle<? extends Element> handle;
 
     /**
      * The simple name of the member (e.g., "myField", "myMethod").
      */
-    private final String name;
+    private String name;
 
     /**
      * The kind of the member (e.g., FIELD, METHOD, CONSTRUCTOR).
      */
-    private final ElementKind kind;
+    private ElementKind kind;
 
     /**
      * A human-readable representation of the member's signature or type.
      */
-    private final String details;
+    private String details;
 
     /**
      * Constructs a new JavaMember.

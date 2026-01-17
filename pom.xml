@@ -97,7 +97,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
@@ -621,9 +621,7 @@
                     <detectJavaApiLink>false</detectJavaApiLink>
                     <links>
                         <link>https://www.slf4j.org/apidocs/</link>
-                        <link>https://javadoc.io/doc/com.google.guava/guava/33.5.0-jre/</link>
-                        <link>https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/</link>
-                        <link>https://javadoc.io/doc/com.google.genai/google-genai/1.32.0/</link>
+                        <link>https://guava.dev/releases/33.5.0-jre/api/docs/</link>
                         <link>https://anahata-os.github.io/gemini-java-client/</link>
                     </links>
                     <top>
