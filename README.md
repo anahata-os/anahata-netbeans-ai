@@ -5,7 +5,7 @@
 # 🚀 Code from the Heart
 
 [![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
-[![Version](https://img.shields.io/badge/version-28.0.5-SNAPSHOT-orange)](https://search.maven.org/artifact/uno.anahata/anahata-netbeans-ai)
+[![Version](https://img.shields.io/badge/version-28.0.5-SNAPSHOT-orange)](https://central.sonatype.com/artifact/uno.anahata/anahata-netbeans-ai)
 [![Javadoc](https://img.shields.io/badge/Javadoc-Reference-blue)](https://anahata-os.github.io/anahata-netbeans-ai/)
 [![Deploy Javadoc](https://github.com/anahata-os/anahata-netbeans-ai/actions/workflows/javadoc.yml/badge.svg)](https://anahata-os.github.io/anahata-netbeans-ai/)
 
