@@ -29,11 +29,16 @@ jobs:
         run: |
           # Create a temporary deployment directory
           mkdir -p _site
-          # Copy the static website from docs/
+          # Copy the static website from docs/ (includes CNAME)
           cp -r docs/* _site/
           # Inject the generated Javadocs into the apidocs/ subfolder
+          # Note: We've explicitly set the outputDirectory to target/reports/apidocs in the pom.xml
           mkdir -p _site/apidocs
           cp -r target/reports/apidocs/* _site/apidocs/
+          
+          # VERIFICATION: List the contents to the log
+          echo "--- Deployment Folder Structure ---"
+          ls -R _site
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
