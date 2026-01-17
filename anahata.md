@@ -20,15 +20,26 @@ The plugin is designed with a clear separation of concerns:
 - `uno.anahata.ai.nb.model`: Domain-driven DTOs and POJOs.
 - `uno.anahata.ai.nb.mime`: Editor integration and syntax highlighting.
 
-## 4. Coding Principles
+## 4. CI/CD & Website Deployment
+
+- **GitHub Actions:** The `.github/workflows/javadoc.yml` workflow manages the deployment to GitHub Pages (branch `gh-pages`).
+- **Custom Domain:** Uses `www.anahata.uno` (configured via `CNAME`).
+- **Deployment Process:**
+    1.  Static website content is copied from the `docs/` directory to the site root.
+    2.  Javadocs are generated using Maven and injected into the `apidocs/` subfolder.
+- **URLs:**
+    - Main Website: [https://www.anahata.uno](https://www.anahata.uno)
+    - Javadoc Reference: [https://www.anahata.uno/apidocs/](https://www.anahata.uno/apidocs/)
+
+## 5. Coding Principles
 - **Domain-Driven Design (DDD):** Models are expressive and contain domain logic.
 - **Javadoc Integrity:** Documentation is a first-class citizen. Never remove existing Javadoc.
 - **Butler Principle:** Safety and explicit consent are paramount.
 
-## 5. Managing AI Tools
+## 6. Managing AI Tools
 Available tools are registered in `NetBeansChatConfig.getToolClasses()`.
 
-## 6. Very Important Notes
+## 7. Very Important Notes
 - **Do not "clean" the project** to avoid deleting runtime JARs.
 - **nbmreload** is the preferred way to test changes to tools or dependencies.
 - **Hot Reload:** Use `NetBeansProjectJVM.compileAndExecuteInProject` for rapid testing of logic within the IDE's JVM.

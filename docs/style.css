@@ -73,6 +73,8 @@ nav {
 
 .nav-logo {
     height: 40px;
+    width: auto;
+    max-width: 180px;
 }
 
 .menu-toggle {
@@ -84,7 +86,7 @@ nav {
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: center;
 }
 
@@ -93,10 +95,25 @@ nav {
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .nav-links a:hover {
     color: var(--primary-light);
+}
+
+.v2-badge {
+    color: var(--barca-gold) !important;
+    font-weight: 800 !important;
+    border: 1px solid var(--barca-gold);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.v2-badge:hover {
+    background: rgba(237, 187, 0, 0.1);
 }
 
 .btn-sponsor {
@@ -576,12 +593,18 @@ footer {
 .gallery-category i { color: var(--primary-light); font-size: 1.8rem; }
 .gallery-category h3 { margin: 0; font-size: 1.8rem; color: var(--white); }
 
+@media (max-width: 1100px) {
+    .nav-links { gap: 1rem; }
+    .nav-links a { font-size: 0.9rem; }
+}
+
 @media (max-width: 992px) {
     .hero h1 { font-size: 3.5rem; }
     .philosophy-grid, .showcase-grid, .safety-grid, .footer-grid { grid-template-columns: 1fr; }
     .barca-flex { flex-direction: column; text-align: center; }
     .sextete-list { grid-template-columns: 1fr; }
     .bonus-section { padding: 3rem 2rem; }
+    .nav-links { gap: 0.8rem; }
 }
 
 @media (max-width: 768px) {
@@ -598,10 +621,13 @@ footer {
         background: var(--bg-dark);
         padding: 2rem;
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        gap: 1.5rem;
+        text-align: center;
     }
     .nav-links.active { display: flex; }
     .bonus-section { padding: 2rem 1rem; }
     .comparison-card { padding: 1.2rem; }
     .tech-grid { gap: 1.5rem !important; }
     .philosophy-grid { gap: 2rem; }
+    .nav-logo { height: 32px; }
 }

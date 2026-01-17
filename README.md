@@ -6,8 +6,8 @@
 
 [![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
 [![Maven Central](https://img.shields.io/maven-central/v/uno.anahata/anahata-ai-nb)](https://central.sonatype.com/artifact/uno.anahata/anahata-ai-nb)
-[![Javadoc](https://img.shields.io/badge/Javadoc-Reference-blue)](https://anahata.uno/apidocs/)
-[![Deploy Javadoc](https://github.com/anahata-os/anahata-netbeans-ai/actions/workflows/javadoc.yml/badge.svg)](https://anahata.uno/apidocs/)
+[![Javadoc](https://img.shields.io/badge/Javadoc-Reference-blue)](https://www.anahata.uno/apidocs/)
+[![Deploy Javadoc](https://github.com/anahata-os/anahata-netbeans-ai/actions/workflows/javadoc.yml/badge.svg)](https://www.anahata.uno/apidocs/)
 
 **Stop accepting "almost right." Demand an AI that truly understands your workspace.**
 
@@ -90,7 +90,7 @@ Anahata doesn't just guess; it *knows*. By leveraging NetBeans' deep understandi
       <b>Safe Refactoring</b><br>
       Rename classes and members using native NetBeans APIs.
     </td>
-    <td align="center">
+    <td align="center" width="50%">
       <a href="docs/screenshots/tools-tab-javadocs.png"><img src="docs/screenshots/tools-tab-javadocs.png" width="100%" alt="Javadoc Awareness"></a><br>
       <b>Javadoc Awareness</b><br>
       The AI reads and writes documentation as a first-class citizen.
