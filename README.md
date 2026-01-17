@@ -5,9 +5,9 @@
 # 🚀 Code from the Heart
 
 [![Sponsor anahata-os](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23db61a2.svg?logo=GitHub)](https://github.com/sponsors/anahata-os)
-[![Version](https://img.shields.io/badge/version-28.0.5-SNAPSHOT-orange)](https://central.sonatype.com/artifact/uno.anahata/anahata-netbeans-ai)
-[![Javadoc](https://img.shields.io/badge/Javadoc-Reference-blue)](https://anahata-os.github.io/anahata-netbeans-ai/)
-[![Deploy Javadoc](https://github.com/anahata-os/anahata-netbeans-ai/actions/workflows/javadoc.yml/badge.svg)](https://anahata-os.github.io/anahata-netbeans-ai/)
+[![Maven Central](https://img.shields.io/maven-central/v/uno.anahata/anahata-ai-nb)](https://central.sonatype.com/artifact/uno.anahata/anahata-ai-nb)
+[![Javadoc](https://img.shields.io/badge/Javadoc-Reference-blue)](https://anahata.uno/apidocs/)
+[![Deploy Javadoc](https://github.com/anahata-os/anahata-netbeans-ai/actions/workflows/javadoc.yml/badge.svg)](https://anahata.uno/apidocs/)
 
 **Stop accepting "almost right." Demand an AI that truly understands your workspace.**
 
@@ -126,7 +126,7 @@ We believe in **Explicit Consent**. Anahata never acts without your approval. Ev
     <td align="center">
       <a href="docs/screenshots/tool-confirmation-overview.png"><img src="docs/screenshots/tool-confirmation-overview.png" width="100%" alt="Full Audit Trail"></a><br>
       <b>Full Audit Trail</b><br>
-      A transparent history of every tool call and its outcome.
+       a transparent history of every tool call and its outcome.
     </td>
   </tr>
 </table>
