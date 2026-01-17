@@ -51,7 +51,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.version>RELEASE280</netbeans.version>
         <maven.compiler.release>17</maven.compiler.release>
-        
     </properties>
     <repositories>
         <repository>
@@ -98,7 +97,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
