@@ -1,5 +1,5 @@
 /* Licensed under the Apache License, Version 2.0 */
-package uno.anahata.ai.nb.tools.deprecated;
+package uno.anahata.ai.nb.tools;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -205,11 +205,12 @@ public class MavenTools {
                 return resultBuilder.pomModificationSuccess(false).summary(summary.toString()).build();
             }
 
-            String effectiveScope = (scope == null || scope.isBlank()) ? "compile" : scope;
-            String effectiveType = (type == null || type.isBlank()) ? "jar" : type;
+            String effectiveScope = (scope == null || scope.isBlank()) ? null : scope;
+            String effectiveType = (type == null || type.isBlank()) ? null : type;
             String effectiveClassifier = (classifier == null || classifier.isBlank()) ? null : classifier;
             
-            ModelUtils.addDependency(pom, groupId, artifactId, version, effectiveClassifier, effectiveScope, effectiveType, false);
+            // ModelUtils.addDependency signature: (FileObject, String, String, String, String type, String scope, String classifier, boolean isTest)
+            ModelUtils.addDependency(pom, groupId, artifactId, version, effectiveType, effectiveScope, effectiveClassifier, false);
             resultBuilder.pomModificationSuccess(true);
             summary.append("Result: SUCCESS. Dependency added to pom.xml.\n\n");
 
