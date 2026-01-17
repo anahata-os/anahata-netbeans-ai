@@ -42,7 +42,6 @@ import uno.anahata.ai.nb.model.maven.DependencyScope;
 import uno.anahata.ai.nb.model.projects.ProjectFile;
 import uno.anahata.ai.nb.model.projects.ProjectOverview;
 import uno.anahata.ai.nb.model.projects.SourceFolder;
-import uno.anahata.ai.nb.tools.deprecated.MavenTools;
 
 @Slf4j
 public class Projects {
