@@ -29,9 +29,16 @@ jobs:
         run: |
           # Create a temporary deployment directory
           mkdir -p _site
-          # Copy the static website from docs/ (includes CNAME)
+          
+          # 1. Copy the static website from docs/
           cp -r docs/* _site/
-          # Inject the generated Javadocs into the apidocs/ subfolder
+          
+          # 2. Explicitly copy the CNAME file from the root
+          if [ -f CNAME ]; then
+            cp CNAME _site/
+          fi
+          
+          # 3. Inject the generated Javadocs into the apidocs/ subfolder
           # Note: We've explicitly set the outputDirectory to target/reports/apidocs in the pom.xml
           mkdir -p _site/apidocs
           cp -r target/reports/apidocs/* _site/apidocs/
