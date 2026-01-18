@@ -38,8 +38,10 @@ jobs:
             cp CNAME _site/
           fi
           
-          # 3. Inject the generated Javadocs into the apidocs/ subfolder
-          # Note: We've explicitly set the outputDirectory to target/reports/apidocs in the pom.xml
+          # 3. Create .nojekyll to prevent GitHub from processing the site
+          touch _site/.nojekyll
+          
+          # 4. Inject the generated Javadocs into the apidocs/ subfolder
           mkdir -p _site/apidocs
           cp -r target/reports/apidocs/* _site/apidocs/
           
