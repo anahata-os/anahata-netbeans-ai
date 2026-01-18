@@ -6,10 +6,10 @@ This document provides the essential, high-level overview of the `anahata-netbea
 This project is the flagship host application for the `gemini-java-client`. It integrates the Anahata AI Assistant directly into the Apache NetBeans IDE, providing a deeply context-aware development partner.
 
 ## 2. Recent Milestones
+- **GitHub Actions Migration (Modern Deployment):** Successfully transitioned from branch-based deployment to a direct GitHub Actions workflow. This enables automated Javadoc generation and injection into the website without polluting the `master` branch.
+- **Automated Javadoc Integration:** Javadocs are now automatically generated and served at `www.anahata.uno/apidocs/` using a custom "merge" strategy in CI.
 - **V1 Website Launch:** Completed the `anahata.uno` website (hosted in `/docs`) with a high-impact design, categorized screenshots, and a "Sextete of Productivity" narrative.
-- **Dual Licensing:** Implemented a dual-license model:
-    - **Apache License 2.0:** For open-source community use.
-    - **ASL V108 (The Immutable Edict):** A custom, personality-driven license for commercial use and "fair play" contributions.
+- **Dual Licensing:** Implemented a dual-license model (Apache 2.0 and ASL V108).
 - **Tech Stack Branding:** Integrated official NetBeans, Java, and Maven branding into the project's public presence.
 
 ## 3. Architectural Overview
@@ -21,15 +21,10 @@ The plugin is designed with a clear separation of concerns:
 - `uno.anahata.ai.nb.mime`: Editor integration and syntax highlighting.
 
 ## 4. CI/CD & Website Deployment
-
-- **GitHub Actions:** The `.github/workflows/javadoc.yml` workflow manages the deployment to GitHub Pages (branch `gh-pages`).
+- **GitHub Actions:** The `.github/workflows/javadoc.yml` workflow manages the deployment.
+- **Deployment Method:** Uses `actions/deploy-pages` for direct deployment from the build runner.
 - **Custom Domain:** Uses `www.anahata.uno` (configured via `CNAME`).
-- **Deployment Process:**
-    1.  Static website content is copied from the `docs/` directory to the site root.
-    2.  Javadocs are generated using Maven and injected into the `apidocs/` subfolder.
-- **URLs:**
-    - Main Website: [https://www.anahata.uno](https://www.anahata.uno)
-    - Javadoc Reference: [https://www.anahata.uno/apidocs/](https://www.anahata.uno/apidocs/)
+- **Detailed Strategy**: See `ci.md` for the full CI/CD and Javadoc strategy.
 
 ## 5. Coding Principles
 - **Domain-Driven Design (DDD):** Models are expressive and contain domain logic.
