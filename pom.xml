@@ -648,8 +648,10 @@
                             <docfilessubdirs>true</docfilessubdirs>
                             <detectJavaApiLink>false</detectJavaApiLink>
                             <links>
+                                <!--
                                 <link>https://www.slf4j.org/apidocs/</link>
                                 <link>https://guava.dev/releases/33.5.0-jre/api/docs/</link>
+                                -->
                                 <link>https://anahata-os.github.io/gemini-java-client/</link>
                             </links>
                             <top>
