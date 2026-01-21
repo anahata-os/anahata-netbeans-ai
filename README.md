@@ -17,6 +17,21 @@ Anahata is an unprecedented, deeply integrated AI assistant for the Apache NetBe
 
 ---
 
+## 📢 Latest Release: 28.0.5 (Critical Windows Fix)
+
+We've released **v28.0.5** today to address a critical startup issue on Windows. 
+
+### ⚡ Get Updates "On-The-Day"
+To receive critical bug fixes and experimental updates immediately (without waiting weeks for official verification), please install the **NetBeans Community Experimental Update Center**:
+
+1.  Go to **Tools** &rarr; **Plugins** &rarr; **Settings**.
+2.  Click **Add**.
+3.  **Name:** `NetBeans Community Experimental Catalog`
+4.  **URL:** `https://plugins.netbeans.apache.org/data/28/catalog-experimental.xml.gz`
+5.  Tick both boxes for the latest updates.
+
+---
+
 ## ✨ The "Deep Strike" Philosophy: Beyond Autocomplete
 
 While other AI tools are just glorified autocomplete, Anahata is a true IDE partner. We win by executing a "Deep Strike" beyond surface-level code suggestions, targeting the core of the development workflow.
