@@ -17,9 +17,12 @@ Anahata is an unprecedented, deeply integrated AI assistant for the Apache NetBe
 
 ---
 
-## 📢 Latest Release: 28.0.5 (Critical Windows Fix)
+## 📢 Latest Release: 28.0.6 (JSON & Pruning Fix)
 
-We've released **v28.0.5** today to address a critical startup issue on Windows. 
+We've released **v28.0.6** today (Jan 22, 2026). This release includes critical improvements since the last verified version (28.0.4):
+
+- **v28.0.6:** Fixed a bug in JSON serialization and improved `thoughtSignature` retention for aggressive pruning scenarios.
+- **v28.0.5:** Addressed a critical startup issue on Windows.
 
 ### ⚡ Instant Updates on your IDE
 Get critical bug fixes and the latest features the same day they are released to maven central. To receive critical bug fixes and experimental updates immediately (without waiting weeks for official verification), please install the **NetBeans Community Experimental Update Center**:
