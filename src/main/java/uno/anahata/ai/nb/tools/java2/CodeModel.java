@@ -28,6 +28,7 @@ import uno.anahata.ai.nb.model.java2.JavaType;
 import uno.anahata.ai.nb.model.java2.JavaTypeSearch;
 import uno.anahata.ai.tools.AIToolMethod;
 import uno.anahata.ai.tools.AIToolParam;
+import uno.anahata.ai.tools.ContextBehavior;
 import uno.anahata.ai.tools.spi.pojos.FileInfo;
 
 /**
@@ -74,7 +75,8 @@ public class CodeModel {
      * @return the content of the source file.
      * @throws Exception if the source cannot be retrieved.
      */
-    @AIToolMethod("Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow.")
+    @AIToolMethod("Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow. Note this tool doesnt return"
+            + " a FileInfo and it is not stateful, usefull for a quick peack on dependency sources as it gets automatically prunned after 5 user turns")
     public static String getTypeSources(
             @AIToolParam("The minimalist keychain DTO from a findTypes call.") JavaType javaType) throws Exception {
         return javaType.getSource().getContent();
@@ -99,10 +101,13 @@ public class CodeModel {
      * @return a FileInfo object containing the source code.
      * @throws Exception if the source cannot be found.
      */
-    @AIToolMethod("Gets the source for a type using a specific project's classpath. This is the 'Ctrl+Click', context-aware, one-turn tool.")
+    @AIToolMethod(value = "Gets the source for a type using a specific project's classpath. This is the 'Ctrl+Click', context-aware, one-turn tool. "
+            + "This getSources method is very similar to JavaSources.getSource in the sense that the loaded FileInfo will stay in context but the implementation "
+            + "is a bit different"
+            + "a ", behavior = ContextBehavior.STATEFUL_REPLACE)    
     public static FileInfo getSources(
             @AIToolParam("The simple or FQN of the type.") String typeName,
-            @AIToolParam("The absolute path of the project directory to use for context.") String projectDirectoryPath) throws Exception {
+            @AIToolParam("The absolute path of the project directory to use for 'Ctrl+Click' context.") String projectDirectoryPath) throws Exception {
 
         Project project = findProject(projectDirectoryPath);
 
