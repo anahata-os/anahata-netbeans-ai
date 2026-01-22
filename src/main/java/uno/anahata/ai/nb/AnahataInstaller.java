@@ -18,7 +18,7 @@ import org.openide.windows.WindowManager;
 import uno.anahata.ai.AnahataConfig;
 import uno.anahata.ai.nb.util.ElementHandleModule;
 import uno.anahata.ai.nb.util.NetBeansModuleUtils;
-import uno.anahata.ai.tools.schema.SchemaProvider2;
+import uno.anahata.ai.tools.schema.SchemaProvider;
 
 /**
  * The NetBeans module installer responsible for lifecycle management.
@@ -43,7 +43,7 @@ public class AnahataInstaller extends ModuleInstall {
         NetBeansModuleUtils.initRunningJVM();
         
         // Register the ElementHandle module for global JSON support in the IDE
-        SchemaProvider2.OBJECT_MAPPER.registerModule(new ElementHandleModule());
+        SchemaProvider.OBJECT_MAPPER.registerModule(new ElementHandleModule());
 
         File handoffFile = getHandoffFile();
         if (handoffFile.exists()) {
