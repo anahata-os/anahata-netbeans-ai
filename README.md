@@ -24,14 +24,15 @@ We've released **v28.0.6** today (Jan 22, 2026). This release includes critical 
 - **v28.0.6:** Fixed a bug in JSON serialization and improved `thoughtSignature` retention for aggressive pruning scenarios.
 - **v28.0.5:** Addressed a critical startup issue on Windows.
 
-### ⚡ Instant Updates on your IDE
-Get critical bug fixes and the latest features the same day they are released to maven central. To receive critical bug fixes and experimental updates immediately (without waiting weeks for official verification), please install the **NetBeans Community Experimental Update Center**:
+### ⚡ Instant Updates & Critical Hotfixes
+Get the latest Anahata features and essential bug fixes the moment they're released to Maven Central.
 
-1.  Go to **Tools** &rarr; **Plugins** &rarr; **Settings**.
-2.  Click **Add**.
-3.  **Name:** `NetBeans Community Experimental Catalog`
-4.  **URL:** `https://plugins.netbeans.apache.org/data/28/catalog-experimental.xml.gz`
-5.  Tick both boxes for the latest updates.
+<a href="https://anahata.uno/instant_updates.html" target="_blank" style="text-decoration: none;">
+    <img src="https://img.shields.io/maven-central/v/uno.anahata/anahata-ai-nb" alt="Maven Central Latest Version" style="height: 25px; vertical-align: middle; margin-right: 10px;">
+</a>
+<span style="font-size: 1rem; color: #333;">Latest Version on Maven Central</span>
+
+For details on how to install these updates, visit our [Instant Updates & Critical Hotfixes page](https://anahata.uno/instant_updates.html).
 
 ---
 

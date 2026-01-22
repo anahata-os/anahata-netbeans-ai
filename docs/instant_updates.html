@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anahata | Instant Updates & Hotfixes</title>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <img src="assets/logo-horizontal.png" alt="Anahata Logo" class="nav-logo">
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="https://www.youtube.com/@anahata108" target="_blank" title="Anahata TV"><i class="fab fa-youtube"></i></a>
+                <a href="https://discord.gg/M396BNtX" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://github.com/anahata-os/anahata-asi" target="_blank" class="v2-badge">v2 is coming!</a>
+                <a href="https://github.com/sponsors/anahata-os" class="btn-sponsor">Sponsor <i class="fas fa-heart"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero" style="height: auto; min-height: 60vh; display: flex; align-items: center; padding: 4rem 0;">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content" style="text-align: center;">
+            <h1 class="fade-in">Instant Updates & Critical Hotfixes</h1>
+            <p class="tagline fade-in-delay">Get the latest Anahata features and essential bug fixes the moment they're released to Maven Central, without waiting for official plugin portal verification.</p>
+            <div class="fade-in-delay-2" style="margin-top: 2rem;">
+                <a href="https://central.sonatype.com/artifact/uno.anahata/anahata-ai-nb" target="_blank" style="text-decoration: none;">
+                    <img src="https://img.shields.io/maven-central/v/uno.anahata/anahata-ai-nb" alt="Maven Central Latest Version" style="height: 30px; vertical-align: middle; margin-right: 10px;">
+                </a>
+                <span style="font-size: 1.2rem; color: var(--white);">Latest Version on Maven Central</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="installation" class="container" style="padding: 4rem 0;">
+            <div class="section-header">
+                <h2>How to Install Critical Hotfixes</h2>
+                <p>To receive critical bug fixes and the very latest features immediately, please install the <strong>NetBeans Community Hotfix Update Center</strong>:</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Open Plugins Settings</h3>
+                    <p>Go to <strong>Tools</strong> &rarr; <strong>Plugins</strong> &rarr; <strong>Settings</strong>.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Add Update Center</h3>
+                    <p>Click the <strong>Add</strong> button.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Enter Details</h3>
+                    <p>Use the following details:</p>
+                    <ul>
+                        <li><strong>Name:</strong> <code>NetBeans Community Hotfix Catalog</code></li>
+                        <li><strong>URL:</strong> <code>https://plugins.netbeans.apache.org/data/28/catalog-experimental.xml.gz</code></li>
+                    </ul>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Enable & Update</h3>
+                    <p>Tick both boxes for the newly added catalog. Then, go to the <strong>Available Plugins</strong> tab and click <strong>Check for Newest</strong> to see the latest updates.</p>
+                    <div style="margin-top: 1.5rem;">
+                        <a href="screenshots/nbexperimental3.png" target="_blank">
+                            <img src="screenshots/nbexperimental3.png" alt="NetBeans Experimental Update Center Screenshot" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="benefits" class="dark-bg" style="padding: 4rem 0;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Why Use the Hotfix Update Center?</h2>
+                    <p>Stay ahead with immediate access to:</p>
+                </div>
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <i class="fas fa-bug"></i>
+                        <h3>Rapid Bug Fixes</h3>
+                        <p>Get critical bug resolutions the same day they are identified and patched.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-rocket"></i>
+                        <h3>Latest Features</h3>
+                        <p>Access new functionalities and improvements as soon as they are stable.</p>
+                    </div>
+                    <div class="benefit-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Enhanced Stability</h3>
+                        <p>Ensure your Anahata plugin is always running with the most stable and performant code.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <button id="back-to-top" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="assets/logo-horizontal.png" target="_blank">
+                    <img src="assets/logo-horizontal.png" alt="Anahata Logo">
+                </a>
+                <p>Built with passion for the NetBeans community.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Community</h4>
+                <a href="https://www.youtube.com/@anahata108" target="_blank">Anahata TV</a>
+                <a href="https://discord.gg/M396BNtX" target="_blank">Discord Server</a>
+                <a href="https://github.com/anahata-os/anahata-netbeans-ai/issues">Issues</a>
+                <a href="https://github.com/sponsors/anahata-os">Sponsor</a>
+            </div>
+            <div class="footer-legal">
+                <h4>Legal</h4>
+                <a href="ASL_108.html">ASL V108 (The Immutable Edict)</a>
+                <a href="LICENSE.html">Apache License 2.0</a>
+                <p>&copy; 2025 Anahata. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Back to Top Button
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.style.display = "block";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        };
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
