@@ -76,7 +76,7 @@ public class CodeModel {
      * @throws Exception if the source cannot be retrieved.
      */
     @AIToolMethod("Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow. Note this tool doesnt return"
-            + " a FileInfo and it is not stateful, usefull for a quick peack on dependency sources as it gets automatically prunned after 5 user turns")
+            + " a FileInfo and it is not stateful, usefull for a quick peek on dependency sources as it gets automatically prunned after 5 user turns")
     public static String getTypeSources(
             @AIToolParam("The minimalist keychain DTO from a findTypes call.") JavaType javaType) throws Exception {
         return javaType.getSource().getContent();
