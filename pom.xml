@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
-    <version>28.0.7-SNAPSHOT</version>
+    <version>28.0.7</version>
     <packaging>nbm</packaging>
     <name>Anahata</name>
     <description><![CDATA[
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.7-SNAPSHOT</version>
+            <version>1.0.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
