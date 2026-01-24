@@ -93,7 +93,29 @@ public class Coding {
             throw new IOException("The source file does not exist: " + filePath);
         }
 
-        // Stale file checks
+        // Context Status Check
+        ResourceTracker rt = Chat.getCallingInstance().getContextManager().getResourceTracker();
+        Optional<StatefulResourceStatus> contextStatusOpt = rt.getStatefulResourcesOverview().stream()
+                .filter(s -> s.getResourceId().equals(filePath))
+                .findFirst();
+        
+        boolean isAnahataMd = filePath.endsWith("anahata.md");
+        
+        if (!isAnahataMd) {
+            if (contextStatusOpt.isEmpty()) {
+                throw new RuntimeException("Context Error: The file at " + filePath 
+                        + " is not in your context. You must call LocalFiles.readFile to load it "
+                        + "before proposing changes.");
+            }
+            if (contextStatusOpt.get().getStatus() != ResourceStatus.VALID) {
+                throw new RuntimeException("Context Sync Error: The file at " + filePath 
+                        + " is marked as " + contextStatusOpt.get().getStatus() + " in your context. "
+                        + "You must call LocalFiles.readFile to refresh your context "
+                        + "before proposing changes to ensure you are working with the latest version on disk.");
+            }
+        }
+
+        // Stale file checks (Optimistic Locking)
         if (originalFile.lastModified() != lastModified) {
             throw new IOException("Optimistic Locking Exception. File has been modified on disk. You provided: " + lastModified + ", current: " + originalFile.lastModified());
         }
@@ -101,7 +123,6 @@ public class Coding {
         // Hallucination Check: Is the model proposing a change that does nothing?
         String currentContent = Files.readString(originalFile.toPath());
         if (currentContent.equals(proposedContent)) {
-            ResourceTracker rt = Chat.getCallingInstance().getContextManager().getResourceTracker();
             Optional<StatefulResourceStatus> statusOpt = rt.getStatefulResourcesOverview().stream()
                     .filter(s -> s.getResourceId().equals(filePath) && s.getStatus() == ResourceStatus.VALID)
                     .findFirst();

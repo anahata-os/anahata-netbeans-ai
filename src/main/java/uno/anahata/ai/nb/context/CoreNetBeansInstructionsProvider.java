@@ -3,6 +3,7 @@ package uno.anahata.ai.nb.context;
 
 import com.google.genai.types.Part;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ import uno.anahata.ai.nb.AnahataTopComponent;
 import uno.anahata.ai.nb.tools.IDE;
 import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.tools.MavenTools;
+import uno.anahata.ai.tools.spi.RunningJVM;
 
 /**
  * Provides core instructions and environment details for the Anahata NetBeans plugin.
@@ -36,14 +38,11 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
     @Override
     @SneakyThrows
     public List<Part> getParts(Chat chat) {
-        String text = """
+        List<Part> parts = new ArrayList<>();
+        
+        String mainText = """
                       Your host environment is the Anahata NetBeans plugin.
                       The main TopComponent class of the plugin is: %s
-
-                      ## Runtime Environment & Classpath ("Hot Reload")
-                      You are executing within the NetBeans Platform's OSGi-like module system. All active IDE modules are on the classpath.
-                      The `NetBeansProjectJVM` tool provides a powerful "hot-reload" capability by leveraging NetBeans' **Compile on Save** feature. It dynamically constructs a classpath that **prioritizes** the target project's own build directories (e.g., `target/classes`). This ensures that any code you compile and execute will use the very latest, unsaved changes directly from the editor, without requiring a project rebuild.
-                      **IMPORTANT:** Be extremely careful when using this tool on NetBeans Modules (NBMs). If you include dependencies that are already provided by the IDE (like NetBeans Platform APIs), you will cause fatal `LinkageError` exceptions.
 
                       ## Project-Specific Instructions (`anahata.md` & `tasks.md`)
                       The `anahata.md` file, located in a project's root, is your primary source for its specific architecture, goals, and principles. Its content is **automatically included** in your context on every turn by the `ProjectOverviewContextProvider`. The `AnahataNodeFactory` will automatically create this file if it is missing. The project's actionable task board is located in `tasks.md`.
@@ -103,7 +102,38 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
                 MavenTools.getMavenPath()
         );
 
-        return Collections.singletonList(Part.fromText(text));
+        parts.add(Part.fromText(mainText));
+        
+        String runtimeText = """
+                      ## Runtime Environment & Classpath Visibility
+                      You are executing within the NetBeans Platform's OSGi-like module system. Access to other IDE modules is strictly controlled:
+                      - **Public API Access:** You can access public packages of **all** the NetBeans modules listed in the pretty-printed compiler classpath below.
+                      - **Implementation Access:** You have access to the **private/internal packages** of the following modules (marked as `impl` in the plugin's configuration):
+                        - `org.netbeans.modules.versioning.core`
+                        - `org.netbeans.modules.java.source`
+                        - `org.netbeans.modules.java.source.base`
+                        - `org.netbeans.modules.java.sourceui`
+                        - `org.netbeans.modules.java.project`
+                        - `org.netbeans.modules.java.project.ui`
+                        - `org.netbeans.modules.jumpto`
+                        - `org.netbeans.modules.code.analysis`
+                        - `org.netbeans.modules.maven`
+                        - `org.netbeans.modules.maven.embedder`
+                        - `org.netbeans.modules.maven.indexer`
+                      - **Plugin Dependencies:** You have full access to all packages of the plugin's own dependencies (e.g., `gemini-java-client`, `gson`, `jsoup`).
+                      
+                      The default compiler classpath for JVM tools is initialized at startup to the plugin's own runtime classpath.
+                      
+                      ## Default Compiler Classpath (Grouped View)
+                      The following is a grouped view of the JARs available on your default classpath. Note that the actual classpath contains hundreds of individual JARs. 
+                      If you need the full, flat list of absolute paths (e.g., for debugging or complex compilation), call `RunningJVM.getDefaultCompilerClasspath()`.
+
+                      %s
+                      """.formatted(RunningJVM.getPrettyPrintedDefaultCompilerClasspath());
+        
+        parts.add(Part.fromText(runtimeText));
+
+        return parts;
     }
 
     /**
