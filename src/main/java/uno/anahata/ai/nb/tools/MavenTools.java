@@ -4,6 +4,7 @@ package uno.anahata.ai.nb.tools;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.model.Dependency;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -32,11 +34,12 @@ import org.netbeans.modules.maven.api.execute.RunUtils;
 import org.netbeans.modules.maven.embedder.EmbedderFactory;
 import org.netbeans.modules.maven.embedder.MavenEmbedder;
 import org.netbeans.modules.maven.execute.MavenCommandLineExecutor;
+import org.netbeans.modules.maven.execute.cmd.ExecMojo;
+import org.netbeans.modules.maven.execute.cmd.ExecutionEventObject;
 import org.netbeans.modules.maven.indexer.api.NBVersionInfo;
 import org.netbeans.modules.maven.indexer.api.QueryField;
 import org.netbeans.modules.maven.indexer.api.RepositoryPreferences;
 import org.netbeans.modules.maven.indexer.api.RepositoryQueries;
-import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
@@ -58,7 +61,6 @@ import uno.anahata.ai.nb.model.maven.MavenBuildResult;
 import uno.anahata.ai.nb.model.maven.MavenSearchResultPage;
 import uno.anahata.ai.nb.model.maven.ResolvedDependencyGroup;
 import uno.anahata.ai.nb.model.maven.ResolvedDependencyScope;
-import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.util.TeeInputOutput;
 
 /**
@@ -84,7 +86,8 @@ public class MavenTools {
      * @return a MavenSearchResultPage containing the found artifacts.
      * @throws Exception if an error occurs.
      */
-    @AIToolMethod("Searches the Maven index for artifacts matching a given query. The search is performed across all configured repositories (local, remote, and project-specific).")
+    @AIToolMethod("Searches the Maven index for artifacts matching a given query. The search is performed across all configured repositories (local, remote, and project-specific). "
+            + "IMPORTANT: This tool only supports simple keyword queries (e.g., 'junit platform'). It does NOT support advanced syntax like 'artifactId:' or 'groupId:'.")
     public static MavenSearchResultPage searchMavenIndex(
             @AIToolParam("The search query, with terms separated by spaces (e.g., 'junit platform').") String query,
             @AIToolParam("The starting index (0-based) for pagination. Defaults to 0 if null.") Integer startIndex,
@@ -492,7 +495,59 @@ public class MavenTools {
         TextChunk stdoutChunk = TextUtils.processText(capturedOutput, startIndex, MAX_OUTPUT_LINES, null, MAX_LINE_LENGTH);
         TextChunk stderrChunk = TextUtils.processText(capturedError, 0, null, null, MAX_LINE_LENGTH); // Show all of stderr, but truncate long lines
 
-        return new MavenBuildResult(status, exitCode, stdoutChunk, stderrChunk, logFilePath);
+        List<MavenBuildResult.BuildPhase> phases = extractBuildPhases(executor);
+
+        return new MavenBuildResult(status, exitCode, stdoutChunk, stderrChunk, logFilePath, phases);
+    }
+
+    private static List<MavenBuildResult.BuildPhase> extractBuildPhases(MavenCommandLineExecutor executor) {
+        List<MavenBuildResult.BuildPhase> phases = new ArrayList<>();
+        try {
+            // Path: executor -> tabContext -> overview -> root
+            Field tabContextField = executor.getClass().getSuperclass().getDeclaredField("tabContext");
+            tabContextField.setAccessible(true);
+            Object tabContext = tabContextField.get(executor);
+            if (tabContext == null) return phases;
+
+            Field overviewField = tabContext.getClass().getDeclaredField("overview");
+            overviewField.setAccessible(true);
+            Object overview = overviewField.get(tabContext);
+            if (overview == null) return phases;
+
+            Field rootField = overview.getClass().getDeclaredField("root");
+            rootField.setAccessible(true);
+            ExecutionEventObject.Tree tree = (ExecutionEventObject.Tree) rootField.get(overview);
+            
+            if (tree != null) {
+                collectPhases(tree, phases);
+            }
+        } catch (Exception e) {
+            LOG.log(Level.FINE, "Could not extract build phases via reflection", e);
+        }
+        return phases;
+    }
+
+    private static void collectPhases(ExecutionEventObject.Tree node, List<MavenBuildResult.BuildPhase> phases) {
+        ExecutionEventObject start = node.getStartEvent();
+        ExecutionEventObject end = node.getEndEvent();
+
+        if (start instanceof ExecMojo) {
+            ExecMojo mojo = (ExecMojo) start;
+            boolean success = false;
+            if (end != null) {
+                success = ExecutionEvent.Type.MojoSucceeded.equals(end.type);
+            }
+            phases.add(new MavenBuildResult.BuildPhase(
+                mojo.phase, 
+                mojo.plugin.getId() + ":" + mojo.goal, 
+                success, 
+                0 // Duration calculation would require timestamps from events
+            ));
+        }
+
+        for (ExecutionEventObject.Tree child : node.getChildrenNodes()) {
+            collectPhases(child, phases);
+        }
     }
     
     /**

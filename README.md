@@ -17,10 +17,12 @@ Anahata is an unprecedented, deeply integrated AI assistant for the Apache NetBe
 
 ---
 
-## 📢 Latest Release: 28.0.6 (JSON & Pruning Fix)
+## 📢 Latest Release: 28.0.8 (gemini-java-client 1.0.8)
 
-We've released **v28.0.6** today (Jan 22, 2026). This release includes critical improvements since the last verified version (28.0.4):
+We've released **v28.0.8** today (Jan 24, 2026). This release includes critical improvements since the last verified version (28.0.4):
 
+- **v28.0.8:** gemini-java-client 1.0.8 upgrade (Kill switch, togglable tools, support panel), session nicknames, agent spawning, and compact maven build summaries.
+- **v28.0.7:** Upgraded google-genai to 1.36.0.
 - **v28.0.6:** Fixed a bug in JSON serialization and improved `thoughtSignature` retention for aggressive pruning scenarios.
 - **v28.0.5:** Addressed a critical startup issue on Windows.
 

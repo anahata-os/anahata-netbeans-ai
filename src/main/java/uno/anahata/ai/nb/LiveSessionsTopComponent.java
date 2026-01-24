@@ -37,7 +37,7 @@ import uno.anahata.ai.swing.SwingChatConfig;
         preferredID = "LiveSessionsTopComponent",
         iconBase = "icons/anahata_16.png",
         persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED)
-@TopComponent.Registration(mode = "explorer", openAtStartup = true, position = 100)
+@TopComponent.Registration(mode = "output", openAtStartup = true, position = 100)
 @ActionID(category = "Window", id = "uno.anahata.nb.ai.LiveSessionsTopComponent")
 @ActionReference(path = "Menu/Window", position = 100)
 @TopComponent.OpenActionRegistration(

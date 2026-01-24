@@ -37,4 +37,6 @@ Available tools are registered in `NetBeansChatConfig.getToolClasses()`.
 ## 7. Very Important Notes
 - **Do not "clean" the project** to avoid deleting runtime JARs.
 - **nbmreload** is the preferred way to test changes to tools or dependencies.
+- **IMPORTANT (nbmreload & Context):** When you invoke `nbmreload`, the NetBeans module classloader disposes of all old classes. To preserve continuity, the current conversation context is automatically serialized to a Kryo file. After the reload, the new version of the plugin loads this saved context (using the same UUID) into a fresh `AnahataTopComponent` instance. **You must totally stop your current task** before reloading, as the `Chat` instance is entirely replaced.
+- **IMPORTANT (gemini-java-client Dependency):** Since `gemini-java-client` is the main dependency of this plugin, you **must** run `maven clean install` on the `gemini-java-client` project before reloading the plugin if any changes have been made to the client. "Compile on Save" does not build the JAR, and `nbmreload` packages the plugin using JARs, not the `target/classes` directory.
 - **Hot Reload:** Use `NetBeansProjectJVM.compileAndExecuteInProject` for rapid testing of logic within the IDE's JVM.

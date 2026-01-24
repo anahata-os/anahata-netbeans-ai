@@ -3,9 +3,7 @@ package uno.anahata.ai.nb;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.swing.table.AbstractTableModel;
-import org.apache.commons.lang3.StringUtils;
 import uno.anahata.ai.Chat;
 import uno.anahata.ai.status.ChatStatus;
 

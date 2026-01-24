@@ -1,17 +1,26 @@
 /* Licensed under the Apache License, Version 2.0 */
 package uno.anahata.ai.nb;
 
+import com.google.genai.types.Content;
+import com.google.genai.types.Part;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +33,9 @@ import uno.anahata.ai.Chat;
 import uno.anahata.ai.status.ChatStatus;
 import uno.anahata.ai.status.StatusListener;
 import uno.anahata.ai.swing.ChatPanel;
+import uno.anahata.ai.swing.SwingChatConfig;
 import uno.anahata.ai.nb.mime.NetBeansEditorKitProvider;
+import uno.anahata.ai.swing.IconUtils;
 
 /**
  * The main TopComponent for the Anahata AI Assistant plugin.
@@ -45,6 +56,9 @@ public final class AnahataTopComponent extends TopComponent implements Externali
 
     private transient ChatPanel chatPanel;
     private transient boolean isInitialized = false;
+    private transient String startupMessage;
+    private transient List<Part> startupParts;
+    private transient String nickname;
 
     @Getter
     @Setter
@@ -59,6 +73,19 @@ public final class AnahataTopComponent extends TopComponent implements Externali
         setName("Anahata");
         setDisplayName("Anahata");
         ALL_SESSIONS.add(this);
+    }
+
+    /**
+     * Constructor that allows starting a session with an initial message and optional parts (like images).
+     * @param initialMessage The first text message to send.
+     * @param initialParts Optional parts (e.g., screenshots) to include in the first message.
+     * @param nickname An optional nickname for the session.
+     */
+    public AnahataTopComponent(String initialMessage, List<Part> initialParts, String nickname) {
+        this();
+        this.startupMessage = initialMessage;
+        this.startupParts = initialParts;
+        this.nickname = nickname;
     }
 
     /**
@@ -90,6 +117,29 @@ public final class AnahataTopComponent extends TopComponent implements Externali
     }
 
     @Override
+    public Action[] getActions() {
+        List<Action> actions = new ArrayList<>(Arrays.asList(super.getActions()));
+        actions.add(null); // Separator
+        AbstractAction setNicknameAction = new AbstractAction("Set Nickname...") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String currentNickname = getChat().getNickname();
+                String newNickname = JOptionPane.showInputDialog(WindowManager.getDefault().getMainWindow(),
+                        "Enter a nickname for this session:",
+                        currentNickname != null ? currentNickname : "");
+                if (newNickname != null) {
+                    log.info("Changing nickname for session {} to: {}", sessionUuid, newNickname);
+                    getChat().setNickname(newNickname);
+                    updateTitleAndTooltip(getChat().getStatusManager().getCurrentStatus(), null);
+                }
+            }
+        };
+        setNicknameAction.putValue(Action.SMALL_ICON, IconUtils.getIcon("anahata_16.png"));
+        actions.add(setNicknameAction);
+        return actions.toArray(new Action[0]);
+    }
+
+    @Override
     public void componentOpened() {
         logId("componentOpened()");
         // This block runs only ONCE in the lifetime of the instance to create the session and UI.
@@ -102,13 +152,41 @@ public final class AnahataTopComponent extends TopComponent implements Externali
             setLayout(new BorderLayout());
             NetBeansChatConfig config = new NetBeansChatConfig(sessionUuid);
             
-            // Use the new, simplified ChatPanel constructor
             chatPanel = new ChatPanel(config, new NetBeansEditorKitProvider());
             add(chatPanel, BorderLayout.CENTER); 
             
-            chatPanel.checkAutobackupOrStartupContent();
             getChat().addStatusListener(this);
-            statusChanged(getChat().getStatusManager().getCurrentStatus(), null);
+            
+            if (nickname != null) {
+                getChat().setNickname(nickname);
+            }
+
+            // Handle programmatic startup content vs automatic backup/startup check
+            if (StringUtils.isNotBlank(startupMessage) || (startupParts != null && !startupParts.isEmpty())) {
+                log.info("Programmatic start detected. Skipping backup check.");
+                final String msg = startupMessage;
+                final List<Part> parts = startupParts != null ? new ArrayList<>(startupParts) : new ArrayList<>();
+                
+                new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        List<Part> allParts = new ArrayList<>();
+                        if (StringUtils.isNotBlank(msg)) {
+                            allParts.add(Part.fromText(msg));
+                        }
+                        allParts.addAll(parts);
+                        getChat().sendContent(Content.builder().role("user").parts(allParts).build());
+                        return null;
+                    }
+                }.execute();
+                
+                startupMessage = null;
+                startupParts = null;
+            } else {
+                chatPanel.checkAutobackupOrStartupContent();
+            }
+
+            updateTitleAndTooltip(getChat().getStatusManager().getCurrentStatus(), null);
             isInitialized = true;
         }
     }
@@ -116,8 +194,6 @@ public final class AnahataTopComponent extends TopComponent implements Externali
     @Override
     public void componentClosed() {
         logId("componentClosed()");
-        // The UI panel is no longer removed. The NetBeans framework handles hiding/showing the TopComponent.
-        // The underlying Chat session continues to run in the background.
     }
 
     /**
@@ -178,27 +254,23 @@ public final class AnahataTopComponent extends TopComponent implements Externali
 
     @Override
     public void statusChanged(ChatStatus newStatus, String lastExceptionToString) {
-        SwingUtilities.invokeLater(() -> {
-            if (getChat() == null) {
-                return; // Guard against race conditions on close
-            }
-            Color color = getNetBeansChatConfig().getColor(newStatus);
-            String hexColor = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+        SwingUtilities.invokeLater(() -> updateTitleAndTooltip(newStatus, lastExceptionToString));
+    }
 
-            String displayName = StringUtils.isNotBlank(getChat().getNickname())
-                               ? getChat().getNickname()
-                               : getChat().getShortId();
+    private void updateTitleAndTooltip(ChatStatus status, String error) {
+        if (getChat() == null) return;
 
-            String statusText = newStatus.getDisplayName();
+        Color color = SwingChatConfig.getColor(status);
+        String hexColor = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+        String displayName = getChat().getDisplayName();
 
-            setDisplayName("Anahata - " + displayName);
-            setHtmlDisplayName("<html><font color='" + hexColor + "'>Anahata - " + displayName + "</font></html>");
+        setDisplayName("Anahata - " + displayName);
+        setHtmlDisplayName("<html><font color='" + hexColor + "'>Anahata - " + displayName + "</font></html>");
 
-            String tooltip = "Anahata Session: " + sessionUuid + " [" + statusText + "]";
-            if (lastExceptionToString != null) {
-                tooltip += " - Error: " + lastExceptionToString;
-            }
-            setToolTipText(tooltip);
-        });
+        String tooltip = "Anahata Session: " + sessionUuid + " [" + status.getDisplayName() + "]";
+        if (error != null) {
+            tooltip += " - Error: " + error;
+        }
+        setToolTipText(tooltip);
     }
 }

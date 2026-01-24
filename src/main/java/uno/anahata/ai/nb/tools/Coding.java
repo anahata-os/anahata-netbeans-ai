@@ -18,6 +18,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,6 +43,10 @@ import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.windows.WindowManager;
+import uno.anahata.ai.Chat;
+import uno.anahata.ai.context.stateful.ResourceStatus;
+import uno.anahata.ai.context.stateful.ResourceTracker;
+import uno.anahata.ai.context.stateful.StatefulResourceStatus;
 import uno.anahata.ai.tools.AIToolMethod;
 import uno.anahata.ai.tools.spi.LocalFiles;
 import uno.anahata.ai.tools.AIToolParam;
@@ -91,6 +97,22 @@ public class Coding {
         if (originalFile.lastModified() != lastModified) {
             throw new IOException("Optimistic Locking Exception. File has been modified on disk. You provided: " + lastModified + ", current: " + originalFile.lastModified());
         }
+        
+        // Hallucination Check: Is the model proposing a change that does nothing?
+        String currentContent = Files.readString(originalFile.toPath());
+        if (currentContent.equals(proposedContent)) {
+            ResourceTracker rt = Chat.getCallingInstance().getContextManager().getResourceTracker();
+            Optional<StatefulResourceStatus> statusOpt = rt.getStatefulResourcesOverview().stream()
+                    .filter(s -> s.getResourceId().equals(filePath) && s.getStatus() == ResourceStatus.VALID)
+                    .findFirst();
+            
+            if (statusOpt.isPresent()) {
+                throw new RuntimeException("Hallucination Detected: The proposed content for " + filePath 
+                        + " is identical to the version on disk, which is already VALID in your context. "
+                        + "Do not propose changes that do nothing.");
+            }
+        }
+
         /*
         if (originalFile.length() != size) {
             throw new IOException("Optimistic Locking Exception. File size has changed on disk. You provided : " + size + ", current: " + originalFile.length());
@@ -104,7 +126,7 @@ public class Coding {
         try {
             DataObject dob = DataObject.find(fo);
             if (dob.isModified()) {
-                throw new IOException("File has unsaved changes in the editor. Please save the file before proposing a change.");
+                throw new IOException("File has unsaved changes in the editor. Ask the user to save the file before proposing a change.");
             }
         } catch (DataObjectNotFoundException e) {
             // Ignore if no DataObject, it's not open or not a project file.

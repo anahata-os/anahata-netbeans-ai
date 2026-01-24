@@ -8,11 +8,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Lookup;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
 
-public class TeeInputOutput implements InputOutput {
+public class TeeInputOutput implements InputOutput, Lookup.Provider {
     private static final Logger LOG = Logger.getLogger(TeeInputOutput.class.getName());
 
     private final InputOutput delegate;
@@ -122,6 +123,14 @@ public class TeeInputOutput implements InputOutput {
     public void setInputVisible(boolean value) {
         LOG.log(Level.INFO, "TeeInputOutput: setInputVisible called with value: {0}", value);
         delegate.setInputVisible(value);
+    }
+
+    @Override
+    public Lookup getLookup() {
+        if (delegate instanceof Lookup.Provider) {
+            return ((Lookup.Provider) delegate).getLookup();
+        }
+        return Lookup.EMPTY;
     }
 
     private static class TeeOutputWriter extends OutputWriter {

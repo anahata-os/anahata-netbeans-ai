@@ -25,6 +25,7 @@ import uno.anahata.ai.nb.tools.NetBeansProjectJVM;
 import uno.anahata.ai.nb.tools.Output;
 import uno.anahata.ai.nb.tools.Projects;
 import uno.anahata.ai.nb.tools.Refactor;
+import uno.anahata.ai.nb.tools.Sessions;
 import uno.anahata.ai.nb.tools.TopComponents;
 import uno.anahata.ai.nb.tools.MavenTools;
 import uno.anahata.ai.nb.tools.java2.CodeModel;
@@ -69,6 +70,7 @@ public class NetBeansChatConfig extends SwingChatConfig {
         ret.add(Output.class);
         ret.add(Projects.class);
         ret.add(Refactor.class);
+        ret.add(Sessions.class);
         ret.add(TopComponents.class);
         ret.add(CodeModel.class);
         return ret;

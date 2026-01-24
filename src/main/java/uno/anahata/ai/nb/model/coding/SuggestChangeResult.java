@@ -6,8 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import uno.anahata.ai.context.stateful.StatefulResource;
-import uno.anahata.ai.tools.spi.pojos.FileInfo;
+import uno.anahata.ai.tools.UserFeedback;
 
 /**
  * Represents the result of a proposeChange operation, indicating whether the user
@@ -21,8 +22,8 @@ import uno.anahata.ai.tools.spi.pojos.FileInfo;
 @Schema(description = "Represents the result of a suggestChange operation, indicating:"
         + "- The user's approval (Accepted / Cancelled), "
         + "- Any message from the user regarding the proposed change (regardless of whether the user approved it or not)  "
-        + "- The updated file details if accepted.")
-public class SuggestChangeResult implements StatefulResource {
+        + "- The updated file details (content and metadata) if accepted.")
+public class SuggestChangeResult implements StatefulResource, UserFeedback {
 
     public enum Status {
         /** The user accepted the proposed file change. */
@@ -65,6 +66,15 @@ public class SuggestChangeResult implements StatefulResource {
     @Override
     public long getSize() {
         return (fileInfo != null) ? fileInfo.getSize() : 0;
+    }
+
+    @Override
+    public String getUserFeedback() {
+        if (status == Status.CANCELLED) {
+            String prefix = "Cancelled, no changes have been written to disk.";
+            return StringUtils.isBlank(userMessage) ? prefix : prefix + " " + userMessage;
+        }
+        return userMessage;
     }
 
     @Override

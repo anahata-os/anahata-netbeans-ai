@@ -2,6 +2,7 @@
 package uno.anahata.ai.nb.model.maven;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,4 +44,25 @@ public class MavenBuildResult {
 
     @Schema(description = "The absolute path to the full, untruncated log file saved on disk.")
     private String logFile;
+
+    @Schema(description = "A list of build phases executed during the Maven run, with their individual outcomes.")
+    private List<BuildPhase> phases;
+
+    /**
+     * Represents a single phase or goal within a Maven build.
+     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(description = "Represents a single phase or goal within a Maven build.")
+    public static class BuildPhase {
+        @Schema(description = "The name of the phase (e.g., 'compile', 'test').")
+        private String name;
+        @Schema(description = "The plugin and goal associated with this phase.")
+        private String plugin;
+        @Schema(description = "Whether this phase succeeded or failed.")
+        private boolean success;
+        @Schema(description = "The duration of this phase in milliseconds.")
+        private long durationMs;
+    }
 }
