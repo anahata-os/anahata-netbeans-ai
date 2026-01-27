@@ -120,7 +120,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.10-SNAPSHOT</version>
+            <version>1.0.10</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
