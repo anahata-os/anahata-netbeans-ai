@@ -85,8 +85,8 @@ Anahata doesn't just guess; it *knows*. By leveraging NetBeans' deep understandi
 ---
 
 ## 📺 Watch the Agent in Action
-[![Anahata TV](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/@anahata108)
-*(Click to visit Anahata TV)*
+[![Anahata TV](docs/screenshots/beating_vscode.png)](https://www.youtube.com/watch?v=yav3jTbkfv4)
+*(Click to watch Messi beating VS Code on Anahata TV)*
 
 ---
 
