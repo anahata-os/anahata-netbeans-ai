@@ -12,6 +12,7 @@ The plugin operates within the NetBeans module system. Access to other modules i
 - **Runtime Classpath:** The `RunningJVM` tool's default classpath is initialized to the plugin's runtime classpath. A grouped, pretty-printed view of the available JARs is provided in your context on every turn. Note that this is a summary; the actual underlying classpath contains hundreds of individual JARs. To retrieve the full, flat list of absolute paths, call `RunningJVM.getDefaultCompilerClasspath()`.
 
 ## 3. Recent Milestones
+- **v28.0.10 (Autonomous Agent Transition):** Launched the "Autonomous JVM Agent" narrative. Added the Support Panel, Pruning Improvements (PAYG v2), and enhanced JIT execution capabilities.
 - **GitHub Actions Migration (Modern Deployment):** Successfully transitioned from branch-based deployment to a direct GitHub Actions workflow. This enables automated Javadoc generation and injection into the website without polluting the `master` branch.
 - **Automated Javadoc Integration:** Javadocs are now automatically generated and served at `www.anahata.uno/apidocs/` using a custom "merge" strategy in CI.
 - **V1 Website Launch:** Completed the `anahata.uno` website (hosted in `/docs`) with a high-impact design, categorized screenshots, and a "Sextete of Productivity" narrative.

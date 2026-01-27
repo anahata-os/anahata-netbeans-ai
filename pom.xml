@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
-    <version>28.0.10</version>
+    <version>28.0.11-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <name>Anahata</name>
     <description>
@@ -120,7 +120,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.10-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
@@ -653,7 +653,7 @@
                                 <link>https://www.slf4j.org/apidocs/</link>
                                 <link>https://guava.dev/releases/33.5.0-jre/api/docs/</link>
                                 -->
-                                <link>https://anahata-os.github.io/gemini-java-client/</link>
+                                <link>https://anahata-os.github.io/gemini-java-client/apidocs/</link>
                             </links>
                             <top>
                                 <![CDATA[
