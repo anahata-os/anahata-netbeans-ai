@@ -2,26 +2,29 @@
 package uno.anahata.ai.nb.tools;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import javax.tools.Diagnostic;
 import lombok.extern.slf4j.Slf4j;
+import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
+import org.netbeans.modules.parsing.spi.indexing.ErrorsCache;
 import org.netbeans.spi.project.ui.ProjectProblemsProvider;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.URLMapper;
 import uno.anahata.ai.AnahataExecutors;
 import uno.anahata.ai.internal.TextUtils;
 import uno.anahata.ai.nb.model.ide.JavacAlert;
@@ -99,51 +102,40 @@ public class IDE {
         Project targetProject = Projects.findProject(projectId);
         ProjectDiagnostics projectDiags = new ProjectDiagnostics(ProjectUtils.getInformation(targetProject).getDisplayName());
 
-        // 1. Scan for Javac-style alerts in parallel
-        Sources sources = ProjectUtils.getSources(targetProject);
-        SourceGroup[] sourceGroups = sources.getSourceGroups(Sources.TYPE_GENERIC);
-        List<FileObject> javaFiles = new ArrayList<>();
+        // 1. Surf the IDE's internal ErrorsCache to find files that already have errors
+        List<FileObject> filesInError = findFilesInError(targetProject);
 
-        for (SourceGroup sg : sourceGroups) {
-            FileObject root = sg.getRootFolder();
-            Enumeration<? extends FileObject> files = root.getChildren(true);
-            while (files.hasMoreElements()) {
-                FileObject fo = files.nextElement();
-                if (!fo.isFolder() && "text/x-java".equals(fo.getMIMEType())) {
-                    javaFiles.add(fo);
-                }
-            }
-        }
-
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
-        for (FileObject fo : javaFiles) {
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                try {
-                    JavaSource javaSource = JavaSource.forFileObject(fo);
-                    if (javaSource != null) {
-                        javaSource.runUserActionTask(controller -> {
-                            controller.toPhase(JavaSource.Phase.RESOLVED);
-                            List<? extends Diagnostic> diagnostics = controller.getDiagnostics();
-                            for (Diagnostic d : diagnostics) {
-                                projectDiags.addJavacAlert(new JavacAlert(
-                                        fo.getPath(),
-                                        d.getKind().toString(),
-                                        (int) d.getLineNumber(),
-                                        (int) d.getColumnNumber(),
-                                        d.getMessage(null)
-                                ));
-                            }
-                        }, true);
+        if (!filesInError.isEmpty()) {
+            log.info("Found {} files in error via ErrorsCache for project {}. Performing targeted scan.", filesInError.size(), projectId);
+            List<CompletableFuture<Void>> futures = new ArrayList<>();
+            for (FileObject fo : filesInError) {
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                    try {
+                        JavaSource javaSource = JavaSource.forFileObject(fo);
+                        if (javaSource != null) {
+                            javaSource.runUserActionTask(controller -> {
+                                controller.toPhase(JavaSource.Phase.RESOLVED);
+                                List<? extends Diagnostic> diagnostics = controller.getDiagnostics();
+                                for (Diagnostic d : diagnostics) {
+                                    projectDiags.addJavacAlert(new JavacAlert(
+                                            fo.getPath(),
+                                            d.getKind().toString(),
+                                            (int) d.getLineNumber(),
+                                            (int) d.getColumnNumber(),
+                                            d.getMessage(null)
+                                    ));
+                                }
+                            }, true);
+                        }
+                    } catch (IOException e) {
+                        projectDiags.addJavacAlert(new JavacAlert(fo.getPath(), "ERROR", -1, -1, "Error processing file: " + e.getMessage()));
                     }
-                } catch (IOException e) {
-                    projectDiags.addJavacAlert(new JavacAlert(fo.getPath(), "ERROR", -1, -1, "Error processing file: " + e.getMessage()));
-                }
-            }, AnahataExecutors.SHARED_CPU_EXECUTOR);
-            futures.add(future);
+                }, AnahataExecutors.SHARED_CPU_EXECUTOR);
+                futures.add(future);
+            }
+            // Wait for all targeted scans to complete
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         }
-
-        // Wait for all parallel tasks to complete
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
         // 2. Scan for Project-level problems (this is typically fast and doesn't need parallelization)
         ProjectProblemsProvider problemProvider = targetProject.getLookup().lookup(ProjectProblemsProvider.class);
@@ -161,5 +153,31 @@ public class IDE {
         }
 
         return projectDiags;
+    }
+
+    private static List<FileObject> findFilesInError(Project project) {
+        List<FileObject> results = new ArrayList<>();
+        Sources sources = ProjectUtils.getSources(project);
+        
+        // We must check JAVA source groups, as ErrorsCache is keyed by source root
+        SourceGroup[] groups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        for (SourceGroup sg : groups) {
+            FileObject root = sg.getRootFolder();
+            URL rootUrl = root.toURL();
+            try {
+                Collection<? extends URL> files = ErrorsCache.getAllFilesInError(rootUrl);
+                if (files != null) {
+                    for (URL url : files) {
+                        FileObject fo = URLMapper.findFileObject(url);
+                        if (fo != null && !fo.isFolder() && "text/x-java".equals(fo.getMIMEType())) {
+                            results.add(fo);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("Error querying ErrorsCache for root: " + root.getPath(), e);
+            }
+        }
+        return results;
     }
 }

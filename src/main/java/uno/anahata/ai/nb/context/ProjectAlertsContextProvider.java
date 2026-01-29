@@ -6,12 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.netbeans.api.java.source.SourceUtils;
 import uno.anahata.ai.Chat;
 import uno.anahata.ai.context.provider.ContextPosition;
 import uno.anahata.ai.context.provider.ContextProvider;
 import uno.anahata.ai.internal.GsonUtils;
 import uno.anahata.ai.nb.model.ide.ProjectDiagnostics;
-import uno.anahata.ai.nb.model.projects.ProjectOverview;
 import uno.anahata.ai.nb.tools.IDE;
 import uno.anahata.ai.nb.tools.Projects;
 
@@ -40,6 +40,14 @@ public class ProjectAlertsContextProvider extends ContextProvider {
     public List<Part> getParts(Chat chat) {
 
         if (Projects.getOpenProjects().contains(projectId)) {
+            // Wait for indexing and background analysis to finish to avoid race conditions
+            // on cross-project changes (the 'ripple effect').
+            try {
+                SourceUtils.waitScanFinished();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
             ProjectDiagnostics alerts = IDE.getProjectAlerts(projectId);
             return Collections.singletonList(Part.fromText(GsonUtils.getGson().toJson(alerts)));
         } else {

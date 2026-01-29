@@ -12,7 +12,8 @@ The plugin operates within the NetBeans module system. Access to other modules i
 - **Runtime Classpath:** The `RunningJVM` tool's default classpath is initialized to the plugin's runtime classpath. A grouped, pretty-printed view of the available JARs is provided in your context on every turn. Note that this is a summary; the actual underlying classpath contains hundreds of individual JARs. To retrieve the full, flat list of absolute paths, call `RunningJVM.getDefaultCompilerClasspath()`.
 
 ## 3. Recent Milestones
-- **v28.0.12 (Performance & Stability):** Refined the "Autonomous JVM Agent" narrative. Improved JIT execution reliability and updated the visual documentation.
+- **v28.0.13 (Context Safety & Intelligence):** Implemented the "90% Soft Limit" for context window management. Added Dynamic Model Intelligence to automatically discover model-specific token limits from the Gemini API.
+- **v28.0.12 (Performance & Stability):** Optimized project alerts retrieval by 'surfing' the IDE's internal ErrorsCache, reducing turn latency from seconds to milliseconds.
 - **v28.0.11 (Performance & Stability):** Refined the "Autonomous JVM Agent" narrative. Improved JIT execution reliability and updated the visual documentation.
 - **v28.0.10 (Autonomous Agent Transition):** Launched the "Autonomous JVM Agent" narrative. Added the Support Panel, Pruning Improvements (PAYG v2), and enhanced JIT execution capabilities.
 - **GitHub Actions Migration (Modern Deployment):** Successfully transitioned from branch-based deployment to a direct GitHub Actions workflow. This enables automated Javadoc generation and injection into the website without polluting the `master` branch.
