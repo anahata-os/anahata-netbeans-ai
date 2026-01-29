@@ -70,15 +70,15 @@ public class Coding {
      * @return A SuggestChangeResult indicating whether the user accepted or cancelled the change.
      * @throws Exception if an error occurs during the process.
      */
-    @AIToolMethod(value = "Proposes a change to a an existing file by showing the netbeans modal diff dialog to the user."
+    @AIToolMethod(value = "Proposes a change to an existing file by showing the NetBeans modal diff dialog to the user."
             + "\n*Important Note*: while the user may YES approve or ALWAYS approve the execution of this tool, "
             + "the approval of the tool execution does not imply the change was approved: "
-            + "Approving this tool only displays the diff dialog to the user but it is ultimatly up to the user to manually approve the change or not. This is indicated in the returned ProposeChangeResult. "
-            + "\nIn other words: this tool has a two step approval process: The approval of the tool call (proposeCodChange) which only implies that the user got to see the diff dialog and produces a FunctionRespons AND the approval of the code change it self (as seen in the 'status' and 'userMessage' fields of the returned object). "
+            + "Approving this tool only displays the diff dialog to the user but it is ultimately up to the user to manually approve the change or not. This is indicated in the returned ProposeChangeResult. "
+            + "\nIn other words: this tool has a two step approval process: The approval of the tool call (suggestChange) which only implies that the user got to see the diff dialog and produces a FunctionResponse AND the approval of the code change itself (as seen in the 'status' and 'userMessage' fields of the returned object). "
             + "\nDo not assume the user approved your change or that any changes have actually been written to disk on the basis that you see a FunctionResponse associated with this tool call or a tool feedback message stating the tool call got executed (YES or ALWAYS)."
-            + "\n\nNever call this tool for a stale resource (a resource showing as stale or a file that has modifications on the netbeans editor."
+            + "\n\nNever call this tool for a stale resource (a resource showing as stale or a file that has modifications on the NetBeans editor."
             + "\nDo not use this tool for creating new files, just for updating existing ones. "
-            + "\n\nNote: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Calling LocalFiles.readFile for the returned resource on your next trip will auto prune the FunctionCall/FunctionResponse paris of proposeChange and will reduce the overall token usage of the file modification to half.",
+            + "\n\nNote: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Calling LocalFiles.readFile for the returned resource on your next trip will auto prune the FunctionCall/FunctionResponse pairs of suggestChange and will reduce the overall token usage of the file modification to half.",
              behavior = ContextBehavior.STATEFUL_REPLACE)
     public static SuggestChangeResult suggestChange(
             @AIToolParam("The absolute path of the existing file to modify.") String filePath,

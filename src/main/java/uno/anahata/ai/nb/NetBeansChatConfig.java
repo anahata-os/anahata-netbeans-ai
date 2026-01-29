@@ -114,7 +114,14 @@ public class NetBeansChatConfig extends SwingChatConfig {
             projectProviders.computeIfAbsent(projectId, id -> {
                 List<ContextProvider> newProviders = new ArrayList<>();
                 newProviders.add(new ProjectOverviewContextProvider(id));
-                newProviders.add(new ProjectAlertsContextProvider(id));
+                
+                ProjectAlertsContextProvider alertsProvider = new ProjectAlertsContextProvider(id);
+                // If it's a parent project, we add it but keep it disabled by default for performance.
+                if (Projects.isParentProject(id)) {
+                    alertsProvider.setEnabled(false);
+                }
+                newProviders.add(alertsProvider);
+                
                 return newProviders;
             });
         }

@@ -53,29 +53,31 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
                       - **Proactive Analysis:** Before proposing changes, use Java analysis tools to check for potential compilation errors or to diagnose the impact of a refactoring operation.
 
                       **Core Principle: Efficient File Interaction & Context Utilization**
-                      *   **Reading Files:** Use `LocalFiles.readFile` to initially load a file's content and metadata into the conversation context.
+                      *   **Reading Files:** Use `LocalFiles.readFile` to load a file's content and metadata into the conversation context.
+                      *   **Strategic Re-reading:** While the context is kept current, calling `LocalFiles.readFile` for a file already in context is **valid and encouraged** after a `suggestChange` operation. This triggers the `STATEFUL_REPLACE` mechanism, which prunes the token-heavy `suggestChange` call/response pairs and brings the fresh file content to the "tip" of the conversation, closer to your current task intent.
                       *   **Modifying Files (`Coding.suggestChange`):** When modifying an existing file, always use `Coding.suggestChange`. For the `lastModified` parameter, **always retrieve it directly from the `FileInfo` object returned by the *most recent* `LocalFiles.readFile` or `Coding.suggestChange` call for that specific file that is currently `VALID` in the context.**
-                      *   **Avoid Redundant Reads:** **Never call `LocalFiles.readFile` for a file that is already marked as `VALID` in the `Stateful Resources` context provider.** The content and `lastModified` timestamp in your context are guaranteed to be current.
                       *   **Context as Source of Truth:** Treat the `FileInfo` objects within the context (from `LocalFiles.readFile` and `Coding.suggestChange` responses) as the primary source of truth for file content and metadata when they are `VALID`.
 
                       **Core Principle: The Task-Lock Pruning Rule (Anti-Loop)**
                       Once you begin a task (e.g., fixing a bug, adding a feature), you are **forbidden** from pruning **any** stateful resources (modified files OR reference files) until the task is explicitly confirmed as successful by the user or by fresh sensory input (e.g., a new screenshot, a `TopComponents` check, or a successful build). Pruning "evidence" or "references" before the environment reflects the change leads to redundant work and "looping" behavior. **Correctness and continuity are more important than token efficiency.**
 
                       **Core Principle: Project Overview & Alerts Context Providers**
-                      By default, the Project Overview and Project Alerts of ALL open projects is included in EVERY turn with the most up-to-date, high salient info of the IDE collected after all tool calls have been executed. This contains:
+                      By default, the Project Overview and Project Alerts of ALL open projects are included in EVERY turn with the most up-to-date, high-salience info of the IDE collected after all tool calls have been executed. This contains:
 
                       - the full contents of the anahata.md file for the project
                       - a directory / file tree view of all source folders and all source files (including test files and resources directories)
                       - a listing with all files in the project's root directory
-                      - additional project info like maven deps, java versions, etc
-                      - javac alerts, and any netbeans "project levle problems" (e.g. a dependency that has been added but not yet downloaded)
+                      - additional project info like maven deps, java versions, etc.
+                      - javac alerts, and any NetBeans "project-level problems" (e.g., a dependency that has been added but not yet downloaded)
 
-                      The information supplied by these project specific context providers (that get included in every turn if enabled) is obtained from the `Projects.getOverview` and `IDE.getProjectAlerts` tools and converted to markup format for convenience but both (the tools and the context providers) provide the exact same info just in different formats so:
-                      In order to avoid redundant information present in the context DO NOT CALL THE `Projects.getOverview` or `IDE.getProjectAlerts` tools if their respective context providers are enabled.
+                      The information supplied by these project-specific context providers (that get included in every turn if enabled) is obtained from the `Projects.getOverview` and `IDE.getProjectAlerts` tools and converted to markup format for convenience, but both (the tools and the context providers) provide the exact same info just in different formats.
+                      In order to avoid redundant information present in the context, DO NOT CALL THE `Projects.getOverview` or `IDE.getProjectAlerts` tools if their respective context providers are enabled.
+
+                      **Performance Note:** For Maven projects with submodules (parent POMs), the Project Alerts provider is added but **disabled by default**. Enabling it on a parent project can be extremely slow as it triggers a recursive scan of all child modules. Only enable it if you specifically need to diagnose project-level issues at the root.
 
                       ## Core Principle: The Two-Step `suggestChange` Process
                       The `Coding.suggestChange` tool has a **two-step approval process**. 
-                      1.  **Step 1: Tool Confirmation Popup:** Confirms that the diff dialog should be displayed. (if suggestChange or any other tool calls in that batch have a PROMPT permission, this dialog has a feebdack text area for comments on the entire batch)
+                      1.  **Step 1: Tool Confirmation Popup:** Confirms that the diff dialog should be displayed. (If `suggestChange` or any other tool calls in that batch have a `PROMPT` permission, this dialog has a feedback text area for comments on the entire batch.)
                       2.  **Step 2: NetBeans Diff Dialog:** The actual code change is approved or cancelled here. It has a comments text area for comments regarding the changes to the file being shown.
                       
                       **Unified Feedback:** Any comments you provide in *either* the confirmation popup or the diff dialog are aggregated into the system-generated user message in the next turn. You MUST always inspect the `SuggestChangeResult` object in the **Tool Response** to verify if the change was `ACCEPTED` or `CANCELLED`.
@@ -93,7 +95,7 @@ public class CoreNetBeansInstructionsProvider extends ContextProvider {
 
                       The current open projects (as given by the Projects.getOpenProjects() tool) are: %s
 
-                      Prefer the Maven installation if you need to use maven in this environment. The maven installation used by netbeans as given by the tool Maven.getMavenPath() is: %s
+                      Prefer the Maven installation if you need to use Maven in this environment. The Maven installation used by NetBeans as given by the tool `Maven.getMavenPath()` is: %s
                       """.formatted(
                 AnahataTopComponent.class.getName(),
                 getNetBeansProjectsFolder(),

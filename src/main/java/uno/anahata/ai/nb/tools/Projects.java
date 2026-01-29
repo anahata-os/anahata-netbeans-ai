@@ -306,6 +306,25 @@ public class Projects {
         throw new IllegalArgumentException("Project not found or not open: " + id);
     }
 
+    /**
+     * Checks if a project is a Maven parent project (packaging 'pom' and has submodules).
+     * @param projectId the project ID
+     * @return true if it's a parent project, false otherwise.
+     */
+    public static boolean isParentProject(String projectId) {
+        try {
+            Project p = findProject(projectId);
+            NbMavenProject nbMavenProject = p.getLookup().lookup(NbMavenProject.class);
+            if (nbMavenProject != null) {
+                org.apache.maven.project.MavenProject rawMvnProject = nbMavenProject.getMavenProject();
+                return "pom".equals(rawMvnProject.getPackaging()) && rawMvnProject.getModules() != null && !rawMvnProject.getModules().isEmpty();
+            }
+        } catch (Exception e) {
+            // Ignore
+        }
+        return false;
+    }
+
     public static String listAllKnownPreferences(String projectId) {
         Project project = findProject(projectId);
         if (project == null) {
