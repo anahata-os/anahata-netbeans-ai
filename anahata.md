@@ -51,3 +51,4 @@ Available tools are registered in `NetBeansChatConfig.getToolClasses()`.
 - **IMPORTANT (gemini-java-client Dependency):** Since `gemini-java-client` is the main dependency of this plugin, you **must** run `maven clean install` on the `gemini-java-client` project before reloading the plugin if any changes have been made to the client. "Compile on Save" does not build the JAR, and `nbmreload` packages the plugin using JARs, not the `target/classes` directory.
 - **Hot Reload:** Use `NetBeansProjectJVM.compileAndExecuteInProject` for rapid testing of logic within the IDE's JVM.
 - **Note on Dependency Warnings:** You may see a warning about `aopalliance:asm:jar:9.8` being missing from the local repository. This is a known issue in the current NetBeans release and is fixed in the next version. You can safely ignore this warning.
+
