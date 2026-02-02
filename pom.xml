@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="https://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
-    <version>28.0.13</version>
+    <version>28.0.14-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <name>Anahata</name>
     <description>
@@ -667,26 +667,26 @@
                             <top>
                                 <![CDATA[
             <div class="anahata-footer">
-                <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
+                <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo" />
                 <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
                     Please Donate ❤️
                 </a>
                 <div class="barca-wrapper">
                     <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
-                    <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest" />
                 </div>
             </div>
         ]]>
                             </top>
                             <bottom><![CDATA[
             <div class="anahata-footer">
-                <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo">
+                <img src="https://www.anahata.uno/assets/logo-transparent.png" alt="Anahata Logo" class="anahata-logo" />
                 <a href="https://github.com/sponsors/anahata-os" target="_blank" class="donate-link">
                     Please Donate ❤️
                 </a>
                 <div class="barca-wrapper">
                     <span class="forca-text">Força <span class="barca-red">Barça!</span></span>
-                    <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg" alt="Barça Crest" />
                 </div>
             </div>
         ]]></bottom>

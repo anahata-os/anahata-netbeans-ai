@@ -12,6 +12,7 @@ The plugin operates within the NetBeans module system. Access to other modules i
 - **Runtime Classpath:** The `RunningJVM` tool's default classpath is initialized to the plugin's runtime classpath. A grouped, pretty-printed view of the available JARs is provided in your context on every turn. Note that this is a summary; the actual underlying classpath contains hundreds of individual JARs. To retrieve the full, flat list of absolute paths, call `RunningJVM.getDefaultCompilerClasspath()`.
 
 ## 3. Recent Milestones
+- **v28.0.14 (Polymorphic Code Discovery):** Upgraded the `CodeModel` to use a polymorphic "Keychain" pattern. `JavaMember` now extends `JavaType`, allowing for recursive, zero-turn exploration of nested and anonymous inner classes across projects, dependencies, and the JDK.
 - **v28.0.13 (Context Safety & Intelligence):** Implemented the "90% Soft Limit" for context window management. Added Dynamic Model Intelligence to automatically discover model-specific token limits from the Gemini API.
 - **v28.0.12 (Performance & Stability):** Optimized project alerts retrieval by 'surfing' the IDE's internal ErrorsCache, reducing turn latency from seconds to milliseconds.
 - **v28.0.11 (Performance & Stability):** Refined the "Autonomous JVM Agent" narrative. Improved JIT execution reliability and updated the visual documentation.
@@ -19,8 +20,6 @@ The plugin operates within the NetBeans module system. Access to other modules i
 - **GitHub Actions Migration (Modern Deployment):** Successfully transitioned from branch-based deployment to a direct GitHub Actions workflow. This enables automated Javadoc generation and injection into the website without polluting the `master` branch.
 - **Automated Javadoc Integration:** Javadocs are now automatically generated and served at `www.anahata.uno/apidocs/` using a custom "merge" strategy in CI.
 - **V1 Website Launch:** Completed the `anahata.uno` website (hosted in `/docs`) with a high-impact design, categorized screenshots, and a "Sextete of Productivity" narrative.
-- **Dual Licensing:** Implemented a dual-license model (Apache 2.0 and ASL V108).
-- **Tech Stack Branding:** Integrated official NetBeans, Java, and Maven branding into the project's public presence.
 
 ## 4. Architectural Overview
 The plugin is designed with a clear separation of concerns:
@@ -29,6 +28,9 @@ The plugin is designed with a clear separation of concerns:
 - `uno.anahata.ai.nb.tools`: Actionable intelligence (IDE-specific AI tools).
 - `uno.anahata.ai.nb.model`: Domain-driven DTOs and POJOs.
 - `uno.anahata.ai.nb.mime`: Editor integration and syntax highlighting.
+
+### 4.1. The "Keychain" Pattern (`JavaType`)
+The `JavaType` class implements a "Keychain" pattern for type identity, combining an `ElementHandle` with the `URL` of the class file. This ensures that a type's identity is globally resolvable across different classpaths (Project, Maven, JDK) and remains stable across multiple conversation turns.
 
 ## 5. CI/CD & Website Deployment
 - **GitHub Actions:** The `.github/workflows/javadoc.yml` workflow manages the deployment.
@@ -51,4 +53,3 @@ Available tools are registered in `NetBeansChatConfig.getToolClasses()`.
 - **IMPORTANT (gemini-java-client Dependency):** Since `gemini-java-client` is the main dependency of this plugin, you **must** run `maven clean install` on the `gemini-java-client` project before reloading the plugin if any changes have been made to the client. "Compile on Save" does not build the JAR, and `nbmreload` packages the plugin using JARs, not the `target/classes` directory.
 - **Hot Reload:** Use `NetBeansProjectJVM.compileAndExecuteInProject` for rapid testing of logic within the IDE's JVM.
 - **Note on Dependency Warnings:** You may see a warning about `aopalliance:asm:jar:9.8` being missing from the local repository. This is a known issue in the current NetBeans release and is fixed in the next version. You can safely ignore this warning.
-

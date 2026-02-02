@@ -4,9 +4,9 @@ package uno.anahata.ai.nb.tools.java2;
 import java.io.File;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.java.source.ClassIndex;
@@ -18,12 +18,10 @@ import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
-import org.netbeans.modules.java.source.ui.JavaTypeDescription;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import uno.anahata.ai.nb.model.Page;
 import uno.anahata.ai.nb.model.java2.JavaMember;
-import uno.anahata.ai.nb.model.java2.JavaMemberSearch;
 import uno.anahata.ai.nb.model.java2.JavaType;
 import uno.anahata.ai.nb.model.java2.JavaTypeSearch;
 import uno.anahata.ai.tools.AIToolMethod;
@@ -83,15 +81,45 @@ public class CodeModel {
     }
     
     /**
-     * Gets a list of all members (fields, constructors, methods) for a given type.
+     * Gets the Javadoc for a given JavaType.
+     * @param javaType The keychain DTO for the type or member to inspect.
+     * @return the Javadoc comment.
+     * @throws Exception if the Javadoc cannot be retrieved.
+     */
+    @AIToolMethod("Gets the Javadoc for a given JavaType. This tool works for classes, inner classes, and members (methods, fields).")
+    public static String getJavadoc(
+            @AIToolParam("The keychain DTO for the type or member to inspect.") JavaType javaType) throws Exception {
+        return javaType.getJavadoc().getJavadoc();
+    }
+
+    /**
+     * Gets a paginated list of all members (fields, constructors, methods) for a given type.
      * @param javaType The keychain DTO for the type to inspect.
-     * @return a list of JavaMember objects.
+     * @param startIndex The starting index (0-based) for pagination.
+     * @param pageSize The maximum number of results to return per page.
+     * @param kindFilters Optional list of member kinds to filter by (e.g., ['METHOD', 'FIELD']).
+     * @return a paginated result of JavaMember objects.
      * @throws Exception if the members cannot be retrieved.
      */
-    @AIToolMethod("Gets a list of all members (fields, constructors, methods) for a given type.")
-    public static List<JavaMember> getMembers(
-            @AIToolParam("The keychain DTO for the type to inspect.") JavaType javaType) throws Exception {
-        return javaType.getMembers();
+    @AIToolMethod("Gets a paginated list of all members (fields, constructors, methods) for a given type.")
+    public static Page<JavaMember> getMembers(
+            @AIToolParam("The keychain DTO for the type to inspect.") JavaType javaType,
+            @AIToolParam(value = "The starting index (0-based) for pagination.", required = false) Integer startIndex,
+            @AIToolParam(value = "The maximum number of results to return per page.", required = false) Integer pageSize,
+            @AIToolParam(value = "Optional list of member kinds to filter by.", required = false) List<ElementKind> kindFilters) throws Exception {
+        
+        List<JavaMember> allMembers = javaType.getMembers();
+        
+        if (kindFilters != null && !kindFilters.isEmpty()) {
+            allMembers = allMembers.stream()
+                    .filter(m -> kindFilters.contains(m.getKind()))
+                    .collect(Collectors.toList());
+        }
+
+        int start = startIndex != null ? startIndex : 0;
+        int size = pageSize != null ? pageSize : 100;
+
+        return new Page<>(allMembers, start, size);
     }
 
     /**
