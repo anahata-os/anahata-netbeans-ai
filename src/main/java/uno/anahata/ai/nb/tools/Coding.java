@@ -62,6 +62,8 @@ public class Coding {
 
     /**
      * Proposes a change to an existing file by showing the NetBeans modal diff dialog to the user.
+     * If the proposed content is identical to the current content on disk, the dialog is skipped 
+     * and the change is automatically marked as ACCEPTED without writing to disk.
      * 
      * @param filePath The absolute path of the existing file to modify.
      * @param proposedContent The full, new proposed content for the file.
@@ -70,12 +72,13 @@ public class Coding {
      * @return A SuggestChangeResult indicating whether the user accepted or cancelled the change.
      * @throws Exception if an error occurs during the process.
      */
-    @AIToolMethod(value = "Proposes a change to an existing file by showing the NetBeans modal diff dialog to the user."
-            + "\n*Important Note*: while the user may YES approve or ALWAYS approve the execution of this tool, "
-            + "the approval of the tool execution does not imply the change was approved: "
-            + "Approving this tool only displays the diff dialog to the user but it is ultimately up to the user to manually approve the change or not. This is indicated in the returned ProposeChangeResult. "
-            + "\nIn other words: this tool has a two step approval process: The approval of the tool call (suggestChange) which only implies that the user got to see the diff dialog and produces a FunctionResponse AND the approval of the code change itself (as seen in the 'status' and 'userMessage' fields of the returned object). "
-            + "\nDo not assume the user approved your change or that any changes have actually been written to disk on the basis that you see a FunctionResponse associated with this tool call or a tool feedback message stating the tool call got executed (YES or ALWAYS)."
+    @AIToolMethod(value = "Proposes a change to an existing file by showing the NetBeans modal diff dialog to the user. "
+            + "If the proposed content is identical to the current content on disk, the dialog is skipped and the change is automatically marked as ACCEPTED without writing to disk."
+            + "\n*Important Note*: while you may see a tool feedback message stating that this tool got EXECUTED (e.g., [Coding.suggestChange id=... EXECUTED ...]), "
+            + "the execution of the tool call does not imply the code change was approved: "
+            + "Executing this tool only displays the diff dialog to the user but it is ultimately up to the user to manually approve the change or not. This is indicated in the returned SuggestChangeResult. "
+            + "\nIn other words: this tool has a two step process: The execution of the tool call (suggestChange) which only implies that the user got to see the diff dialog and produces a FunctionResponse AND the approval of the code change itself (as seen in the 'status' and 'userMessage' fields of the returned object). "
+            + "\nDo not assume the user approved your change or that any changes have actually been written to disk on the basis that you see a FunctionResponse associated with this tool call or a tool feedback message stating the tool call got EXECUTED."
             + "\n\nNever call this tool for a stale resource (a resource showing as stale or a file that has modifications on the NetBeans editor."
             + "\nDo not use this tool for creating new files, just for updating existing ones. "
             + "\n\nNote: This tool, like writeFile is token heavy as it adds a file to the context twice (in the function call and the function response). Calling LocalFiles.readFile for the returned resource on your next trip will auto prune the FunctionCall/FunctionResponse pairs of suggestChange and will reduce the overall token usage of the file modification to half.",
@@ -120,18 +123,15 @@ public class Coding {
             throw new IOException("Optimistic Locking Exception. File has been modified on disk. You provided: " + lastModified + ", current: " + originalFile.lastModified());
         }
         
-        // Hallucination Check: Is the model proposing a change that does nothing?
+        // Hallucination Check / Silent Success
         String currentContent = Files.readString(originalFile.toPath());
         if (currentContent.equals(proposedContent)) {
-            Optional<StatefulResourceStatus> statusOpt = rt.getStatefulResourcesOverview().stream()
-                    .filter(s -> s.getResourceId().equals(filePath) && s.getStatus() == ResourceStatus.VALID)
-                    .findFirst();
-            
-            if (statusOpt.isPresent()) {
-                throw new RuntimeException("Hallucination Detected: The proposed content for " + filePath 
-                        + " is identical to the version on disk, which is already VALID in your context. "
-                        + "Do not propose changes that do nothing.");
-            }
+            log.info("Proposed content for {} is identical to disk. Returning ACCEPTED without dialog.", filePath);
+            return new SuggestChangeResult(
+                SuggestChangeResult.Status.ACCEPTED, 
+                "Accepted: The proposed content is identical to the version on disk. No changes were required.", 
+                new FileInfo(filePath)
+            );
         }
 
         /*
