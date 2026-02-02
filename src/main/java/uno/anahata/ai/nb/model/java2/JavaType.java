@@ -48,11 +48,11 @@ public class JavaType {
      * @throws Exception if the URL cannot be resolved.
      */
     public FileObject getClassFileObject() throws Exception {
-        FileObject classFile = URLMapper.findFileObject(getUrl());
-        if (classFile == null) {
-            throw new Exception("Could not resolve URL back to FileObject: " + getUrl());
+        FileObject fo = URLMapper.findFileObject(url);
+        if (fo == null) {
+            throw new Exception("Could not resolve URL back to FileObject: " + url);
         }
-        return classFile;
+        return fo;
     }
 
     /**

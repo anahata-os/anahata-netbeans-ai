@@ -11,7 +11,6 @@ import javax.lang.model.element.TypeElement;
 import lombok.Getter;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
-import org.netbeans.api.java.source.ClasspathInfo;
 import org.netbeans.api.java.source.JavaSource;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.URLMapper;
@@ -23,9 +22,9 @@ import org.openide.filesystems.URLMapper;
 @Getter
 public class JavaTypeSource {
 
-    private final JavaType javaType;
-    private final FileObject sourceFile;
-    private final String content;
+    protected final JavaType javaType;
+    protected final FileObject sourceFile;
+    protected String content;
 
     /**
      * Constructs a new JavaTypeSource and attempts to find the source file for the given JavaType.
@@ -35,45 +34,59 @@ public class JavaTypeSource {
     public JavaTypeSource(JavaType javaType) throws Exception {
         this.javaType = javaType;
         
-        // 1. Build a context-aware ClasspathInfo from the type's own class file.
+        // 1. Get the FileObject (could be .java or .class)
         FileObject classFile = javaType.getClassFileObject();
-        ClasspathInfo cpInfo = ClasspathInfo.create(classFile);
+        
+        // 2. Create a JavaSource for the file.
+        JavaSource js = JavaSource.forFileObject(classFile);
+        if (js == null) {
+            throw new Exception("Could not create JavaSource for: " + classFile.getPath());
+        }
 
-        JavaSource js = JavaSource.create(cpInfo);
         final String[] resourceName = new String[1];
+        final Exception[] taskException = new Exception[1];
         
         js.runUserActionTask(controller -> {
-            controller.toPhase(JavaSource.Phase.RESOLVED);
-            Element resolved = javaType.getHandle().resolve(controller);
-            if (resolved != null) {
-                // Find the enclosing type element (or the element itself if it's already a type)
-                Element current = resolved;
-                while (current != null && !(current instanceof TypeElement)) {
-                    current = current.getEnclosingElement();
-                }
-                
-                if (current instanceof TypeElement te) {
-                    // Java 17 compatible way to find the outermost type:
-                    // Traverse up until the enclosing element is a package.
-                    Element outermost = te;
-                    while (outermost.getEnclosingElement() != null && 
-                           outermost.getEnclosingElement().getKind() != ElementKind.PACKAGE) {
-                        outermost = outermost.getEnclosingElement();
+            try {
+                controller.toPhase(JavaSource.Phase.RESOLVED);
+                Element resolved = javaType.getHandle().resolve(controller);
+                if (resolved != null) {
+                    // Find the enclosing type element (or the element itself if it's already a type)
+                    Element current = resolved;
+                    while (current != null && !(current instanceof TypeElement)) {
+                        current = current.getEnclosingElement();
                     }
                     
-                    if (outermost instanceof TypeElement outermostTe) {
-                        resourceName[0] = outermostTe.getQualifiedName().toString().replace('.', '/') + ".java";
+                    if (current instanceof TypeElement te) {
+                        // Java 17 compatible way to find the outermost type:
+                        // Traverse up until the enclosing element is a package.
+                        Element outermost = te;
+                        while (outermost.getEnclosingElement() != null && 
+                               outermost.getEnclosingElement().getKind() != ElementKind.PACKAGE) {
+                            outermost = outermost.getEnclosingElement();
+                        }
+                        
+                        if (outermost instanceof TypeElement outermostTe) {
+                            resourceName[0] = outermostTe.getQualifiedName().toString().replace('.', '/') + ".java";
+                        }
                     }
                 }
+            } catch (Exception e) {
+                taskException[0] = e;
             }
         }, true);
+
+        if (taskException[0] != null) {
+            throw taskException[0];
+        }
 
         if (resourceName[0] == null) {
             throw new Exception("Could not resolve type element for: " + javaType.getHandle());
         }
 
-        // 2. Locate the source file using the resolved resource name.
-        String protocol = javaType.getUrl().getProtocol();
+        // 3. Locate the source file using the resolved resource name.
+        URL url = javaType.getUrl();
+        String protocol = url.getProtocol();
         FileObject foundSourceFile = null;
 
         if ("file".equals(protocol)) {
@@ -106,7 +119,8 @@ public class JavaTypeSource {
         }
 
         if (foundSourceFile == null) {
-            throw new Exception("Source not found for: " + resourceName[0]);
+            throw new Exception("Source code not found for: " + resourceName[0] + ". "
+                    + "If this is a Maven dependency, try using 'MavenTools.downloadProjectDependencies' or 'MavenTools.downloadDependencyArtifact' to retrieve the 'sources' classifier.");
         }
         
         this.sourceFile = foundSourceFile;

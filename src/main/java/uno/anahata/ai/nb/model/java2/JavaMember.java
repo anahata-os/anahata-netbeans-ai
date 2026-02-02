@@ -34,11 +34,6 @@ public class JavaMember extends JavaType {
     private ElementKind kind;
 
     /**
-     * A human-readable representation of the member's signature or type.
-     */
-    private String details;
-    
-    /**
      * The set of modifiers for this member (e.g., "public", "static", "default").
      */
     private Set<String> modifiers;
@@ -48,20 +43,38 @@ public class JavaMember extends JavaType {
      * @param handle the element handle.
      * @param name the member name.
      * @param kind the member kind.
-     * @param details the member details.
      * @param url the class file URL.
      * @param modifiers the set of modifiers.
      */
-    public JavaMember(ElementHandle<? extends Element> handle, String name, ElementKind kind, String details, URL url, Set<String> modifiers) {
+    public JavaMember(ElementHandle<? extends Element> handle, String name, ElementKind kind, URL url, Set<String> modifiers) {
         super(handle, url);
         this.name = name;
         this.kind = kind;
-        this.details = details;
         this.modifiers = modifiers;
+    }
+
+    /**
+     * Gets the source code for this member.
+     * @return a JavaMemberSource object.
+     * @throws Exception if the source cannot be retrieved.
+     */
+    @Override
+    public JavaMemberSource getSource() throws Exception {
+        return new JavaMemberSource(this);
+    }
+
+    /**
+     * Gets the Javadoc for this member.
+     * @return a JavaMemberDocs object.
+     * @throws Exception if the Javadoc cannot be retrieved.
+     */
+    @Override
+    public JavaMemberDocs getJavadoc() throws Exception {
+        return new JavaMemberDocs(this);
     }
 
     @Override
     public String toString() {
-        return modifiers + " " + kind + ": " + name + " (" + details + ")";
+        return modifiers + " " + kind + ": " + name;
     }
 }

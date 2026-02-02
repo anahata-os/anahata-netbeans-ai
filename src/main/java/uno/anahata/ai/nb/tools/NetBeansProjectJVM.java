@@ -5,8 +5,11 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -15,6 +18,8 @@ import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
+import org.netbeans.api.project.ui.OpenProjects;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.spi.java.classpath.ClassPathProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -80,7 +85,7 @@ public class NetBeansProjectJVM {
     public static Object compileAndExecuteInProject(
             @AIToolParam("The ID (directory name) of the NetBeans project to run in.") String projectId,
             @AIToolParam("Source code of a public class named **Anahata** that has **no package declaration** and **implements java.util.concurrent.Callable**.") String sourceCode,
-            @AIToolParam("Whether to include the project's COMPILE and EXECUTE **dependencies** (the target/classess dir is always included regardless of this flag).") boolean includeCompileAndExecuteDependencies,
+            @AIToolParam("Whether to include the project's COMPILE and EXECUTE **dependencies**. Note: target/classes of the current and open projects are ALWAYS included. JARs already in the runtime are automatically filtered.") boolean includeCompileAndExecuteDependencies,
             @AIToolParam("Whether to include the project's test source folders and test dependencies in the classpath (only for running code that uses test sources).") boolean includeTestDependencies,
             @AIToolParam("Optional additional compiler options.") String[] compilerOptions) throws Exception {
 
@@ -91,9 +96,51 @@ public class NetBeansProjectJVM {
             throw new IllegalStateException("Could not find ClassPathProvider for project: " + projectId);
         }
 
+        // Detect NBM packaging using NetBeans API
+        boolean isNbm = false;
+        NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
+        if (nbMavenProject != null) {
+            String packaging = nbMavenProject.getMavenProject().getPackaging();
+            isNbm = "nbm".equals(packaging) || "nbm-application".equals(packaging);
+        }
+
+        // Map open projects to their target/classes for hot-reload swapping
+        Map<String, String> openProjectArtifacts = new HashMap<>();
+        for (Project p : OpenProjects.getDefault().getOpenProjects()) {
+            NbMavenProject nmp = p.getLookup().lookup(NbMavenProject.class);
+            if (nmp != null) {
+                org.apache.maven.project.MavenProject mp = nmp.getMavenProject();
+                String key = mp.getGroupId() + ":" + mp.getArtifactId();
+                FileObject targetClasses = p.getProjectDirectory().getFileObject("target/classes");
+                if (targetClasses != null) {
+                    openProjectArtifacts.put(key, FileUtil.toFile(targetClasses).getAbsolutePath());
+                }
+            }
+        }
+        
+        // Map JAR paths to artifact keys for the current project
+        Map<String, String> jarToArtifactKey = new HashMap<>();
+        if (nbMavenProject != null) {
+            for (org.apache.maven.artifact.Artifact art : nbMavenProject.getMavenProject().getArtifacts()) {
+                File f = art.getFile();
+                if (f != null) {
+                    jarToArtifactKey.put(f.getAbsolutePath(), art.getGroupId() + ":" + art.getArtifactId());
+                }
+            }
+        }
+
         List<String> internalPaths = new ArrayList<>();
         List<String> dependencyPaths = new ArrayList<>();
-        String projectDir = project.getProjectDirectory().getPath();
+
+        // Get the current default classpath to avoid duplication
+        String defaultCp = RunningJVM.getDefaultCompilerClasspath();
+        Set<String> existingPaths = new HashSet<>(Arrays.asList(defaultCp.split(File.pathSeparator)));
+        Set<String> existingBaseNames = new HashSet<>();
+        for (String path : existingPaths) {
+            if (path.endsWith(".jar")) {
+                existingBaseNames.add(getJarBaseName(new File(path).getName()));
+            }
+        }
 
         Sources sources = ProjectUtils.getSources(project);
         SourceGroup[] javaGroups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
@@ -121,29 +168,63 @@ public class NetBeansProjectJVM {
 
                 if (f != null) {
                     String absolutePath = f.getAbsolutePath();
-                    boolean isInternal = absolutePath.startsWith(projectDir);
-
-                    if (isInternal) {
+                    
+                    if (f.isDirectory()) {
+                        // Always include directories (target/classes of current or open projects)
                         if (!internalPaths.contains(absolutePath)) {
                            internalPaths.add(absolutePath);
                         }
-                    } else if (includeCompileAndExecuteDependencies) {
-                        if (!dependencyPaths.contains(absolutePath)) {
-                            dependencyPaths.add(absolutePath);
+                    } else {
+                        // It's a JAR. Check if it's an open project we can swap for source.
+                        String artifactKey = jarToArtifactKey.get(absolutePath);
+                        if (artifactKey != null && openProjectArtifacts.containsKey(artifactKey)) {
+                            String sourcePath = openProjectArtifacts.get(artifactKey);
+                            if (!internalPaths.contains(sourcePath)) {
+                                log.info("Swapping dependency JAR for open project source: {} -> {}", artifactKey, sourcePath);
+                                internalPaths.add(sourcePath);
+                            }
+                            continue; // Skip the JAR, we have the source directory
+                        }
+
+                        if (includeCompileAndExecuteDependencies) {
+                            String jarName = f.getName();
+                            String baseName = getJarBaseName(jarName);
+                            
+                            // Aggressive NetBeans Platform and Stub Filtering
+                            String normalizedPath = absolutePath.replace('\\', '/');
+                            boolean isNetBeansJar = normalizedPath.startsWith("org-netbeans-") 
+                                    || jarName.startsWith("org-openide-")
+                                    || jarName.startsWith("org-apache-netbeans-")
+                                    || jarName.contains("nbstubs");
+
+                            if (isNbm && isNetBeansJar) {
+                                log.debug("Skipping NetBeans Platform/Stub JAR in NBM project: {}", absolutePath);
+                                continue;
+                            }
+
+                            boolean isDuplicate = existingPaths.contains(absolutePath) || existingBaseNames.contains(baseName);
+
+                            if (!isDuplicate) {
+                                if (!dependencyPaths.contains(absolutePath)) {
+                                    dependencyPaths.add(absolutePath);
+                                }
+                            } else {
+                                log.debug("Skipping duplicate JAR (base name match): {}", absolutePath);
+                            }
                         }
                     }
                 }
             }
         }
         
-        log.info("Constructing classpath for project '{}'", projectId);
-        log.info("Found {} internal project directories (e.g., target/classes):", internalPaths.size());
+        log.info("Constructing classpath for project '{}' (NBM Mode: {})", projectId, isNbm);
+        log.info("Found {} internal/open project directories (e.g., target/classes):", internalPaths.size());
         for (String path : internalPaths) {
             log.info("  - {}", path);
         }
 
         if (includeCompileAndExecuteDependencies) {
-            log.info("Including {} resolved dependency JARs.", dependencyPaths.size());
+            log.info("Including {} unique resolved dependency JARs.", dependencyPaths.size());
         } else {
             log.info("Resolved dependency JARs are excluded by request.");
         }
@@ -158,5 +239,14 @@ public class NetBeansProjectJVM {
         String extraClassPath = String.join(File.pathSeparator, finalPathElements);
 
         return RunningJVM.compileAndExecuteJava(sourceCode, extraClassPath, compilerOptions);
+    }
+
+    private static String getJarBaseName(String filename) {
+        String name = filename.toLowerCase();
+        if (name.endsWith(".jar")) {
+            name = name.substring(0, name.length() - 4);
+        }
+        // Strip version suffixes: -1.2.3, -RELEASE, -SNAPSHOT, -20240101
+        return name.replaceAll("-(?:[0-9]|release|snapshot).*", "");
     }
 }

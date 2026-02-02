@@ -17,9 +17,6 @@ The plugin operates within the NetBeans module system. Access to other modules i
 - **v28.0.12 (Performance & Stability):** Optimized project alerts retrieval by 'surfing' the IDE's internal ErrorsCache, reducing turn latency from seconds to milliseconds.
 - **v28.0.11 (Performance & Stability):** Refined the "Autonomous JVM Agent" narrative. Improved JIT execution reliability and updated the visual documentation.
 - **v28.0.10 (Autonomous Agent Transition):** Launched the "Autonomous JVM Agent" narrative. Added the Support Panel, Pruning Improvements (PAYG v2), and enhanced JIT execution capabilities.
-- **GitHub Actions Migration (Modern Deployment):** Successfully transitioned from branch-based deployment to a direct GitHub Actions workflow. This enables automated Javadoc generation and injection into the website without polluting the `master` branch.
-- **Automated Javadoc Integration:** Javadocs are now automatically generated and served at `www.anahata.uno/apidocs/` using a custom "merge" strategy in CI.
-- **V1 Website Launch:** Completed the `anahata.uno` website (hosted in `/docs`) with a high-impact design, categorized screenshots, and a "Sextete of Productivity" narrative.
 
 ## 4. Architectural Overview
 The plugin is designed with a clear separation of concerns:
@@ -46,10 +43,32 @@ The `JavaType` class implements a "Keychain" pattern for type identity, combinin
 ## 7. Managing AI Tools
 Available tools are registered in `NetBeansChatConfig.getToolClasses()`.
 
-## 8. Very Important Notes
+## 8. Very Important Notes (Plugin Development Protocol)
+
+> [!DANGER]
+> **CRITICAL: THE RUNTIME BOUNDARY RULE**
+> Changing a file in this plugin project or its dependencies **DOES NOT** automatically update the tools you are currently using. The IDE's tool registry is static until the module is reloaded.
+
 - **Do not "clean" the project** to avoid deleting runtime JARs.
-- **nbmreload** is the preferred way to test changes to tools or dependencies.
-- **IMPORTANT (nbmreload & Context):** When you invoke `nbmreload`, the NetBeans module classloader disposes of all old classes. To preserve continuity, the current conversation context is automatically serialized to a Kryo file. After the reload, the new version of the plugin loads this saved context (using the same UUID) into a fresh `AnahataTopComponent` instance. **You must totally stop your current task** before reloading, as the `Chat` instance is entirely replaced.
-- **IMPORTANT (gemini-java-client Dependency):** Since `gemini-java-client` is the main dependency of this plugin, you **must** run `maven clean install` on the `gemini-java-client` project before reloading the plugin if any changes have been made to the client. "Compile on Save" does not build the JAR, and `nbmreload` packages the plugin using JARs, not the `target/classes` directory.
-- **Hot Reload:** Use `NetBeansProjectJVM.compileAndExecuteInProject` for rapid testing of logic within the IDE's JVM.
-- **Note on Dependency Warnings:** You may see a warning about `aopalliance:asm:jar:9.8` being missing from the local repository. This is a known issue in the current NetBeans release and is fixed in the next version. You can safely ignore this warning.
+- **nbmreload** is the **MANDATORY** way to deploy changes to tools or dependencies.
+
+### 8.1. The Reload Protocol
+1.  **Modify & Verify:** Use `suggestChange` followed by `NetBeansProjectJVM.compileAndExecuteInProject` to verify the logic.
+2.  **Check for Errors:** Before reloading, ensure the `Project Alerts` context provider shows **zero** compilation errors.
+3.  **Invoke Reload:** Call `Projects.invokeAction(projectId="anahata-netbeans-ai", action="nbmreload")`.
+4.  **STOP IMMEDIATELY:** Once you receive the `FunctionResponse` for `nbmreload`, you are **FORBIDDEN** from calling any more tools or continuing the conversation in that turn. The current `Chat` instance is marked for garbage collection.
+5.  **WAIT FOR RESTORATION:** You must wait for the next **real user message** on the new chat instance and new classloader before proceeding with any tasks or demonstrations.
+
+### 8.2. Dependency Handling
+- **gemini-java-client:** Since this is the main dependency, you **must** run `maven clean install` on the `gemini-java-client` project before reloading the plugin if it was modified. "Compile on Save" is insufficient for `nbmreload`.
+
+## 9. Note on Dependency Warnings
+You may see a warning about `aopalliance:asm:jar:9.8` being missing from the local repository. This is a known issue in the current NetBeans release and is fixed in the next version. You can safely ignore this warning.
+
+## 10. THE "NEVER-TRUE" DEPENDENCY RULE
+
+> [!DANGER]
+> **CRITICAL: CLASSPATH SAFETY**
+> When using `NetBeansProjectJVM.compileAndExecuteInProject` on this project, the `includeCompileAndExecuteDependencies` flag **MUST** be set to `false`. 
+> 
+> **Rationale:** The plugin's parent classloader already provides all necessary NetBeans APIs and dependencies. Setting this to `true` will cause `LinkageError`s and break critical IDE services (like `URLMapper`). The project's `target/classes` is always included automatically.

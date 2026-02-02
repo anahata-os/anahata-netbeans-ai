@@ -68,13 +68,12 @@ public class CodeModel {
     }
 
     /**
-     * Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow.
+     * Gets the source file for a given JavaType.
      * @param javaType The minimalist keychain DTO from a findTypes call.
      * @return the content of the source file.
      * @throws Exception if the source cannot be retrieved.
      */
-    @AIToolMethod("Gets the source file for a given JavaType. This is the second step in the 'discovery' (Ctrl+O) workflow. Note this tool doesnt return"
-            + " a FileInfo and it is not stateful, usefull for a quick peek on dependency sources as it gets automatically pruned after 4 user turns")
+    @AIToolMethod("Gets the source file for a given JavaType. Note this tool doesnt return a FileInfo and it is not stateful.")
     public static String getTypeSources(
             @AIToolParam("The minimalist keychain DTO from a findTypes call.") JavaType javaType) throws Exception {
         return javaType.getSource().getContent();
@@ -82,14 +81,38 @@ public class CodeModel {
     
     /**
      * Gets the Javadoc for a given JavaType.
-     * @param javaType The keychain DTO for the type or member to inspect.
+     * @param javaType The keychain DTO for the type to inspect.
      * @return the Javadoc comment.
      * @throws Exception if the Javadoc cannot be retrieved.
      */
-    @AIToolMethod("Gets the Javadoc for a given JavaType. This tool works for classes, inner classes, and members (methods, fields).")
-    public static String getJavadoc(
-            @AIToolParam("The keychain DTO for the type or member to inspect.") JavaType javaType) throws Exception {
+    @AIToolMethod("Gets the Javadoc for a given JavaType.")
+    public static String getTypeJavadocs(
+            @AIToolParam("The keychain DTO for the type to inspect.") JavaType javaType) throws Exception {
         return javaType.getJavadoc().getJavadoc();
+    }
+
+    /**
+     * Gets the source code for a specific JavaMember.
+     * @param member The keychain DTO for the member to inspect.
+     * @return the source code of the member.
+     * @throws Exception if the source cannot be retrieved.
+     */
+    @AIToolMethod("Gets the source code for a specific JavaMember.")
+    public static String getMemberSources(
+            @AIToolParam("The keychain DTO for the member to inspect.") JavaMember member) throws Exception {
+        return member.getSource().getContent();
+    }
+
+    /**
+     * Gets the Javadoc for a specific JavaMember.
+     * @param member The keychain DTO for the member to inspect.
+     * @return the Javadoc comment.
+     * @throws Exception if the Javadoc cannot be retrieved.
+     */
+    @AIToolMethod("Gets the Javadoc for a specific JavaMember.")
+    public static String getMemberJavadocs(
+            @AIToolParam("The keychain DTO for the member to inspect.") JavaMember member) throws Exception {
+        return member.getJavadoc().getJavadoc();
     }
 
     /**
@@ -129,10 +152,7 @@ public class CodeModel {
      * @return a FileInfo object containing the source code.
      * @throws Exception if the source cannot be found.
      */
-    @AIToolMethod(value = "Gets the source for a type using a specific project's classpath. This is the 'Ctrl+Click', context-aware, one-turn tool. "
-            + "This getSources method is very similar to JavaSources.getSource in the sense that the loaded FileInfo will stay in context but the implementation "
-            + "is a bit different"
-            + "a ", behavior = ContextBehavior.STATEFUL_REPLACE)    
+    @AIToolMethod(value = "Gets the source for a type using a specific project's classpath. This is the 'Ctrl+Click', context-aware, one-turn tool.", behavior = ContextBehavior.STATEFUL_REPLACE)    
     public static FileInfo getSources(
             @AIToolParam("The simple or FQN of the type.") String typeName,
             @AIToolParam("The absolute path of the project directory to use for 'Ctrl+Click' context.") String projectDirectoryPath) throws Exception {
