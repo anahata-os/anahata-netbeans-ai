@@ -82,6 +82,7 @@ public class ProjectOverviewContextProvider extends ContextProvider {
         }
         sb.append("  - Java Version: ").append(overview.getJavaSourceLevel()).append(" (source), ").append(overview.getJavaTargetLevel()).append(" (target)\n");
         sb.append("  - Encoding: ").append(overview.getSourceEncoding()).append("\n");
+        sb.append("  - Compile on Save: ").append(overview.isCompileOnSave() ? "Enabled" : "Disabled").append("\n");
         sb.append("  - Actions: `").append(String.join("`, `", overview.getActions())).append("`\n");
 
         sb.append("\n  ## Root Directory\n");

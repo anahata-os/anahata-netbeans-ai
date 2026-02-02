@@ -60,5 +60,8 @@ public final class ProjectOverview {
     
     @Schema(description = "The source file encoding for the project (e.g., 'UTF-8').")
     private final String sourceEncoding;
+
+    @Schema(description = "Whether 'Compile on Save' is enabled for this project.")
+    private final boolean compileOnSave;
     
 }

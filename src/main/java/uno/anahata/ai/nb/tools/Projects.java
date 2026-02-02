@@ -28,10 +28,13 @@ import org.netbeans.api.project.Sources;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.spi.project.ActionProvider;
+import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import uno.anahata.ai.Chat;
 import uno.anahata.ai.context.ContextManager;
 import uno.anahata.ai.context.stateful.ResourceStatus;
@@ -208,8 +211,24 @@ public class Projects {
                 mavenDeclaredDependencies,
                 javaSourceLevel,
                 javaTargetLevel,
-                sourceEncoding
+                sourceEncoding,
+                isCompileOnSaveEnabled(target)
         );
+    }
+
+    private static boolean isCompileOnSaveEnabled(Project project) {
+        AuxiliaryConfiguration aux = project.getLookup().lookup(AuxiliaryConfiguration.class);
+        if (aux == null) return false;
+        
+        Element el = aux.getConfigurationFragment("properties", "http://www.netbeans.org/ns/maven-properties-data/1", true);
+        if (el != null) {
+            NodeList nl = el.getElementsByTagName("netbeans.compile.on.save");
+            if (nl.getLength() > 0) {
+                String val = nl.item(0).getTextContent();
+                return "all".equalsIgnoreCase(val) || "true".equalsIgnoreCase(val);
+            }
+        }
+        return false;
     }
 
     private static Map<String, ResourceStatus> getContextStatusMap(Chat chat) {
