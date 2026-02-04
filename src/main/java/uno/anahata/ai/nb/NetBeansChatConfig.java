@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
 import uno.anahata.ai.context.provider.ContextProvider;
 import uno.anahata.ai.nb.context.CoreNetBeansInstructionsProvider;
 import uno.anahata.ai.nb.context.ProjectAlertsContextProvider;
@@ -124,6 +126,26 @@ public class NetBeansChatConfig extends SwingChatConfig {
                 
                 return newProviders;
             });
+        }
+    }
+
+    @Override
+    public ThemeMode getThemeMode() {
+        Preferences prefs = NbPreferences.forModule(NetBeansChatConfig.class);
+        String name = prefs.get("themeMode", ThemeMode.AUTO.name());
+        try {
+            return ThemeMode.valueOf(name);
+        } catch (Exception e) {
+            return ThemeMode.AUTO;
+        }
+    }
+
+    @Override
+    public void setThemeMode(ThemeMode themeMode) {
+        super.setThemeMode(themeMode);
+        Preferences prefs = NbPreferences.forModule(NetBeansChatConfig.class);
+        if (themeMode != null) {
+            prefs.put("themeMode", themeMode.name());
         }
     }
 }

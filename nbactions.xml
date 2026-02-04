@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-        <action>
-            <actionName>CUSTOM-nbm:run</actionName>
-            <displayName>nbm:run</displayName>
-            <goals>
-                <goal>nbm:run</goal>
-            </goals>
-        </action>
-        <action>
-            <actionName>CUSTOM-run-ide</actionName>
-            <displayName>run-ide</displayName>
-            <goals>
-                <goal>clean</goal>
-                <goal>install</goal>
-                <goal>nbm:cluster</goal>
-                <goal>nbm:run-ide</goal>
-            </goals>
-        </action>
+    <action>
+        <actionName>CUSTOM-nbm:run</actionName>
+        <displayName>nbm:run</displayName>
+        <goals>
+            <goal>nbm:run</goal>
+        </goals>
+        <properties>
+            <netbeans.runparams>--laf com.formdev.flatlaf.FlatDarkLaf</netbeans.runparams>
+        </properties>
+    </action>
+    <!--
+    <action>
+        <actionName>CUSTOM-run-ide</actionName>
+        <displayName>run-ide</displayName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            <goal>nbm:cluster</goal>
+            <goal>nbm:run-ide</goal>
+        </goals>
+    </action>
+        -->
+    
     <action>
         <actionName>nbmreload</actionName>
         <displayName>Install/Reload in Development IDE</displayName>
@@ -28,4 +34,19 @@
             <activatedProfiles>nbm-packaging</activatedProfiles>
         </properties>
     </action>
+    
+    <action>
+            <actionName>run</actionName>
+            <packagings>
+                <packaging>nbm</packaging>
+            </packagings>
+            <goals>
+                <goal>nbm:cluster</goal>
+                <goal>nbm:run-ide</goal>
+            </goals>
+            <properties>
+                <netbeans.runparams>--laf com.formdev.flatlaf.FlatDarkLaf</netbeans.runparams>
+                
+            </properties>
+        </action>
 </actions>

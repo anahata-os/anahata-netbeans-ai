@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
-    <version>28.0.14</version>
+    <version>28.0.15</version>
     <packaging>nbm</packaging>
     <name>Anahata</name>
     <description>
@@ -64,6 +64,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netbeans.version>RELEASE280</netbeans.version>
         <maven.compiler.release>17</maven.compiler.release>
+        <netbeans.runparams></netbeans.runparams>
     </properties>
     <repositories>
         <repository>
@@ -120,7 +121,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.13</version>
+            <version>1.0.14</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
@@ -544,6 +545,7 @@
                     <brandingToken>anahata</brandingToken>
                     <moduleIcon>src/main/resources/icons/anahata_32.png</moduleIcon>
                     <includeRuntimeModuleLibraries>true</includeRuntimeModuleLibraries>
+                    <additionalArguments>${netbeans.runparams}</additionalArguments>
                     <moduleDependencies>
                         <dependency>
                             <type>spec</type>
@@ -706,6 +708,7 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <!-- Prevent gpg from hanging on CI -->
                             <gpgArguments>
                                 <arg>--pinentry-mode</arg>
                                 <arg>loopback</arg>
