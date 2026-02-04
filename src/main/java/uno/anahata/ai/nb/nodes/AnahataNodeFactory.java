@@ -173,13 +173,14 @@ public class AnahataNodeFactory implements NodeFactory {
                 DataObject dob = DataObject.find(key);
                 Node originalNode = dob.getNodeDelegate();
 
+                // ALWAYS wrap in a FilterNode to avoid hierarchy conflicts with the project root.
                 if ("anahata.md".equals(key.getNameExt())) {
                     Node[] result = new Node[]{new AnahataMdNode(originalNode)};
                     log.log(Level.INFO, "EXIT createNodes() -> [AnahataMdNode for {0}]", key.getNameExt());
                     return result;
                 } else {
-                    Node[] result = new Node[]{originalNode};
-                    log.log(Level.INFO, "EXIT createNodes() -> [Default Node for {0}]", key.getNameExt());
+                    Node[] result = new Node[]{new FilterNode(originalNode)};
+                    log.log(Level.INFO, "EXIT createNodes() -> [FilterNode for {0}]", key.getNameExt());
                     return result;
                 }
             } catch (DataObjectNotFoundException e) {
