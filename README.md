@@ -12,12 +12,12 @@
 **Stop accepting "almost right." Demand an AI that lives inside your runtime.**
 
 > [!IMPORTANT]
-> **Latest Release: v28.0.14 (Polymorphic Code Discovery)**
-> This release introduces recursive, zero-turn exploration of nested and anonymous inner classes across your entire project and the JDK. Available now in Maven Central and the NetBeans Community Hotfix Update Center.
+> **Latest Release: v28.0.18 (UI/UX Stability & Theme Overhaul)**
+> This release introduces a theme-independent UI engine, theme persistence, and critical UI/UX stability fixes, including the "Modal Hang" resolution and high-visibility split pane dividers.
 
 Anahata is an unprecedented, deeply integrated **Autonomous AI Agent** for the Apache NetBeans IDE. It's more than a chatbot—it's an **insider** that operates directly within your JVM, capable of executing LLM-generated Java code with any required classpath.
 
-**[Website](https://anahata.uno) | [Anahata TV (YouTube)](https://www.youtube.com/@anahata108) | [Discord](https://discord.gg/M396BNtX)**
+**[Website](https://anahata.uno) | [Anahata TV (YouTube)](https://www.youtube.com/@anahata108) | [Discord](https://discord.gg/M396BNtX) | [v2 is coming!](https://github.com/anahata-os/anahata-asi)**
 
 ---
 
