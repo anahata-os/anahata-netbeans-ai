@@ -51,7 +51,8 @@ public class NetBeansProjectJVM {
      */
     @AIToolMethod(
             value = "Compiles and executes Java source code within the context of a specific NetBeans project. "
-            + "This tool enables a powerful 'hot-reload' workflow by creating a dynamic classpath that prioritizes the project's own build directories (e.g., 'target/classes') over the application's default classpath.",
+            + "This tool enables a powerful 'hot-reload' workflow by creating a dynamic classpath that prioritizes the project's own build directories (e.g., 'target/classes') over the application's default classpath. "
+            + "It can be used to test immediate changes to a Java class if 'Compile on Save' is enabled, but you MUST add a 2-3 second delay (e.g., Thread.sleep(2000)) in your Anahata.call() code to ensure the IDE has finished background compilation.",
             requiresApproval = true
     )
     public static Object compileAndExecuteInProject(
