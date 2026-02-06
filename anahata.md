@@ -11,6 +11,7 @@ This project is the flagship host application for the `gemini-java-client`. It i
 - **Release Synchronization:** When releasing a new version of the `gemini-java-client` library, you **MUST WAIT at least 5 to 10 minutes** before pushing the corresponding plugin update to GitHub.
 - **Rationale:** The GitHub Actions build for the plugin will fail if it cannot find the newly released library artifact in Maven Central. Central synchronization takes time; pushing too early will break the CI/CD pipeline.
 - **Sequential Pushing:** Never push both projects simultaneously. Ensure the library is fully published and visible in Central before triggering the plugin's release workflow.
+- **Verification Protocol:** Before pushing a plugin release that depends on a new library version, you MUST poll Maven Central (e.g., via `searchMavenIndex` or a custom scraper) to verify that the specific version is available and indexed.
 
 ## 3. Runtime Environment & Classpath Visibility
 The plugin operates within the NetBeans module system. Access to other modules is strictly controlled by the `pom.xml`:
