@@ -4,6 +4,8 @@ on:
   # Trigger on push to master (usually for Snapshots)
   push:
     branches: [ "master" ]
+    tags:
+      - 'v*'
   # Trigger when a Release is published in GitHub UI
   release:
     types: [ published ]
@@ -41,16 +43,16 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            # For releases: Sign artifacts and use the central portal
+          if [[ "${{ github.ref }}" == refs/tags/v* ]] || [[ "${{ github.event_name }}" == "release" ]]; then
+            # For releases/tags: Sign artifacts and use the central portal
             mvn deploy -DskipTests -P release -ntp
           else
-            # For snapshots: Force deployment to the Sonatype snapshot repo with the release profile for sources/javadocs
+            # For snapshots: Force deployment to the Sonatype snapshot repo
             mvn deploy -DskipTests -P release -ntp -DaltSnapshotDeploymentRepository=sonatype-central::default::https://central.sonatype.com/repository/maven-snapshots/
           fi
 
-      - name: Upload NBM to GitHub Release
-        if: github.event_name == 'release'
+      - name: Create/Update GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
