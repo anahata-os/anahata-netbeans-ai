@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
-    <version>28.0.19</version>
+    <version>28.0.20-SNAPSHOT</version>
     <packaging>nbm</packaging>
     <name>Anahata</name>
     <description>
@@ -121,7 +121,7 @@
         <dependency>
             <groupId>uno.anahata</groupId>
             <artifactId>gemini-java-client</artifactId>
-            <version>1.0.18</version>
+            <version>1.0.19-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.formdev</groupId>
@@ -469,6 +469,11 @@
             <artifactId>org-netbeans-modules-parsing-indexing</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.modules</groupId>
+            <artifactId>org-netbeans-modules-java-editor</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
         
         
         <!-- NetBeans libs -->
@@ -607,6 +612,10 @@
                         <dependency>
                             <type>spec</type>
                             <id>org.netbeans.api:org-netbeans-modules-parsing-indexing</id>
+                        </dependency>
+                        <dependency>
+                            <type>impl</type>
+                            <id>org.netbeans.modules:org-netbeans-modules-java-editor</id>
                         </dependency>
                     </moduleDependencies>
                 </configuration>
