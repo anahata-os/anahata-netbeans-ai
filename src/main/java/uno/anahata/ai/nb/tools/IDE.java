@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.tools.Diagnostic;
 import lombok.extern.slf4j.Slf4j;
@@ -57,15 +59,20 @@ public class IDE {
             @AIToolParam("The maximum length of each line. Lines longer than this will be truncated. Set to 0 for no limit.") int maxLineLength) throws Exception {
 
         Path logFilePath = findLogFile();
-        String content = new String(Files.readAllBytes(logFilePath));
-        TextChunk processResult = TextUtils.processText(content, startIndex, pageSize, grepPattern, maxLineLength);
-        long linesShown = processResult.getText().lines().filter(l -> !l.isEmpty()).count();
-        String header = String.format("Showing %d of %d matching lines (from %d total lines) in %s",
-                linesShown,
-                processResult.getMatchingLineCount(),
-                processResult.getTotalLineCount(),
-                logFilePath);
-        return header + "\n\n" + processResult.getText();
+        
+        // Use streaming to avoid loading the entire file into memory
+        try (Stream<String> lines = Files.lines(logFilePath)) {
+            String content = lines.collect(Collectors.joining("\n"));
+            TextChunk processResult = TextUtils.processText(content, startIndex, pageSize, grepPattern, maxLineLength);
+            
+            long linesShown = processResult.getText().lines().filter(l -> !l.isEmpty()).count();
+            String header = String.format("Showing %d of %d matching lines (from %d total lines) in %s",
+                    linesShown,
+                    processResult.getMatchingLineCount(),
+                    processResult.getTotalLineCount(),
+                    logFilePath);
+            return header + "\n\n" + processResult.getText();
+        }
     }
 
     private static Path findLogFile() throws IOException {
