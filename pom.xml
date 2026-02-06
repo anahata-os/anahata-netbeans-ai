@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uno.anahata</groupId>
     <artifactId>anahata-ai-nb</artifactId>
-    <version>28.0.20-SNAPSHOT</version>
+    <version>28.0.20</version>
     <packaging>nbm</packaging>
     <name>Anahata</name>
     <description>
