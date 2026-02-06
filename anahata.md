@@ -1,3 +1,4 @@
+/* Licensed under the Anahata Software License (ASL) v 108. See the LICENSE file for details. Força Barça! */
 # Project: anahata-netbeans-ai - Anahata NetBeans AI Assistant Plugin (v1 plugin)
 
 This document provides the essential, high-level overview of the `anahata-netbeans-ai` project. It is intended to be the stable, "always-in-context" guide to the plugin's purpose, architecture, and core principles.
@@ -17,6 +18,7 @@ The plugin operates within the NetBeans module system. Access to other modules i
 - **Runtime Classpath:** The `RunningJVM` tool's default classpath is initialized to the plugin's runtime classpath. A grouped, pretty-printed view of the available JARs is provided in your context on every turn. Note that this is a summary; the actual underlying classpath contains hundreds of individual JARs. To retrieve the full, flat list of absolute paths, call `RunningJVM.getDefaultCompilerClasspath()`.
 
 ## 4. Recent Milestones
+- **v28.1.0 (First Stable Version):** Marks the transition to a stable production state. Includes the new Vector Icon System, enhanced PAYG v2 context management, and critical UI/UX stability fixes.
 - **v28.0.14 (Polymorphic Code Discovery):** Upgraded the `CodeModel` to use a polymorphic "Keychain" pattern. `JavaMember` now extends `JavaType`, allowing for recursive, zero-turn exploration of nested and anonymous inner classes across projects, dependencies, and the JDK.
 - **v28.0.13 (Context Safety & Intelligence):** Implemented the "90% Soft Limit" for context window management. Added Dynamic Model Intelligence to automatically discover model-specific token limits from the Gemini API.
 - **v28.0.12 (Performance & Stability):** Optimized project alerts retrieval by 'surfing' the IDE's internal ErrorsCache, reducing turn latency from seconds to milliseconds.

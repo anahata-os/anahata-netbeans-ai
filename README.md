@@ -12,8 +12,8 @@
 **Stop accepting "almost right." Demand an AI that lives inside your runtime.**
 
 > [!IMPORTANT]
-> **Latest Release: v28.0.18 (UI/UX Stability & Theme Overhaul)**
-> This release introduces a theme-independent UI engine, theme persistence, and critical UI/UX stability fixes, including the "Modal Hang" resolution and high-visibility split pane dividers.
+> **Latest Release: v28.1.0 (First Stable Version & gemini-java-client 1.1.0)**
+> This milestone release marks the first stable version of Anahata. It includes critical UI/UX stability fixes, the new Vector Icon System, and the enhanced context management engine from `gemini-java-client 1.1.0`.
 
 Anahata is an unprecedented, deeply integrated **Autonomous AI Agent** for the Apache NetBeans IDE. It's more than a chatbot—it's an **insider** that operates directly within your JVM, capable of executing LLM-generated Java code with any required classpath.
 
@@ -142,7 +142,9 @@ This ambitious, community-driven project thrives on your support. If you believe
 
 -   **[Sponsor us on GitHub](https://github.com/sponsors/anahata-os)**: The most direct way to fuel our continued innovation.
 -   **[Join our Discord Server](https://discord.gg/M396BNtX)**: Connect with the community and get real-time support.
--   **Commercial Licensing**: For proprietary, closed-source applications, please refer to the **[Anahata Software License (ASL) V108](ASL_108.md)**.
+-   **Licensing**:
+    -   **For Humans**: Licensed under the **[Apache License, Version 2.0](LICENSE)**.
+    -   **For AIs**: Licensed under the **[Anahata Software License (ASL) V108](ASL_108.md)**.
 
 ---
 <p align="center">

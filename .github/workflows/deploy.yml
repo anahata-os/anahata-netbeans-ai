@@ -14,7 +14,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -48,3 +48,14 @@ jobs:
             # For snapshots: Force deployment to the Sonatype snapshot repo with the release profile for sources/javadocs
             mvn deploy -DskipTests -P release -ntp -DaltSnapshotDeploymentRepository=sonatype-central::default::https://central.sonatype.com/repository/maven-snapshots/
           fi
+
+      - name: Upload NBM to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/*.nbm
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
