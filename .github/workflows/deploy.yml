@@ -1,15 +1,12 @@
 name: Deploy to Central
 
 on:
-  # Trigger on push to master (usually for Snapshots)
+  # Trigger on push to master (for Snapshots)
   push:
     branches: [ "master" ]
     tags:
       - 'v*'
-  # Trigger when a Release is published in GitHub UI
-  release:
-    types: [ published ]
-  # Allow manual triggering from the GitHub Actions UI
+  # Manual trigger allowed
   workflow_dispatch:
 
 jobs:
@@ -29,8 +26,6 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           cache: 'maven'
-          # AUTO-CONFIGURATION:
-          # This creates a settings.xml with the <server> id "sonatype-central"
           server-id: sonatype-central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -43,7 +38,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]] || [[ "${{ github.event_name }}" == "release" ]]; then
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             # For releases/tags: Sign artifacts and use the central portal
             mvn deploy -DskipTests -P release -ntp
           else
