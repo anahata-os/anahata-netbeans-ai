@@ -6,7 +6,7 @@
 
 After months of intensive development, I am thrilled to announce that **Anahata**, our Open Source, Pure-Java AI Assistant, has officially been released and is now available on the **Apache NetBeans Plugin Portal**.
 
-Anahata isn't just another "chat-in-a-sidebar" plugin. It is a deeply integrated, context-aware development partner designed specifically for the Java ecosystem, running on the latest **NetBeans 28**.
+Anahata isn't just another "chat-in-a-sidebar" plugin. It is a deeply integrated, context-aware development partner designed specifically for the Java ecosystem, running on the latest **NetBeans 29**.
 
 ## Why Anahata?
 
@@ -58,7 +58,7 @@ Anahata is powered by the **Gemini Java Client**, an enterprise-grade framework 
 ## Get Started Today
 Anahata is now live and ready to transform your development workflow. You can find it directly in the NetBeans Plugin Manager or via the official portal:
 
-👉 **[Anahata on the NetBeans Plugin Portal](https://plugins.netbeans.apache.org/catalogue/?id=108)**
+👉 **[Anahata on the NetBeans Plugin Portal](https://plugins.netbeans.apache.org/catalogue/?id=125)**
 
 We invite the Foojay community to take it for a spin, contribute to the code, and help us shape the future of AI-assisted development in the OpenJDK ecosystem.
 

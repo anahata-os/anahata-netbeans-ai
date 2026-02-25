@@ -12,8 +12,8 @@
 **Stop accepting "almost right." Demand an AI that lives inside your runtime.**
 
 > [!IMPORTANT]
-> **Latest Release: v28.1.0 (First Stable Version & gemini-java-client 1.1.0)**
-> This milestone release marks the first stable version of Anahata. It includes critical UI/UX stability fixes, the new Vector Icon System, and the enhanced context management engine from `gemini-java-client 1.1.0`.
+> **Latest Release: v29.0.0 (NetBeans 29 Support & gemini-java-client 1.1.0)**
+> This release brings full compatibility with Apache NetBeans 29. It continues to build on the stability of the v28 series, including the Vector Icon System and the enhanced context management engine.
 
 Anahata is an unprecedented, deeply integrated **Autonomous AI Agent** for the Apache NetBeans IDE. It's more than a chatbot—it's an **insider** that operates directly within your JVM, capable of executing LLM-generated Java code with any required classpath.
 
