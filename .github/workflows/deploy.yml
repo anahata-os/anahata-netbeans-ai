@@ -8,6 +8,17 @@ on:
       - 'v*'
   # Manual trigger allowed
   workflow_dispatch:
+    inputs:
+      skip_deploy:
+        description: 'Skip Maven Deploy (use if already in Central)'
+        required: false
+        default: false
+        type: boolean
+      force_release_tag:
+        description: 'Force Release Tag (e.g. v29.0.0). Use this to release an existing tag while running from master.'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   publish:
@@ -19,6 +30,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.force_release_tag || github.ref }}
 
       - name: Set up JDK 25 & Maven
         uses: actions/setup-java@v4
@@ -33,12 +46,13 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Build & Deploy
+        if: github.event.inputs.skip_deploy != 'true'
         env:
           MAVEN_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+          if [[ "${{ github.ref }}" == refs/tags/v* ]] || [[ "${{ github.event.inputs.force_release_tag }}" == v* ]]; then
             # For releases/tags: Sign artifacts and use the central portal
             mvn deploy -DskipTests -P release -ntp
           else
@@ -46,10 +60,15 @@ jobs:
             mvn deploy -DskipTests -P release -ntp -DaltSnapshotDeploymentRepository=sonatype-central::default::https://central.sonatype.com/repository/maven-snapshots/
           fi
 
+      - name: Build Only (Skip Deploy)
+        if: github.event.inputs.skip_deploy == 'true'
+        run: mvn package -DskipTests -P release -ntp
+
       - name: Create/Update GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.force_release_tag != ''
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.force_release_tag || github.ref_name }}
           files: |
             target/*.nbm
           draft: false
