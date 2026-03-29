@@ -1,3 +1,6 @@
+>  [!IMPORTANT]
+> **v2 (Anahata ASI NetBeans) is ready for testing, give us a hand**
+
 <p align="center">
   <img src="docs/assets/messi_photo.png" width="800" alt="Messi Photo">
 </p>
