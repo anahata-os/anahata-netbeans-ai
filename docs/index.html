@@ -1,6 +1,15 @@
-or <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WMGS1YH2WD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-WMGS1YH2WD');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anahata | The Autonomous NetBeans AI Agent</title>
@@ -9,6 +18,36 @@ or <!DOCTYPE html>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
     <style>
+        .v2-announcement {
+            background: linear-gradient(90deg, var(--barca-blue), var(--barca-red));
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1100;
+            border-bottom: 2px solid var(--barca-gold);
+            line-height: 1.6;
+        }
+        .v2-announcement strong { color: var(--barca-gold); }
+        .v2-announcement a { 
+            color: var(--barca-gold); 
+            font-weight: bold; 
+            text-decoration: underline; 
+            margin: 0 4px;
+        }
+        
+        nav { 
+            position: sticky !important; 
+            top: 0 !important; 
+            z-index: 1090;
+            background: rgba(26, 32, 44, 0.95) !important;
+        }
+        
+        .hero {
+            padding-top: 6rem; /* Reduced padding since banner now occupies physical space */
+        }
+
         #iot, #creative, #safety, #docs {
             margin-top: 12rem;
             padding-top: 10rem;
@@ -17,6 +56,15 @@ or <!DOCTYPE html>
     </style>
 </head>
 <body>
+    <div class="v2-announcement">
+        <div class="container">
+            <span>🚀 <strong>v2 is super super close!</strong> Nightly builds are available. 
+            Experience the first "Enterprise Java" implementation of an AGI Container — CwGC (Context Window Garbage Collector), On-The-Fly AGI tool generation, Flight Recorder, Stateful Toolkits, AGI Container passivation, Remote resources, All NetBeans refactor operations, editor hints, direct Java code AST manipulation and the Kevin's voice from the legendary, OG, one-and-only "Pure Java" TTS library. 
+            Explore the new <a href="https://asi.anahata.uno/desktop.html">Anahata ASI Desktop</a> and 
+            <a href="https://asi.anahata.uno/nb.html">Anahata ASI Studio - NetBeans</a> 
+            at the official <a href="https://asi.anahata.uno">asi.anahata.uno</a> portal.</span>
+        </div>
+    </div>
     <nav>
         <div class="container nav-container">
             <img src="assets/logo-horizontal.png" alt="Anahata Logo" class="nav-logo">
@@ -30,7 +78,7 @@ or <!DOCTYPE html>
                 <a href="#docs">Docs</a>
                 <a href="#iot">IoT</a>
                 <a href="https://www.youtube.com/@anahata108" target="_blank" title="Anahata TV"><i class="fab fa-youtube"></i></a>
-                <a href="https://discord.gg/M396BNtX" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+                <a href="https://discord.gg/gwGWWxPUXE" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
                 <a href="https://x.com/AnahataASI" target="_blank" title="Twitter / X"><i class="fa-brands fa-x-twitter"></i></a>
                 <a href="https://github.com/anahata-os/anahata-netbeans-ai" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
                 <a href="https://asi.anahata.uno" target="_blank" class="v2-badge">v2 is coming!</a>
@@ -562,7 +610,7 @@ or <!DOCTYPE html>
             <div class="footer-links">
                 <h4>Community</h4>
                 <a href="https://www.youtube.com/@anahata108" target="_blank">Anahata TV</a>
-                <a href="https://discord.gg/M396BNtX" target="_blank">Discord Server</a>
+                <a href="https://discord.gg/gwGWWxPUXE" target="_blank">Discord Server</a>
                 <a href="https://x.com/AnahataASI" target="_blank">Twitter / X</a>
                 <a href="https://github.com/anahata-os/anahata-netbeans-ai/issues">Issues</a>
                 <a href="https://github.com/sponsors/anahata-os">Sponsor</a>
