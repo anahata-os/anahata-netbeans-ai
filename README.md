@@ -1,5 +1,5 @@
 >  [!IMPORTANT]
-> **v2 (Anahata ASI NetBeans) is ready for testing, give us a hand**
+> **🚀 ANAHATA V2 (ASI) IS OFFICIALLY LIVE! Get the new Stateful AI Agent Container at [asi.anahata.uno](https://asi.anahata.uno)**
 
 <p align="center">
   <img src="docs/assets/messi_photo.png" width="800" alt="Messi Photo">
@@ -15,12 +15,12 @@
 **Stop accepting "almost right." Demand an AI that lives inside your runtime.**
 
 > [!IMPORTANT]
-> **Latest Release: v29.0.0 (NetBeans 29 Support & gemini-java-client 1.1.0)**
-> This release brings full compatibility with Apache NetBeans 29. It continues to build on the stability of the v28 series, including the Vector Icon System and the enhanced context management engine.
+> **Latest Release: v30.0.0 (NetBeans 30 Support & gemini-java-client 1.1.1)**
+> This is the final bridge release for V1. It brings full compatibility with Apache NetBeans 30 and prominently routes users to the new Anahata V2 (ASI) platform.
 
 Anahata is an unprecedented, deeply integrated **Autonomous AI Agent** for the Apache NetBeans IDE. It's more than a chatbot—it's an **insider** that operates directly within your JVM, capable of executing LLM-generated Java code with any required classpath.
 
-**[Website](https://anahata.uno) | [Anahata TV (YouTube)](https://www.youtube.com/@anahata108) | [Discord](https://discord.gg/M396BNtX) | [v2 is coming!](https://github.com/anahata-os/anahata-asi)**
+**[Website](https://anahata.uno) | [Anahata TV (YouTube)](https://www.youtube.com/@anahata108) | [Discord](https://discord.gg/M396BNtX) | [Anahata V2 (ASI) is LIVE!](https://asi.anahata.uno)**
 
 ---
 
