@@ -15,7 +15,7 @@
 **Stop accepting "almost right." Demand an AI that lives inside your runtime.**
 
 > [!IMPORTANT]
-> **Latest Release: v30.0.0 (NetBeans 30 Support & gemini-java-client 1.1.1)**
+> **Latest Release: v30.0.1 (NetBeans 30 Support & gemini-java-client 1.1.2)**
 > This is the final bridge release for V1. It brings full compatibility with Apache NetBeans 30 and prominently routes users to the new Anahata V2 (ASI) platform.
 
 Anahata is an unprecedented, deeply integrated **Autonomous AI Agent** for the Apache NetBeans IDE. It's more than a chatbot—it's an **insider** that operates directly within your JVM, capable of executing LLM-generated Java code with any required classpath.

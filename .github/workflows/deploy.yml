@@ -52,12 +52,24 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Resolved Maven version: $VERSION"
+          
           if [[ "${{ github.ref }}" == refs/tags/v* ]] || [[ "${{ github.event.inputs.force_release_tag }}" == v* ]]; then
-            # For releases/tags: Sign artifacts and use the central portal
+            if [[ "$VERSION" == *-SNAPSHOT ]]; then
+              echo "[ERROR] Cannot deploy a SNAPSHOT version ($VERSION) to the production Maven Central Release portal!"
+              exit 1
+            fi
+            echo "[INFO] Tag trigger with release version detected. Deploying to Sonatype Central Release portal..."
             mvn deploy -DskipTests -P release -ntp
           else
-            # For snapshots: Force deployment to the Sonatype snapshot repo
-            mvn deploy -DskipTests -P release -ntp -DaltSnapshotDeploymentRepository=sonatype-central::default::https://central.sonatype.com/repository/maven-snapshots/
+            if [[ "$VERSION" != *-SNAPSHOT ]]; then
+              echo "[INFO] Branch trigger with release version ($VERSION) detected. Skipping Sonatype Snapshot deployment to prevent bad coordinate rejection."
+              mvn package -DskipTests -P release -ntp
+            else
+              echo "[INFO] Branch trigger with SNAPSHOT version ($VERSION) detected. Deploying to Sonatype Snapshot repository..."
+              mvn deploy -DskipTests -P release -ntp -DaltSnapshotDeploymentRepository=sonatype-central::default::https://central.sonatype.com/repository/maven-snapshots/
+            fi
           fi
 
       - name: Build Only (Skip Deploy)
