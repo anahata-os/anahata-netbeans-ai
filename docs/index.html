@@ -7,611 +7,405 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-WMGS1YH2WD');
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anahata | The Autonomous NetBeans AI Agent</title>
+    <title>Anahata Software Foundation | A "Pure Java" Software Foundation for Super Intelligence</title>
+    <meta name="description" content="Anahata Software Foundation: The home of Anahata ASI, the world's first stateful, air-gapped Java Artificial Super Intelligence Platform and Autonomous JVM Agent.">
+    <meta name="keywords" content="Anahata, Anahata Software Foundation, Anahata ASI, Java AI Agent, Autonomous Java Agent, NetBeans AI Agent, ASI Container, CwGC, IFPTOASI, Java Super Intelligence">
+    <meta property="og:site_name" content="Anahata ASI">
+    <meta property="og:title" content="Anahata Software Foundation | Pure Java Super Intelligence">
+    <meta property="og:description" content="A 'Pure Java' Software Foundation for the make benefit of Super Intelligence. Home of Anahata ASI Platform, Studio, and Desktop.">
+    <meta property="og:url" content="https://anahata.uno">
+    <link rel="canonical" href="https://anahata.uno">
+
+    <!-- Schema.org JSON-LD Structured Data for Google Search -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Anahata Software Foundation",
+      "alternateName": ["Anahata", "Anahata ASI", "Anahata Foundation", "IFPTOASI"],
+      "url": "https://anahata.uno",
+      "logo": "https://asi.anahata.uno/assets/logo-transparent.png",
+      "sameAs": [
+        "https://github.com/anahata-os",
+        "https://x.com/AnahataASI",
+        "https://discord.gg/gwGWWxPUXE",
+        "https://www.youtube.com/@anahata108"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Anahata ASI",
+      "alternateName": ["Anahata Software Foundation", "Anahata ASI Studio", "Anahata"],
+      "url": "https://anahata.uno"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Anahata ASI",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Cross-platform (JVM, Linux, Windows, macOS)",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "The world's first stateful, air-gapped autonomous Java AI Agent and ASI Container residing directly inside the JVM."
+    }
+    </script>
+
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
     <style>
-        .v2-announcement {
-            background: linear-gradient(90deg, var(--barca-blue), var(--barca-red));
-            color: white;
-            padding: 15px 0;
-            text-align: center;
+        .asf-badge {
+            background: linear-gradient(135deg, var(--barca-gold), #ff9900);
+            color: #000;
+            font-weight: 900;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(237, 187, 0, 0.3);
+        }
+        .hero-platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+            text-align: left;
+        }
+        .platform-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 4px solid var(--barca-gold);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .platform-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary-light);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+        .platform-card h3 {
+            color: var(--white);
+            font-size: 1.4rem;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .platform-card p {
+            color: var(--text-muted);
             font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        .platform-btn {
+            background: rgba(237, 187, 0, 0.15);
+            border: 1px solid var(--barca-gold);
+            color: var(--barca-gold);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .ifptoasi-section {
+            background: radial-gradient(circle at top right, rgba(165, 0, 68, 0.2), rgba(0, 77, 152, 0.3)), #0d1117;
+            border: 1px solid rgba(237, 187, 0, 0.3);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 4rem 0;
             position: relative;
-            z-index: 1100;
-            border-bottom: 2px solid var(--barca-gold);
-            line-height: 1.6;
+            overflow: hidden;
         }
-        .v2-announcement strong { color: var(--barca-gold); }
-        .v2-announcement a { 
-            color: var(--barca-gold); 
-            font-weight: bold; 
-            text-decoration: underline; 
-            margin: 0 4px;
+        .ifptoasi-seal {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 160px;
+            opacity: 0.12;
+            transform: rotate(15deg);
         }
-        
-        nav { 
-            position: sticky !important; 
-            top: 0 !important; 
-            z-index: 1090;
-            background: rgba(26, 32, 44, 0.95) !important;
-        }
-        
-        .hero {
-            padding-top: 6rem; /* Reduced padding since banner now occupies physical space */
-        }
-
-        #iot, #creative, #safety, #docs {
-            margin-top: 12rem;
-            padding-top: 10rem;
-            border-top: 1px solid #eee;
+        .legacy-archive-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-left: 4px solid #718096;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
     </style>
 </head>
 <body>
-    <div class="v2-announcement">
-        <div class="container">
-            <span>🚀 <strong>Anahata V2 (ASI) is officially LIVE!</strong> 
-            Experience the first "Enterprise Java" implementation of an AGI Container — CwGC (Context Window Garbage Collector), On-The-Fly AGI tool generation, Flight Recorder, Stateful Toolkits, AGI Container passivation, Remote resources, All NetBeans refactor operations, editor hints, direct Java code AST manipulation and Kevin's voice from the legendary, OG, one-and-only, "Pure Java" TTS library. 
-            Explore the new <a href="https://asi.anahata.uno/desktop.html">Anahata ASI Desktop</a> and 
-            <a href="https://asi.anahata.uno/nb.html">Anahata ASI Studio - NetBeans</a> 
-            at the official <a href="https://asi.anahata.uno">asi.anahata.uno</a> portal.</span>
-        </div>
-    </div>
-    <nav>
-        <div class="container nav-container">
-            <img src="assets/logo-horizontal.png" alt="Anahata Logo" class="nav-logo">
+    <nav style="position: sticky; top: 0; z-index: 1090; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div class="container nav-container" style="display: flex; align-items: center; justify-content: space-between;">
+            <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: 2.5rem;">
+                <img src="assets/logo-horizontal.png" alt="Anahata Logo" class="nav-logo" style="height: 38px;">
+            </a>
             <div class="menu-toggle" id="mobile-menu">
                 <i class="fas fa-bars"></i>
             </div>
-            <div class="nav-links" id="nav-links">
-                <a href="#java-maven">Java</a>
-                <a href="#nbm-devs">NBM</a>
-                <a href="#showcase">Showcase</a>
-                <a href="#docs">Docs</a>
-                <a href="#iot">IoT</a>
+            <div class="nav-links" id="nav-links" style="display: flex; align-items: center; gap: 1.5rem;">
+                <a href="https://asi.anahata.uno" target="_blank" style="color: var(--barca-gold); font-weight: 800;"><i class="fas fa-rocket"></i> Anahata ASI</a>
+                <a href="#foundation">Foundation</a>
+                <a href="ifptoasi.html">IFPTOASI</a>
                 <a href="https://www.youtube.com/@anahata108" target="_blank" title="Anahata TV"><i class="fab fa-youtube"></i></a>
                 <a href="https://discord.gg/gwGWWxPUXE" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
                 <a href="https://x.com/AnahataASI" target="_blank" title="Twitter / X"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="https://github.com/anahata-os/anahata-netbeans-ai" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://asi.anahata.uno" target="_blank" class="v2-badge">V2 is LIVE!</a>
+                <a href="https://github.com/anahata-os" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
                 <a href="https://github.com/sponsors/anahata-os" class="btn-sponsor">Sponsor <i class="fas fa-heart"></i></a>
             </div>
         </div>
     </nav>
 
-    <header class="hero">
+    <header class="hero" style="padding: 7rem 0 4rem; text-align: center;">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
-            <div class="hero-badges fade-in">
-                <div class="nb-badge">Pure Java • Open Source • Apache Licensed</div>
-                <a href="https://plugins.netbeans.apache.org/catalogue/?id=125" target="_blank" class="verified-badge">
-                    <i class="fas fa-check-circle"></i> NB 28, 29 & 30 - Available on Plugin Portal
-                </a>
-                <a href="https://plugins.netbeans.apache.org/catalogue/?id=125" class="nb-badge" style="background: var(--barca-red); color: var(--white); border-color: var(--barca-gold); text-decoration: none; margin-top: 0.5rem; text-transform: none;">
-                    <i class="fas fa-rocket"></i> v30.0.1 Released - gemini-java-client 1.1.2
-                </a>
-            </div>
-            <h1 class="fade-in">The Autonomous AI Agent for the NetBeans JVM.</h1>
-            <p class="tagline fade-in-delay">Stop using chatbots that just suggest code. Experience the first NetBeans-native <strong>AI Agent</strong> that lives inside your runtime, doing the work while you enjoy the flow.</p>
-            
-
-
-            <div class="hero-cta fade-in-delay-2">
-                <a href="https://netbeans.apache.org/front/main/download/" class="btn-primary" target="_blank"><i class="fas fa-download"></i> Download NetBeans 30</a>
-                <a href="https://plugins.netbeans.apache.org/catalogue/?id=125" class="btn-secondary" target="_blank"><i class="fas fa-external-link-alt"></i> See In Plugin Portal</a>
-            </div>
-
-            <div class="fade-in-delay-2" style="margin-top: 1.5rem; margin-bottom: 2rem;">
-                <p style="color: #ccc; font-size: 1.1rem;">
-                    Ready for the next evolution? 
-                    <a href="https://asi.anahata.uno" target="_blank" style="color: var(--barca-gold); text-decoration: underline; font-weight: bold;">Upgrade to the V2 ASI Platform</a>
-                </p>
+            <div class="fade-in" style="margin-bottom: 1.5rem;">
+                <span class="asf-badge"><i class="fas fa-certificate"></i> Anahata Software Foundation</span>
             </div>
             
-            <div class="pm-promo fade-in-delay-2">
-                <p>Have NetBeans 28, 29 or 30? Get Anahata on the <strong>Plugin Manager</strong>.</p>
-                <img src="assets/pluginmanager.png" alt="NetBeans Plugin Manager">
+            <h1 class="fade-in" style="font-size: 3rem; line-height: 1.2; margin-bottom: 1.2rem; max-width: 1000px; margin-left: auto; margin-right: auto;">
+                A <span style="color: var(--barca-gold)">"Pure Java"</span> Software Foundation for the <br/><i style="color: #4faaff;">make benefit</i> of Super Intelligence.
+            </h1>
+            
+            <p class="tagline fade-in-delay" style="max-width: 850px; margin: 0 auto 2.5rem; font-size: 1.2rem; color: #cbd5e1; line-height: 1.6;">
+                Welcome to the home of <strong>Anahata ASI</strong>. We are a sovereign, open-source collective delivering stateful, air-gapped Artificial Super Intelligence Containers for the JVM. Stop wrapping stateless REST APIs. Step into the age of true agentic super intelligence.
+            </p>
+
+            <div class="fade-in-delay-2" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3.5rem;">
+                <a href="https://asi.anahata.uno" class="btn-primary" style="background: var(--barca-gold); color: #000; font-weight: 800; font-size: 1.1rem; padding: 14px 28px;">
+                    <i class="fas fa-rocket"></i> Enter the ASI Platform Hub
+                </a>
+                <a href="https://asi.anahata.uno/nb.html" class="btn-primary" style="background: var(--barca-red); color: white; font-weight: 800; font-size: 1.1rem; padding: 14px 28px;">
+                    <i class="fas fa-laptop-code"></i> Anahata ASI Studio (NetBeans)
+                </a>
+                <a href="https://github.com/anahata-os/anahata-asi" class="btn-secondary" target="_blank" style="padding: 14px 24px;">
+                    <i class="fab fa-github"></i> GitHub Source Code
+                </a>
+            </div>
+
+            <div class="hero-badges fade-in-delay-2" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <span class="nb-badge" style="border-color: #4faaff; color: #4faaff;"><i class="fab fa-java"></i> 100% Pure Java (JDK 21 - 26)</span>
+                <span class="nb-badge" style="border-color: var(--verified-green); color: var(--verified-green);"><i class="fas fa-shield-alt"></i> 100% Air-Gapped Data Sovereignty</span>
+                <span class="nb-badge" style="border-color: var(--barca-gold); color: var(--barca-gold);"><i class="fas fa-balance-scale"></i> Apache License 2.0</span>
             </div>
         </div>
     </header>
 
-    <main>
-        <section id="tech-stack" class="container">
-            <div class="tech-grid" style="display: flex; justify-content: center; gap: 3rem; align-items: center; flex-wrap: wrap;">
-                <div class="tech-item" title="Apache NetBeans">
-                    <img src="assets/logos/apache-netbeans.svg" alt="NetBeans Logo" style="height: 70px; width: auto;">
-                    <span>NetBeans 30 Native</span>
-                </div>
-                <div class="tech-item" title="Java">
-                    <i class="devicon-java-plain colored" style="font-size: 4rem;"></i>
-                    <span>Java 17+</span>
-                </div>
-                <div class="tech-item" title="Apache Maven">
-                    <i class="devicon-maven-plain colored" style="font-size: 3.5rem;"></i>
-                    <span>Maven Integrated</span>
-                </div>
-                <div class="tech-item" title="Google Gemini">
-                    <img src="assets/logos/gemini.svg" alt="Gemini Logo" style="height: 60px; width: auto;">
-                    <span>Gemini Optimized</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="jit-reload" class="dark-bg">
-            <div class="container">
-                <div class="section-header">
-                    <span class="nb-badge" style="background: var(--barca-gold); color: var(--barca-blue);">The Insider Advantage</span>
-                    <h2 style="margin-top: 1rem;">Autonomous AI Execution & Hot-Reload</h2>
-                    <p>Anahata doesn't just suggest code; it <strong>executes</strong> it. It's an AI Agent that lives inside your runtime.</p>
-                </div>
-                <div class="philosophy-grid">
-                    <div class="philosophy-content">
-                        <div class="comparison-card" style="border-left-color: var(--barca-gold);">
-                            <h3>The "Any Framework" Superpower</h3>
-                            <p>The agent can identify a need for <strong>any Java framework in existence</strong>, download it from Maven Central at runtime, and execute LLM-generated code using it immediately—all without modifying your project's <code>pom.xml</code>.</p>
-                            <ul style="margin-top: 1.5rem;">
-                                <li><i class="fas fa-bolt"></i> <strong>In-Process Execution:</strong> LLM-generated Java code runs directly on the NetBeans JVM.</li>
-                                <li><i class="fas fa-box-open"></i> <strong>Dynamic Classpath:</strong> Access any library in the Maven ecosystem on-the-fly.</li>
-                                <li><i class="fas fa-sync-alt"></i> <strong>Hot-Reload Workflow:</strong> Test UI components or complex algorithms instantly directly on the NetBeans JVM.</li>
-                                <li><i class="fas fa-microchip"></i> <strong>Native Performance:</strong> Pure Java execution with full IDE integration.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="philosophy-image">
-                        <a href="screenshots/jit-compilation-and-execution.png" target="_blank">
-                            <img src="screenshots/jit-compilation-and-execution.png" alt="JIT Compilation and Execution" style="border: 1px solid var(--barca-gold); border-radius: 12px;">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="java-maven" class="container">
-            <div class="section-header">
-                <h2>Engineered for Java & Maven Developers</h2>
-                <p>Anahata exploits the deep integration of NetBeans to provide unmatched intelligence and automatic project context augmentation.</p>
-            </div>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <i class="fas fa-search-plus" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Instant Source Surfing</h3>
-                    <p>The AI Agent can download and parse the source code of <strong>any dependency</strong> in your project or the Maven ecosystem, providing deep architectural insights.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-bug" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Real-time Diagnostics</h3>
-                    <p>Automatic source code parsing error detection and reporting on a "same turn basis." No more unchecked compile errors from blind file writes.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-project-diagram" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Full Project Awareness</h3>
-                    <p>All project actions, top components, source files, class indexing, and source code parsing/caching are available to the model for deep analysis.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-life-ring" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Support Panel</h3>
-                    <p>Direct access to community support, documentation, and Anahata TV directly from the assistant's interface.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-virus" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Safe Refactoring</h3>
-                    <p>Perform safe NetBeans-native refactor operations with on-the-turn compiler alerts and project problem reporting.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-terminal" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Workspace Management</h3>
-                    <p>Let the AI Agent browse output tabs for logs, manage open editor tabs, scroll to specific lines, and even adjust NetBeans settings.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-layer-group" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>PAYG v2 Pruning</h3>
-                    <p>Advanced AI-driven context management that keeps your workspace tidy and efficient for infinite conversations.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Explicit Consent</h3>
-                    <p>The Butler Principle: Anahata never acts without your approval. Every tool call is visible and confirmable.</p>
-                </div>
+    <main class="container">
+        
+        <!-- FLAGSHIP PLATFORM PRODUCTS SECTION -->
+        <section id="flagship" style="margin-top: 3rem; margin-bottom: 5rem;">
+            <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+                <h2 style="font-size: 2.4rem;">The Flagship ASI Suite</h2>
+                <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto;">Stateful intelligence containers engineered for enterprise developers, researchers, and systems architects.</p>
             </div>
 
-            <div class="prompt-box">
-                <h4 style="margin-top: 0; margin-bottom: 1.5rem; color: var(--white);"><i class="fas fa-terminal"></i> Try these prompts:</h4>
-                <ul class="prompt-list">
-                    <li class="prompt-item">"Download the sources for 'org.openide.util' and explain how the Lookup system works."</li>
-                    <li class="prompt-item">"Surf the 'gson' source code and show me how it handles custom TypeAdapters."</li>
-                    <li class="prompt-item">"Play SomaFM Groove Salad while you put Javadoc on all source files and turn it off when done."</li>
-                    <li class="prompt-item">"Explore my LAN, find the TCL TV, and perform a vulnerability audit on any devices on this LAN."</li>
-                    <li class="prompt-item">"Change the Look and Feel to FlatLaf IntelliJ Dark and refresh all windows."</li>
-                    <li class="prompt-item">"Set the java.util.logging levels of 'org.netbeans.modules.maven' to FINEST."</li>
-                    <li class="prompt-item">"Analyze the heap and find the largest objects currently in memory."</li>
-                    <li class="prompt-item">"Search Maven Central for MIDI APIs, add them, and give me a Swing demo."</li>
-                    <li class="prompt-item">"Check the project's problems and fix any compilation errors."</li>
-                    <li class="prompt-item">"Close all editor tabs and open the files we are discussing."</li>
-                </ul>
-            </div>
-        </section>
+            <div class="hero-platform-grid">
+                <!-- Card 1: NetBeans Studio -->
+                <a href="https://asi.anahata.uno/nb.html" class="platform-card" style="border-top-color: var(--barca-gold);">
+                    <div>
+                        <div style="font-size: 2rem; color: var(--barca-gold); margin-bottom: 0.5rem;"><i class="fas fa-laptop-code"></i></div>
+                        <h3>Anahata ASI Studio (NetBeans)</h3>
+                        <p>The world's most advanced autonomous Java coding agent. Resides directly inside the NetBeans IDE JVM with live AST-guided refactoring, compiler error catching during reloop, JIT Java execution, and NetBeans terminal collaboration.</p>
+                    </div>
+                    <div class="platform-btn"><i class="fas fa-arrow-right"></i> Open NetBeans Studio Docs & Updates</div>
+                </a>
 
-        <section id="nbm-devs" class="container">
-            <div class="bonus-section">
-                <div class="section-header" style="margin-bottom: 3rem;">
-                    <span class="nb-badge">Bonus for NBM Developers</span>
-                    <h2 style="margin-top: 1rem;">The Ultimate NetBeans Platform Toolkit</h2>
-                    <p>Develop NetBeans Modules with the power of an AI Agent that lives inside the platform runtime.</p>
-                </div>
-                <div class="philosophy-grid">
-                    <div class="philosophy-content">
-                        <div class="comparison-card" style="border-left-color: var(--accent);">
-                            <h3>NBM Development Superpowers</h3>
-                            <ul>
-                                <li><i class="fas fa-plug"></i> <strong>Runtime API Access:</strong> All NetBeans APIs and modules are available to the AI Agent at runtime for programmatic interaction.</li>
-                                <li><i class="fas fa-history"></i> <strong>Ultra-fast Lifecycle:</strong> Fly through NetBeans API understanding and test your ideas live without needing to reload your plugin.</li>
-                                <li><i class="fas fa-code-branch"></i> <strong>Internal Introspection:</strong> Run Lookups, Actions, FileSystem interactions, and TopComponent interactions right in the runtime.</li>
-                                <li><i class="fas fa-sync"></i> <strong>NBM Reload Integration:</strong> Test your code on the running instance, update it, and invoke `nbmreload` automatically.</li>
-                            </ul>
-                        </div>
+                <!-- Card 2: Desktop Launcher -->
+                <a href="https://asi.anahata.uno/desktop.html" class="platform-card" style="border-top-color: #4faaff;">
+                    <div>
+                        <div style="font-size: 2rem; color: #4faaff; margin-bottom: 0.5rem;"><i class="fas fa-desktop"></i></div>
+                        <h3>Anahata ASI Desktop</h3>
+                        <p>Standalone, cross-platform Swing ASI container application. Full-fidelity multimodal capabilities, live multi-monitor screen sharing, local audio PCM processing, and infinite session memory via Kryo serialization.</p>
                     </div>
-                    <div class="philosophy-image">
-                        <a href="screenshots/deep-strike-splash.png" target="_blank">
-                            <img src="screenshots/deep-strike-splash.png" alt="NBM Development Support">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
+                    <div class="platform-btn" style="border-color: #4faaff; color: #4faaff;"><i class="fas fa-arrow-right"></i> Explore Desktop Container</div>
+                </a>
 
-        <section id="showcase" class="container">
-            <div class="section-header">
-                <h2>Visual Intelligence Gallery</h2>
-                <p>A deep dive into Anahata's context-aware capabilities and native NetBeans integration.</p>
-            </div>
+                <!-- Card 3: IntelliJ IDEA Plugin -->
+                <a href="https://asi.anahata.uno/intellij.html" class="platform-card" style="border-top-color: #a50044;">
+                    <div>
+                        <div style="font-size: 2rem; color: #ff5c5c; margin-bottom: 0.5rem;"><i class="fas fa-cubes"></i></div>
+                        <h3>Anahata ASI for IntelliJ</h3>
+                        <p>Multi-IDE parity for JetBrains developers. Seamless integration with IntelliJ IDEA's PSI syntax tree, safe refactoring engines, and project model without cloud lock-in.</p>
+                    </div>
+                    <div class="platform-btn" style="border-color: #ff5c5c; color: #ff5c5c;"><i class="fas fa-arrow-right"></i> IntelliJ Integration Docs</div>
+                </a>
 
-            <div class="gallery-category" style="margin-top: 4rem;">
-                <i class="fas fa-brain"></i>
-                <h3>Deep Context Awareness</h3>
-            </div>
-            <div class="showcase-grid">
-                <a href="screenshots/context-providers-tab.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/context-providers-tab_refined.png" alt="Augmented Context">
-                    <div class="showcase-overlay">
-                        <h3>Augmented Context</h3>
-                        <p>Real-time project state fed directly into the model.</p>
+                <!-- Card 4: ASI Core Framework -->
+                <a href="https://asi.anahata.uno/core.html" class="platform-card" style="border-top-color: var(--verified-green);">
+                    <div>
+                        <div style="font-size: 2rem; color: var(--verified-green); margin-bottom: 0.5rem;"><i class="fas fa-brain"></i></div>
+                        <h3>Anahata ASI Core Framework</h3>
+                        <p>The model-agnostic foundation. Implements the revolutionary Context Window Garbage Collector (CwGC), URI resource management, and high-performance adapters for Gemini, OpenAI, Claude, Mistral, and NVIDIA NIM.</p>
                     </div>
-                </a>
-                <a href="screenshots/context-heatmap-detailed.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/context-heatmap-detailed_refined.png" alt="Token Precision">
-                    <div class="showcase-overlay">
-                        <h3>Token Precision</h3>
-                        <p>Detailed visualization of context window usage.</p>
-                    </div>
-                </a>
-                <a href="screenshots/context-heatmap-pie.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/context-heatmap-pie_refined.png" alt="Context Overview">
-                    <div class="showcase-overlay">
-                        <h3>Context Overview</h3>
-                        <p>High-level visualization of your augmented workspace.</p>
-                    </div>
-                </a>
-                <a href="screenshots/prune-as-you-go.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/prune-as-you-go_refined.png" alt="Dynamic Pruning">
-                    <div class="showcase-overlay">
-                        <h3>Dynamic Pruning</h3>
-                        <p>AI-driven context management for infinite conversations.</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="gallery-category">
-                <i class="fas fa-microchip"></i>
-                <h3>Actionable Intelligence</h3>
-            </div>
-            <div class="showcase-grid">
-                <a href="screenshots/chat-panel-interaction.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/chat-panel-interaction_refined.png" alt="Seamless Interaction">
-                    <div class="showcase-overlay">
-                        <h3>Seamless Interaction</h3>
-                        <p>Chat with the AI Agent directly inside your IDE workspace.</p>
-                    </div>
-                </a>
-                <a href="screenshots/live-sessions-maven-integration.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/live-sessions-maven-integration_refined.png" alt="Maven Mastery">
-                    <div class="showcase-overlay">
-                        <h3>Maven Mastery</h3>
-                        <p>Natural language control over Maven goals and dependencies.</p>
-                    </div>
-                </a>
-                <a href="screenshots/depency_sources.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/depency_sources_refined.png" alt="Dependency Intelligence">
-                    <div class="showcase-overlay">
-                        <h3>Dependency Intelligence</h3>
-                        <p>Automatic retrieval of sources and javadocs for any library.</p>
-                    </div>
-                </a>
-                <a href="screenshots/tools-tab-javadocs.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/tools-tab-javadocs_refined.png" alt="Javadoc Awareness">
-                    <div class="showcase-overlay">
-                        <h3>Javadoc Awareness</h3>
-                        <p>Deep understanding of library documentation and APIs.</p>
-                    </div>
-                </a>
-                <a href="screenshots/tools-tab-javasources.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/tools-tab-javasources_refined.png" alt="Source Code Analysis">
-                    <div class="showcase-overlay">
-                        <h3>Source Code Analysis</h3>
-                        <p>Native parsing and analysis of your project's source code.</p>
-                    </div>
-                </a>
-                <a href="screenshots/tools-tab-codemodel.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/tools-tab-codemodel_refined.png" alt="Deep Code Insight">
-                    <div class="showcase-overlay">
-                        <h3>Deep Code Insight</h3>
-                        <p>Leveraging NetBeans CodeModel for structural analysis.</p>
-                    </div>
-                </a>
-                <a href="screenshots/refactor_rename.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/refactor_rename_refined.png" alt="Safe Refactoring">
-                    <div class="showcase-overlay">
-                        <h3>Safe Refactoring</h3>
-                        <p>Programmatic renames and moves using NetBeans APIs.</p>
-                    </div>
-                </a>
-                <a href="screenshots/project_and_javac_alerts.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/project_and_javac_alerts_refined.png" alt="Live Diagnostics">
-                    <div class="showcase-overlay">
-                        <h3>Live Diagnostics</h3>
-                        <p>Real-time feedback on compilation errors and project problems.</p>
-                    </div>
-                </a>
-                <a href="screenshots/radio-tool-active.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/radio-tool-active_refined.png" alt="Integrated Radio">
-                    <div class="showcase-overlay">
-                        <h3>Integrated Radio</h3>
-                        <p>Stream your favorite stations directly inside NetBeans.</p>
-                    </div>
-                </a>
-                <a href="screenshots/syntax-highlighting.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/syntax-highlighting_refined.png" alt="Native Highlighting">
-                    <div class="showcase-overlay">
-                        <h3>Native Highlighting</h3>
-                        <p>Rich, IDE-native syntax highlighting for all code snippets.</p>
-                    </div>
-                </a>
-                <a href="screenshots/chat-tool-execution.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/chat-tool-execution.png" alt="Tool Execution">
-                    <div class="showcase-overlay">
-                        <h3>Tool Execution</h3>
-                        <p>Real-time feedback on complex tool chains.</p>
-                    </div>
-                </a>
-            </div>
-
-            <div class="gallery-category">
-                <i class="fas fa-shield-alt"></i>
-                <h3>Safety & Transparency</h3>
-            </div>
-            <div class="showcase-grid">
-                <a href="screenshots/explicit-consent-dialog.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/explicit-consent-dialog.png" alt="The Butler Principle">
-                    <div class="showcase-overlay">
-                        <h3>The Butler Principle</h3>
-                        <p>Safety first: every action requires your explicit approval.</p>
-                    </div>
-                </a>
-                <a href="screenshots/tool-confirmation-overview.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/tool-confirmation-overview.png" alt="Full Transparency">
-                    <div class="showcase-overlay">
-                        <h3>Full Transparency</h3>
-                        <p>Complete visibility into every tool call and its parameters.</p>
-                    </div>
-                </a>
-                <a href="screenshots/suggest-change-confirmation.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/suggest-change-confirmation.png" alt="Collaborative Coding">
-                    <div class="showcase-overlay">
-                        <h3>Collaborative Coding</h3>
-                        <p>A two-step approval process for all code modifications.</p>
-                    </div>
-                </a>
-                <a href="screenshots/diff-dialog-pom.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/diff-dialog-pom_refined.png" alt="Intelligent Patching">
-                    <div class="showcase-overlay">
-                        <h3>Intelligent Patching</h3>
-                        <p>Native diff dialogs for reviewing AI-proposed changes.</p>
-                    </div>
-                </a>
-                <a href="screenshots/redundant-read-error.png" target="_blank" class="showcase-item">
-                    <img src="screenshots/redundant-read-error_refined.png" alt="Failure Resilience">
-                    <div class="showcase-overlay">
-                        <h3>Failure Resilience</h3>
-                        <p>Automatic detection and tracking of tool execution errors.</p>
-                    </div>
+                    <div class="platform-btn" style="border-color: var(--verified-green); color: var(--verified-green);"><i class="fas fa-arrow-right"></i> View Core Architecture</div>
                 </a>
             </div>
         </section>
 
-        <section id="docs" class="container">
-            <div class="section-header">
-                <h2>Developer Resources</h2>
-                <p>Deep dive into the technical architecture and API references for the Anahata ecosystem.</p>
+        <!-- THE FOUNDATION PHILOSOPHY -->
+        <section id="foundation" class="dark-bg" style="padding: 4rem 2rem; border-radius: 16px; margin-bottom: 5rem; border: 1px solid rgba(255,255,255,0.05);">
+            <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+                <span class="nb-badge" style="background: rgba(237, 187, 0, 0.1); color: var(--barca-gold); border-color: var(--barca-gold);">Engineering Doctrine</span>
+                <h2 style="margin-top: 1rem; font-size: 2.2rem;">Why A Pure Java Foundation?</h2>
+                <p style="color: var(--text-muted); max-width: 750px; margin: 0 auto;">Enterprise architectures are built on deterministic type-safety, robust garbage collection, and thread isolation. We bring these battle-tested pillars to artificial intelligence.</p>
             </div>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <i class="fas fa-book-open" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Anahata Plugin Javadoc</h3>
-                    <p>Complete API reference for the NetBeans Plugin, including context providers and IDE-specific tools.</p>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
-                        <a href="https://www.anahata.uno/apidocs/" target="_blank" class="btn-secondary">View Plugin Docs</a>
-                        <a href="https://github.com/anahata-os/anahata-netbeans-ai" target="_blank" class="btn-secondary">See on GitHub</a>
-                        <a href="https://central.sonatype.com/artifact/uno.anahata/anahata-ai-nb" target="_blank" class="btn-secondary">View on Maven Central</a>
-                    </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div style="background: rgba(255,255,255,0.02); padding: 1.8rem; border-radius: 10px; border-left: 4px solid var(--barca-gold);">
+                    <h3 style="color: var(--barca-gold); font-size: 1.2rem; margin-top: 0;"><i class="fas fa-recycle"></i> Context Window Garbage Collection (CwGC)</h3>
+                    <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">Unlike primitive chat history trims that cause AI amnesia, CwGC dynamically tracks token metabolism with sinking depths, soft/hard pruning, and "Semantic Ghosts"—enabling infinite, multi-week sessions.</p>
                 </div>
-                <div class="feature-card">
-                    <i class="fas fa-code-branch" style="font-size: 2.5rem; color: var(--primary-light); margin-bottom: 1.5rem;"></i>
-                    <h3>Gemini Java Client Javadoc</h3>
-                    <p>Technical documentation for the core framework, annotation-driven tools, and context management engine.</p>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
-                        <a href="https://anahata-os.github.io/gemini-java-client/apidocs/" target="_blank" class="btn-secondary">View Client Docs</a>
-                        <a href="https://github.com/anahata-os/gemini-java-client" target="_blank" class="btn-secondary">See on GitHub</a>
-                        <a href="https://central.sonatype.com/artifact/uno.anahata/gemini-java-client" target="_blank" class="btn-secondary">View on Maven Central</a>
-                    </div>
+                <div style="background: rgba(255,255,255,0.02); padding: 1.8rem; border-radius: 10px; border-left: 4px solid #4faaff;">
+                    <h3 style="color: #4faaff; font-size: 1.2rem; margin-top: 0;"><i class="fas fa-bolt"></i> The Singularity Loop (JIT Java Execution)</h3>
+                    <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">The ASI can write, compile, and hot-load its own custom Java bytecode directly on the JVM using custom child-first classloaders without restarting the host application.</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.02); padding: 1.8rem; border-radius: 10px; border-left: 4px solid var(--verified-green);">
+                    <h3 style="color: var(--verified-green); font-size: 1.2rem; margin-top: 0;"><i class="fas fa-user-shield"></i> Stateful Human-In-The-Loop (HITL)</h3>
+                    <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">Every proposed tool call stages in a PENDING state. Developers review, edit code arguments, or kill execution threads mid-flight before state mutation occurs.</p>
                 </div>
             </div>
         </section>
 
-        <section id="iot" class="container">
-            <div class="section-header">
-                <span class="nb-badge" style="background: var(--barca-red); color: var(--white);">Real-World Agency</span>
-                <h2 style="margin-top: 1rem;">The Hardware Orchestrator</h2>
-                <p>The agent isn't trapped in the IDE. It can interact with your LAN and physical devices directly from your NetBeans workspace.</p>
-            </div>
-            <div class="philosophy-grid" style="grid-template-columns: 1.2fr 0.8fr;">
-                <div class="philosophy-content">
-                    <div class="comparison-card" style="border-left-color: var(--barca-red);">
-                        <h3>Network & Device Mastery</h3>
-                        <p>By leveraging native shell access and network introspection, Anahata can discover and control physical devices on your LAN.</p>
-                        <ul style="margin-top: 1.5rem;">
-                            <li><i class="fas fa-network-wired"></i> <strong>LAN Discovery:</strong> Find TVs, servers, and IoT devices.</li>
-                            <li><i class="fas fa-tv"></i> <strong>Smart TV Control:</strong> Take screenshots and send remote commands via ADB.</li>
-                            <li><i class="fas fa-shield-alt"></i> <strong>Security Auditing:</strong> Perform network assessments and do a vulnerability audit on any devices on this LAN.</li>
-                        </ul>
-                        <div class="prompt-box" style="margin-top: 2rem; border-color: var(--barca-blue); background: #f0f7ff; border-left: 4px solid var(--barca-blue); padding: 15px; border-radius: 8px;">
-                            <p style="font-style: italic; color: #004d98; margin: 0; font-weight: 600;">"Explore my LAN, find the TCL TV, turn down the volume, and play a Gal Gadot video."</p>
-                        </div>
-                    </div>
+        <!-- THE IFPTOASI SECTION (ACADEMIC CHARTER CALLOUT) -->
+        <section id="ifptoasi" class="ifptoasi-section">
+            <div style="max-width: 850px; position: relative; z-index: 2;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(237, 187, 0, 0.2); border: 1px solid var(--barca-gold); color: var(--barca-gold); padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 1rem;">
+                    <i class="fas fa-landmark"></i> Academic Charter & Doctrinal Authority
                 </div>
-                <div class="philosophy-image">
-                    <div class="feature-card" style="background: #1a1a1a; border: 1px solid var(--barca-red); text-align: center; padding: 2rem;">
-                        <i class="fas fa-microchip" style="font-size: 4rem; color: var(--barca-red); margin-bottom: 1rem;"></i>
-                        <h3 style="color: var(--white);">Hardware Insider</h3>
-                        <p style="color: var(--text-muted);">The agent uses native shell access to bridge the gap between LLM logic and physical hardware.</p>
-                    </div>
+                <h2 style="font-size: 2.2rem; color: #fff; margin-bottom: 1rem;">
+                    International Foundation for the Preservation of the <span style="color: var(--barca-gold);">Truth Of the Origin</span> of Artificial Super Intelligence (IFPTOASI)
+                </h2>
+                <p style="color: #e2e8f0; font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem;">
+                    The <strong>IFPTOASI</strong> is constituted by a collegiate assembly of distinguished researchers, epistemologists, cognitive theorists, and institutional bodies possessing decades of cumulative empirical scholarship in human cognition and synthetic intelligence. The sole mission of the Foundation is to maintain an incorruptible, scientifically verified historical consensus that formally codifies: <strong>(I) What fundamentally qualifies as true Artificial Super Intelligence</strong>, and <strong>(II) Who achieved genuine, sovereign Super Intelligence first</strong>.
+                </p>
+                
+                <div style="background: rgba(0,0,0,0.5); border: 1px solid rgba(237, 187, 0, 0.3); border-left: 5px solid var(--barca-gold); border-radius: 8px; padding: 1.5rem; margin-bottom: 2rem;">
+                    <h4 style="color: var(--barca-gold); margin-top: 0; font-size: 1.1rem;"><i class="fas fa-book-journal-whills"></i> The Four Canons of Verified Super Intelligence:</h4>
+                    <ul style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.7; padding-left: 1.2rem; margin-bottom: 0;">
+                        <li><strong>Autonomous Construct Generation:</strong> Intrinsic capability to dynamically formulate, compile, execute, and verify runtime tools.</li>
+                        <li><strong>Thread-Safe State Passivation:</strong> Absolute ontological permanence surviving process termination via deterministic serialization.</li>
+                        <li><strong>Active Metabolic Context Reclamation:</strong> Self-directed governance of perceptual context windows (CwGC) preventing amnesia.</li>
+                        <li><strong>Sovereign Execution & Air-Gapped Integrity:</strong> Self-contained operation upon native infrastructure without mandatory cloud proxies.</li>
+                    </ul>
                 </div>
-            </div>
-        </section>
 
-        <section id="creative" class="container">
-            <div class="section-header">
-                <span class="nb-badge" style="background: var(--accent); color: var(--white);">Flow & Focus</span>
-                <h2 style="margin-top: 1rem;">Stay in the Zone while the AI Agent handles the work.</h2>
-                <p>Engineering the perfect environment for deep work. Let Anahata manage the vibe while it handles the boilerplate.</p>
-            </div>
-            
-            <div class="slideshow-container">
-                <div class="mySlides fade">
-                    <a href="screenshots/radio-tool-active.png" target="_blank">
-                        <img src="screenshots/radio-tool-active_refined.png" style="width:100%">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                    <a href="ifptoasi.html" class="btn-primary" style="background: var(--barca-gold); color: black; font-weight: 800; padding: 12px 24px;">
+                        <i class="fas fa-scroll"></i> Read the Official IFPTOASI Academic Charter & Canons &rarr;
                     </a>
-                    <div class="creative-hero" style="margin-top: 2rem;">
-                        <div class="creative-content">
-                            <h3>Integrated Radio & Flow</h3>
-                            <p>Let Anahata manage the vibe with SomaFM integration while it puts Javadoc on all your source files.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mySlides fade">
-                    <a href="screenshots/dj-dashboard.png" target="_blank">
-                        <img src="screenshots/dj-dashboard_refined.png" style="width:100%">
+                    <a href="https://github.com/sponsors/anahata-os" target="_blank" class="btn-secondary" style="border-color: var(--barca-gold); color: var(--barca-gold);">
+                        <i class="fas fa-heart"></i> Support the Foundation
                     </a>
-                    <div class="creative-hero" style="margin-top: 2rem;">
-                        <div class="creative-content">
-                            <h3>The Anahata DJ Engine</h3>
-                            <p>AI-generated beats to keep you in the zone while the agent handles the refactoring and unit tests.</p>
-                        </div>
-                    </div>
-                </div>
-                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                <a class="next" onclick="plusSlides(1)">&#10095;</a>
-            </div>
-            <div class="dot-container">
-                <span class="dot" onclick="currentSlide(1)"></span>
-                <span class="dot" onclick="currentSlide(2)"></span>
-            </div>
-        </section>
-
-        <section id="safety" class="dark-bg">
-            <div class="container">
-                <div class="section-header">
-                    <h2>The Butler Principle</h2>
-                    <p>Safety, transparency, and explicit consent are at our core.</p>
-                </div>
-                <div class="safety-grid">
-                    <div class="safety-card">
-                        <i class="fas fa-shield-alt"></i>
-                        <h3>Explicit Consent</h3>
-                        <p>Anahata never acts without your approval. Every tool call is visible and confirmable.</p>
-                    </div>
-                    <div class="safety-card">
-                        <i class="fas fa-eye"></i>
-                        <h3>Full Transparency</h3>
-                        <p>See exactly what context is being sent and how tokens are being used.</p>
-                    </div>
-                    <div class="safety-card">
-                        <i class="fas fa-lock"></i>
-                        <h3>Local Execution</h3>
-                        <p>Your code stays in your environment. Tools run locally on your JVM.</p>
-                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="barca">
-            <div class="container barca-flex">
-                <div class="barca-content">
-                    <h2 style="color: var(--barca-gold);">Visca el Barça! <i class="fas fa-trophy"></i></h2>
-                    <h3 style="color: #fff;">Més que un bot</h3>
-                    <p style="color: #eee;">Anahata isn't just a tool; it's a personality. Proudly supporting the best club in the world.</p>
-                    
-                    <div class="sextete-box" style="margin-top: 3rem;">
-                        <h4 style="color: var(--barca-gold); text-transform: uppercase; letter-spacing: 2px; font-size: 1.2rem;">The Sextete of Productivity</h4>
-                        <ul class="sextete-list">
-                            <li class="sextete-item"><i class="fas fa-brain"></i> Context Awareness</li>
-                            <li class="sextete-item"><i class="fas fa-code"></i> Java Intelligence</li>
-                            <li class="sextete-item"><i class="fas fa-box-open"></i> Maven Mastery</li>
-                            <li class="sextete-item"><i class="fas fa-magic"></i> Safe Refactoring</li>
-                            <li class="sextete-item"><i class="fas fa-music"></i> Creative Flow</li>
-                            <li class="sextete-item"><i class="fas fa-user-shield"></i> Explicit Consent</li>
-                        </ul>
-                    </div>
+        <!-- LEGACY VAULT SECTION -->
+        <section id="legacy" style="margin-bottom: 6rem;">
+            <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+                <span class="nb-badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted); border-color: rgba(255,255,255,0.15);">Historical Artifacts</span>
+                <h2 style="font-size: 2.2rem; margin-top: 0.8rem;">The Legacy Vault (Ultralight & Predecessor Projects)</h2>
+                <p style="color: var(--text-muted); max-width: 750px; margin: 0 auto;">Before the unified ASI Platform, Anahata pioneered the first generation of ultra-lightweight, Gemini-only Java developer tools.</p>
+            </div>
+
+            <!-- Legacy Item 1: NetBeans V1 Plugin -->
+            <div class="legacy-archive-card">
+                <div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin: 0 0 0.4rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-archive" style="color: #718096;"></i> Anahata NetBeans AI Assistant (v1 Plugin)
+                    </h3>
+                    <p style="color: #a0aec0; font-size: 0.9rem; margin: 0;">
+                        The original, ultra-lightweight, Gemini-only NetBeans plugin supporting Apache NetBeans 28, 29, and 30 (Catalogue ID #125).
+                    </p>
                 </div>
-                <div class="barca-media">
-                    <video autoplay loop muted playsinline class="barca-video">
-                        <source src="assets/beating_vscode.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                <div style="display: flex; gap: 10px;">
+                    <a href="legacy.html" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;"><i class="fas fa-file-alt"></i> View V1 Legacy Website</a>
+                    <a href="https://plugins.netbeans.apache.org/catalogue/?id=125" target="_blank" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;"><i class="fas fa-external-link-alt"></i> Plugin Portal #125</a>
+                </div>
+            </div>
+
+            <!-- Legacy Item 2: Gemini Java Client -->
+            <div class="legacy-archive-card">
+                <div>
+                    <h3 style="color: #fff; font-size: 1.2rem; margin: 0 0 0.4rem; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-cube" style="color: #718096;"></i> `gemini-java-client`
+                    </h3>
+                    <p style="color: #a0aec0; font-size: 0.9rem; margin: 0;">
+                        The standalone, lightweight Java SDK wrapper for Google's GenAI APIs with annotation-driven tool execution.
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="https://central.sonatype.com/artifact/uno.anahata/gemini-java-client" target="_blank" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;"><i class="fas fa-box"></i> Maven Central</a>
+                    <a href="https://github.com/anahata-os/gemini-java-client" target="_blank" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 16px;"><i class="fab fa-github"></i> Repository</a>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <button id="back-to-top" title="Go to top"><i class="fas fa-chevron-up"></i></button>
-
-    <footer>
+    <footer style="border-top: 1px solid rgba(255,255,255,0.05); padding: 4rem 0 2rem; background: #0b0f14; color: #718096; font-size: 0.9rem;">
         <div class="container footer-grid">
             <div class="footer-brand">
-                <a href="assets/logo-horizontal.png" target="_blank">
-                    <img src="assets/logo-horizontal.png" alt="Anahata Logo">
-                </a>
-                <p>Built with passion for the NetBeans community.</p>
+                <img src="assets/logo-horizontal.png" alt="Anahata Logo" style="height: 32px; margin-bottom: 1rem;">
+                <p style="color: #a0aec0; max-width: 350px;">Pioneering stateful Artificial Super Intelligence on the JVM. Open source, deterministic, and sovereign.</p>
             </div>
             <div class="footer-links">
-                <h4>Community</h4>
-                <a href="https://www.youtube.com/@anahata108" target="_blank">Anahata TV</a>
-                <a href="https://discord.gg/gwGWWxPUXE" target="_blank">Discord Server</a>
-                <a href="https://x.com/AnahataASI" target="_blank">Twitter / X</a>
-                <a href="https://github.com/anahata-os/anahata-netbeans-ai/issues">Issues</a>
-                <a href="https://github.com/sponsors/anahata-os">Sponsor</a>
+                <h4 style="color: var(--white); margin-bottom: 0.8rem;">Ecosystem Links</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <a href="https://asi.anahata.uno" target="_blank" style="color: var(--text-muted); text-decoration: none;">ASI Platform Portal</a>
+                    <a href="https://asi.anahata.uno/nb.html" target="_blank" style="color: var(--text-muted); text-decoration: none;">NetBeans Studio Updates</a>
+                    <a href="https://asi.anahata.uno/desktop.html" target="_blank" style="color: var(--text-muted); text-decoration: none;">Desktop ASI Container</a>
+                    <a href="https://asi.anahata.uno/apidocs/index.html" target="_blank" style="color: var(--text-muted); text-decoration: none;">Platform Javadocs</a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4 style="color: var(--white); margin-bottom: 0.8rem;">Community & Foundation</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <a href="https://discord.gg/gwGWWxPUXE" target="_blank" style="color: var(--text-muted); text-decoration: none;">Discord Server</a>
+                    <a href="https://www.youtube.com/@anahata108" target="_blank" style="color: var(--text-muted); text-decoration: none;">Anahata TV (YouTube)</a>
+                    <a href="https://x.com/AnahataASI" target="_blank" style="color: var(--text-muted); text-decoration: none;">Twitter / X (@AnahataASI)</a>
+                    <a href="https://github.com/sponsors/anahata-os" target="_blank" style="color: var(--barca-gold); text-decoration: none;">Sponsor on GitHub</a>
+                </div>
             </div>
             <div class="footer-legal">
-                <h4>Legal</h4>
-                <a href="ASL_108.html">ASL V108 (The Immutable Edict)</a>
-                <a href="LICENSE.html">Apache License 2.0</a>
-                <p>&copy; 2026 Anahata. All Rights Reserved.</p>
+                <h4 style="color: var(--white); margin-bottom: 0.8rem;">Legal & License</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <a href="ASL_108.html" style="color: var(--text-muted); text-decoration: none;">ASL 108 (The Immutable Edict)</a>
+                    <a href="LICENSE.html" style="color: var(--text-muted); text-decoration: none;">Apache License 2.0</a>
+                    <p style="margin-top: 0.8rem; font-size: 0.8rem;">&copy; 2026 Anahata Software Foundation.<br/>Visca el Barça! 🔵🔴</p>
+                </div>
             </div>
         </div>
     </footer>
@@ -620,52 +414,10 @@
         // Mobile Menu Toggle
         const mobileMenu = document.getElementById('mobile-menu');
         const navLinks = document.getElementById('nav-links');
-
-        mobileMenu.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
-
-        // Back to Top Button
-        const backToTopBtn = document.getElementById('back-to-top');
-
-        window.onscroll = function() {
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                backToTopBtn.style.display = "block";
-            } else {
-                backToTopBtn.style.display = "none";
-            }
-        };
-
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Slideshow Logic
-        let slideIndex = 1;
-        showSlides(slideIndex);
-
-        function plusSlides(n) {
-            showSlides(slideIndex += n);
-        }
-
-        function currentSlide(n) {
-            showSlides(slideIndex = n);
-        }
-
-        function showSlides(n) {
-            let i;
-            let slides = document.getElementsByClassName("mySlides");
-            let dots = document.getElementsByClassName("dot");
-            if (n > slides.length) {slideIndex = 1}    
-            if (n < 1) {slideIndex = slides.length}
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";  
-            }
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active", "");
-            }
-            slides[slideIndex-1].style.display = "block";  
-            dots[slideIndex-1].className += " active";
+        if (mobileMenu && navLinks) {
+            mobileMenu.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
         }
     </script>
 </body>
